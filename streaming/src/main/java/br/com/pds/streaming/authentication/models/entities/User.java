@@ -2,7 +2,9 @@ package br.com.pds.streaming.authentication.models.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,12 +20,16 @@ import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "users")
 public class User implements UserDetails, Serializable {
 
     private @MongoId ObjectId id;
 
+    @Indexed(unique = true)
     private String email;
+
+    @Indexed(unique = true)
     private String username;
     private String password;
 
