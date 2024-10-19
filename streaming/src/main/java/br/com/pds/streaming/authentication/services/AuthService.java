@@ -18,6 +18,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -35,6 +36,9 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication;
 
@@ -46,7 +50,7 @@ public class AuthService {
             Map<String, Object> map = new HashMap<>();
             map.put("message", "Bad credentials");
             map.put("status", false);
-            return new ResponseEntity<Object>(map, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Object>(map, HttpStatus.UNAUTHORIZED);
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -71,10 +75,11 @@ public class AuthService {
             Set<Role> roles = new HashSet<>();
             roles.add(role);
             SubscriptionPlan plan = new SubscriptionPlan("free", roles, 200.0);
+            String encryptedPassword = passwordEncoder.encode(registerRequest.getPassword());
 
             userRepository.save(new User(registerRequest.getEmail(),
                     registerRequest.getUsername(),
-                    registerRequest.getPassword(),
+                    encryptedPassword,
                     registerRequest.getFirstName(),
                     registerRequest.getLastName(),
                     plan
