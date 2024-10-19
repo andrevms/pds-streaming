@@ -37,10 +37,12 @@ public class AuthService {
 
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication;
+
         try {
             authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         } catch (AuthenticationException exception) {
+
             Map<String, Object> map = new HashMap<>();
             map.put("message", "Bad credentials");
             map.put("status", false);
@@ -59,7 +61,7 @@ public class AuthService {
 
         LoginResponse response = new LoginResponse(userDetails.getUsername(), jwtToken, roles);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok("teste");
     }
 
     public ResponseEntity<?> registerUser(RegisterRequest registerRequest) {
@@ -77,6 +79,7 @@ public class AuthService {
                     registerRequest.getLastName(),
                     plan
             ));
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
