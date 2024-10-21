@@ -65,13 +65,13 @@ public class AuthService {
 
         LoginResponse response = new LoginResponse(userDetails.getUsername(), jwtToken, roles);
 
-        return ResponseEntity.ok("teste");
+        return ResponseEntity.ok(response);
     }
 
     public ResponseEntity<?> registerUser(RegisterRequest registerRequest) {
         try {
 
-            Role role = new Role("ROLE_ADMIM");
+            Role role = new Role("ROLE_ADMIN");
             Set<Role> roles = new HashSet<>();
             roles.add(role);
             SubscriptionPlan plan = new SubscriptionPlan("free", roles, 200.0);
