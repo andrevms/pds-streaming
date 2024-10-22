@@ -1,12 +1,26 @@
-.outer-login-form {
+.subscription-content {
+    width: 80%;
     margin: 0 auto;
-    padding: 30px;
+}
+
+.price-text {
+    margin-top: 0;
+    text-align: center;
+    font-size: 25px;
+    font-weight: 600;
+    color: white;
+}
+
+.outer-payment-form {
+    width: fit-content;
+    margin: 0 auto;
+    padding: 40px;
     border-radius: 30px;
     background-color: #222222;
 }
 
 .input-box {
-    margin-bottom: 10px;
+    margin: 0 auto 10px;
     display: flex;
     flex-direction: column;
     color: white;
@@ -29,23 +43,16 @@
     cursor: text;
 }
 
-.signup-input {
-    width: 250px;
+.large-subscription-input {
+    width: 200px;
 }
 
-.login-input {
-    width: 180px;
-}
-
-.outer-submit-button {
-    margin: 30px auto 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+.small-subscription-input {
+    width: 75px;
 }
 
 .submit-button {
-    width: 130px;
+    width: 160px;
     height: 50px;
     border-radius: 35px;
     font-size: 105%;
