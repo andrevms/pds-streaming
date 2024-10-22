@@ -1,6 +1,5 @@
 package br.com.pds.streaming.authentication.models.dto.register;
 
-import br.com.pds.streaming.authentication.models.entities.SubscriptionPlan;
 import lombok.Data;
 
 @Data
