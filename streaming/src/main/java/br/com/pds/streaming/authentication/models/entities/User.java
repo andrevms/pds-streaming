@@ -1,5 +1,6 @@
 package br.com.pds.streaming.authentication.models.entities;
 
+import br.com.pds.streaming.subscription.model.entities.Subscription;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,8 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
@@ -36,7 +35,7 @@ public class User implements UserDetails, Serializable {
     private String firstName;
     private String lastName;
 
-    private SubscriptionPlan subscription;
+    private Subscription subscriptionPlan;
 
     private boolean isActive;
     private String dateCreated;
@@ -46,7 +45,7 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return subscription.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList());
+        return subscriptionPlan.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList());
     }
 
     @Override
@@ -75,7 +74,7 @@ public class User implements UserDetails, Serializable {
         this.dateDeleted = new Date().toString();
     }
 
-    public User(String email, String username, String password, String firstName, String lastName, SubscriptionPlan subscription) {
+    public User(String email, String username, String password, String firstName, String lastName, Subscription subscriptionPlan) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -84,6 +83,6 @@ public class User implements UserDetails, Serializable {
         this.isActive = true;
         this.dateCreated = new Date().toString();
         this.dateDeleted = new Date().toString();
-        this.subscription = subscription;
+        this.subscriptionPlan = subscriptionPlan;
     }
 }
