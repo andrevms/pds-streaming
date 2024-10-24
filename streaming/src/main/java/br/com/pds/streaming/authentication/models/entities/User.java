@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,6 +36,7 @@ public class User implements UserDetails, Serializable {
     private String firstName;
     private String lastName;
 
+    @DBRef
     private Subscription subscriptionPlan;
 
     private boolean isActive;
