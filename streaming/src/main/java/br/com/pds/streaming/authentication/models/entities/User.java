@@ -41,8 +41,6 @@ public class User implements UserDetails, Serializable {
     private String dateCreated;
     private String dateDeleted;
 
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return subscriptionPlan.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList());
@@ -50,17 +48,17 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public boolean isAccountNonExpired() {
-        return isActive; // Implement as needed
+        return isActive;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isActive; // Implement as needed
+        return isActive;
     }
 
     @Override
     public boolean isEnabled() {
-        return isActive; // Implement as needed
+        return isActive;
     }
 
     public User(String email, String username, String password, String firstName, String lastName) {
