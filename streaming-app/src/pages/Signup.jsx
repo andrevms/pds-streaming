@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 
 export default function Signup() {
-    const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [repeatedPassword, setRepeatedPassword] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
 
     const handleSubmit = (event) => {};
     const { updateTitle } = useOutletContext();
@@ -20,7 +22,7 @@ export default function Signup() {
             <form className="login-form" onSubmit={handleSubmit}>
                 <div className="input-box">
                     <label className="input-label" htmlFor="email">Nome de usuário</label>
-                    <input className="signup-input" type="text" id="username" name="username" value={name} onChange={(e) => setName(e.target.value)} required />
+                    <input className="signup-input" type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
                 </div>
                 <div className="input-box">
                     <label className="input-label" htmlFor="email">E-mail</label>
@@ -31,8 +33,16 @@ export default function Signup() {
                     <input className="signup-input" type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 </div>
                 <div className="input-box">
-                    <label className="input-label" htmlFor="password">Repetir Senha</label>
+                    <label className="input-label" htmlFor="password">Repetir senha</label>
                     <input className="signup-input" type="password" id="repeated-password" name="repeated-password" value={repeatedPassword} onChange={(e) => setRepeatedPassword(e.target.value)} required />
+                </div>
+                <div className="input-box">
+                    <label className="input-label" htmlFor="email">Primeiro nome</label>
+                    <input className="signup-input" type="text" id="first-name" name="first-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+                </div>
+                <div className="input-box">
+                    <label className="input-label" htmlFor="email">Sobrenome</label>
+                    <input className="signup-input" type="text" id="last-name" name="last-name" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
                 </div>
                 <div className="outer-submit-button">
                     <button className="submit-button" type="submit">Criar Conta</button>

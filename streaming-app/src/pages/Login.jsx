@@ -3,7 +3,7 @@ import { useOutletContext, useNavigate } from "react-router-dom";
 import "./Login.css";
 
 export default function Login() {
-    const [email, setEmail] = useState("");
+    const [username, setUserame] = useState("");
     const [password, setPassword] = useState("");
 
     const handleSubmit = (event) => {};
@@ -17,9 +17,9 @@ export default function Login() {
     return (
         <div className="outer-login-form">
             <form className="login-form" onSubmit={handleSubmit}>
-                <div className="input-box">
-                    <label className="input-label" htmlFor="email">E-mail</label>
-                    <input className="login-input" type="email" id="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <div className="input-box">
+                    <label className="input-label" htmlFor="email">Nome de usuário</label>
+                    <input className="signup-input" type="text" id="username" name="username" value={username} onChange={(e) => setUserame(e.target.value)} required />
                 </div>
                 <div className="input-box">
                     <label className="input-label" htmlFor="password">Senha</label>
