@@ -1,36 +1,28 @@
-package br.com.pds.streaming.media.model.entities;
+package br.com.pds.streaming.media.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "movies")
-public class Movie implements Serializable {
-
-    @Serial
+public class SeasonDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @MongoId
     private ObjectId id;
     private String title;
     private String description;
     private String thumbnailUrl;
     private String animationUrl;
 
-    @DBRef(lazy = true)
-    private Video video;
+    private List<EpisodeDTO> episodes;
 
-    public Movie(ObjectId id, String title, String description, String thumbnailUrl, String animationUrl) {
+    public SeasonDTO(ObjectId id, String title, String description, String thumbnailUrl, String animationUrl) {
         this.id = id;
         this.title = title;
         this.description = description;

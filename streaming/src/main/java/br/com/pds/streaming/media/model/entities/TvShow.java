@@ -1,5 +1,6 @@
 package br.com.pds.streaming.media.model.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Document(collection = "tv_shows")
 public class TvShow implements Serializable {
 
@@ -36,14 +38,5 @@ public class TvShow implements Serializable {
         this.description = description;
         this.thumbnailUrl = thumbnailUrl;
         this.animationUrl = animationUrl;
-    }
-
-    public TvShow(ObjectId id, String title, String description, String thumbnailUrl, String animationUrl, List<Season> seasons) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.thumbnailUrl = thumbnailUrl;
-        this.animationUrl = animationUrl;
-        this.seasons = seasons;
     }
 }
