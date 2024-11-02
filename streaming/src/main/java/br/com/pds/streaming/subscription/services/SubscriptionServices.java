@@ -4,6 +4,7 @@ import br.com.pds.streaming.authentication.models.entities.User;
 import br.com.pds.streaming.authentication.repository.UserRepository;
 import br.com.pds.streaming.authentication.services.UserService;
 import br.com.pds.streaming.exceptions.InvalidSubscriptionTypeException;
+import br.com.pds.streaming.exceptions.PaymentException;
 import br.com.pds.streaming.subscription.model.dto.RequestSubscriptionDTO;
 import br.com.pds.streaming.subscription.model.entities.Role;
 import br.com.pds.streaming.subscription.model.entities.Subscription;
@@ -27,9 +28,17 @@ public class SubscriptionServices {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private PaymentServices paymentServices;
 
     @Transactional
-    public void subscribeUser(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException {
+    public void subscribeUser(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException, PaymentException {
+
+        var creditCard = requestSubscriptionDTO.getCreditCardDTO();
+        if (!paymentServices.processCreditCardPayment(creditCard)) {
+            throw new PaymentException("Payment failed");
+        }
+
         User user;
         user = getUser(requestSubscriptionDTO.getUsername());
 
