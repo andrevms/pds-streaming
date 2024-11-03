@@ -1,15 +1,14 @@
 package br.com.pds.streaming.media.services;
 
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
+import br.com.pds.streaming.media.model.dto.EpisodeDTO;
 import br.com.pds.streaming.media.model.entities.Episode;
-import br.com.pds.streaming.media.model.entities.Season;
 import br.com.pds.streaming.media.repositories.EpisodeRepository;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EpisodeService {
@@ -17,30 +16,50 @@ public class EpisodeService {
     @Autowired
     private EpisodeRepository episodeRepository;
 
-    public Episode findById(String id) throws ObjectNotFoundException {
-        Optional<Episode> episode = episodeRepository.findById(id);
-        return episode.orElseThrow(() -> new ObjectNotFoundException("Episode not found."));
+    @Autowired
+    private MyModelMapper mapper;
+
+    public List<EpisodeDTO> findAll() {
+
+        var episodes = episodeRepository.findAll();
+
+        return mapper.convertList(episodes, EpisodeDTO.class);
     }
 
-    public List<Episode> findAll() {
-        return episodeRepository.findAll();
+    public List<EpisodeDTO> findBySeasonId(String seasonId) {
+
+        var episodes = episodeRepository.findBySeasonId(seasonId);
+
+        return mapper.convertList(episodes, EpisodeDTO.class);
     }
 
-    public List<Episode> findBySeasonId(String seasonId) {
-        return episodeRepository.findBySeasonId(seasonId);
+    public EpisodeDTO findById(String id) throws ObjectNotFoundException {
+
+        var episode = episodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Episode not found."));
+
+        return mapper.convertValue(episode, EpisodeDTO.class);
     }
 
-    public Episode insert(Episode episode) {
-        return episodeRepository.save(episode);
+    public EpisodeDTO insert(EpisodeDTO episodeDTO) {
+
+        var createdEpisode = episodeRepository.save(mapper.convertValue(episodeDTO, Episode.class));
+
+        return mapper.convertValue(createdEpisode, EpisodeDTO.class);
     }
 
-    public Episode update(String id, Episode episode) throws ObjectNotFoundException {
-        if (!episodeRepository.existsById(id)) {
-            throw new ObjectNotFoundException("Episode not found.");
-        }
+    public EpisodeDTO update(EpisodeDTO episodeDTO, String id) throws ObjectNotFoundException {
 
-        episode.setId(new ObjectId(id));
-        return episodeRepository.save(episode);
+        var episode = episodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Episode not found."));
+
+        episode.setTitle(episodeDTO.getTitle());
+        episode.setDescription(episodeDTO.getDescription());
+        episode.setVideoUrl(episodeDTO.getVideoUrl());
+        episode.setThumbnailUrl(episodeDTO.getThumbnailUrl());
+        episode.setAnimationUrl(episodeDTO.getAnimationUrl());
+
+        var updatedEpisode = episodeRepository.save(episode);
+
+        return mapper.convertValue(updatedEpisode, EpisodeDTO.class);
     }
 
     public void delete(String id) {

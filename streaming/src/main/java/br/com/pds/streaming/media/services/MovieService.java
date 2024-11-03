@@ -1,14 +1,14 @@
 package br.com.pds.streaming.media.services;
 
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
+import br.com.pds.streaming.media.model.dto.MovieDTO;
 import br.com.pds.streaming.media.model.entities.Movie;
 import br.com.pds.streaming.media.repositories.MovieRepository;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MovieService {
@@ -16,26 +16,43 @@ public class MovieService {
     @Autowired
     private MovieRepository movieRepository;
 
-    public Movie findById(String id) throws ObjectNotFoundException {
-        Optional<Movie> movie = movieRepository.findById(id);
-        return movie.orElseThrow(() -> new ObjectNotFoundException("Movie not found."));
+    @Autowired
+    private MyModelMapper mapper;
+
+    public List<MovieDTO> findAll() {
+
+        var movies = movieRepository.findAll();
+
+        return mapper.convertList(movies, MovieDTO.class);
     }
 
-    public List<Movie> findAll() {
-        return movieRepository.findAll();
+    public MovieDTO findById(String id) throws ObjectNotFoundException {
+
+        var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Movie not found"));
+
+        return mapper.convertValue(movie, MovieDTO.class);
     }
 
-    public Movie insert(Movie movie) {
-        return movieRepository.save(movie);
+    public MovieDTO insert(MovieDTO movieDTO) {
+
+        var createdMovie = movieRepository.save(mapper.convertValue(movieDTO, Movie.class));
+
+        return mapper.convertValue(createdMovie, MovieDTO.class);
     }
 
-    public Movie update(String id, Movie movie) throws ObjectNotFoundException {
-        if (!movieRepository.existsById(id)) {
-            throw new ObjectNotFoundException("Movie not found.");
-        }
+    public Movie update(MovieDTO movieDTO, String id) throws ObjectNotFoundException {
 
-        movie.setId(new ObjectId(id));
-        return movieRepository.save(movie);
+        var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Movie not found"));
+
+        movie.setTitle(movieDTO.getTitle());
+        movie.setDescription(movieDTO.getDescription());
+        movie.setVideoUrl(movieDTO.getVideoUrl());
+        movie.setThumbnailUrl(movieDTO.getThumbnailUrl());
+        movie.setAnimationUrl(movieDTO.getAnimationUrl());
+
+        var updatedMovie = movieRepository.save(movie);
+
+        return mapper.convertValue(updatedMovie, Movie.class);
     }
 
     public void delete(String id) {
