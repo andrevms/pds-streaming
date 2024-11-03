@@ -1,11 +1,11 @@
 package br.com.pds.streaming.authentication.models.entities;
 
-import br.com.pds.streaming.subscription.model.entities.Subscription;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
@@ -35,17 +37,16 @@ public class User implements UserDetails, Serializable {
     private String firstName;
     private String lastName;
 
-    private Subscription subscriptionPlan;
+    @DBRef
+    private Set<Role> roles = new HashSet<>();
 
     private boolean isActive;
     private String dateCreated;
     private String dateDeleted;
 
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return subscriptionPlan.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList());
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList());
     }
 
     @Override
@@ -74,7 +75,7 @@ public class User implements UserDetails, Serializable {
         this.dateDeleted = new Date().toString();
     }
 
-    public User(String email, String username, String password, String firstName, String lastName, Subscription subscriptionPlan) {
+    public User(String email, String username, String password, String firstName, String lastName, Set<Role> roles) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -83,6 +84,6 @@ public class User implements UserDetails, Serializable {
         this.isActive = true;
         this.dateCreated = new Date().toString();
         this.dateDeleted = new Date().toString();
-        this.subscriptionPlan = subscriptionPlan;
+        this.roles = roles;
     }
 }

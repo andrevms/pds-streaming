@@ -3,6 +3,7 @@ package br.com.pds.streaming.authentication.controller;
 import br.com.pds.streaming.authentication.models.dto.login.LoginRequest;
 import br.com.pds.streaming.authentication.models.dto.register.RegisterRequest;
 import br.com.pds.streaming.authentication.services.AuthService;
+import br.com.pds.streaming.exceptions.InvalidRoleException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) throws InvalidRoleException {
         return authService.registerUser(registerRequest);
     }
 

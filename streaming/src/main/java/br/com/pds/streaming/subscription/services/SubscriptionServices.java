@@ -1,12 +1,13 @@
 package br.com.pds.streaming.subscription.services;
 
+import br.com.pds.streaming.authentication.models.entities.Role;
 import br.com.pds.streaming.authentication.models.entities.User;
+import br.com.pds.streaming.authentication.repository.RoleRepository;
 import br.com.pds.streaming.authentication.repository.UserRepository;
 import br.com.pds.streaming.authentication.services.UserService;
 import br.com.pds.streaming.exceptions.InvalidSubscriptionTypeException;
 import br.com.pds.streaming.exceptions.PaymentException;
 import br.com.pds.streaming.subscription.model.dto.RequestSubscriptionDTO;
-import br.com.pds.streaming.subscription.model.entities.Role;
 import br.com.pds.streaming.subscription.model.entities.Subscription;
 import br.com.pds.streaming.subscription.model.enums.SubscriptionStatus;
 import br.com.pds.streaming.subscription.model.enums.SubscriptionType;
@@ -30,6 +31,8 @@ public class SubscriptionServices {
     private UserService userService;
     @Autowired
     private PaymentServices paymentServices;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Transactional
     public void subscribeUser(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException, PaymentException {
@@ -49,9 +52,7 @@ public class SubscriptionServices {
             throw e;
         }
 
-        user.setSubscriptionPlan(subscription);
-
-        userRepository.save(user);
+        setUserRole(user);
         subscriptionRepository.save(subscription);
     }
 
@@ -60,6 +61,7 @@ public class SubscriptionServices {
     }
 
     private Subscription createSubscription(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException {
+
         SubscriptionType subscriptionType;
         try {
             subscriptionType = SubscriptionType.valueOf(requestSubscriptionDTO.getSubscriptionType());
@@ -70,15 +72,25 @@ public class SubscriptionServices {
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(subscriptionType.getDurationInDays());
         double price = subscriptionType.getPrice();
-        var roles = new HashSet<>(List.of(new Role("ROLE_USER_PREMIUM")));
 
         return new Subscription(
                 subscriptionType,
                 SubscriptionStatus.ACTIVE,
                 startDate,
                 endDate,
-                price,
-                roles
+                price
         );
+    }
+
+    private void setUserRole(User user) {
+        Role role = roleRepository.findByName("ROLE_USER_PREMIUM")
+                .orElseGet(() -> {
+                    Role newRole = new Role("ROLE_USER_PREMIUM");
+                    return roleRepository.save(newRole);
+                });
+
+        user.setRoles(new HashSet<>(List.of(role)));
+
+        userRepository.save(user);
     }
 }
