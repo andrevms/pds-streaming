@@ -1,7 +1,7 @@
 package br.com.pds.streaming.subscription.controllers;
 
 import br.com.pds.streaming.exceptions.InvalidSubscriptionTypeException;
-import br.com.pds.streaming.exceptions.UserNotFoundException;
+import br.com.pds.streaming.exceptions.PaymentException;
 import br.com.pds.streaming.exceptions.response.ResponseError;
 import br.com.pds.streaming.subscription.model.dto.RequestSubscriptionDTO;
 import br.com.pds.streaming.subscription.services.SubscriptionServices;
@@ -22,6 +22,7 @@ public class SubscriptionController {
     @Autowired
     private SubscriptionServices subscriptionServices;
 
+    // TODO("Organizar os tratamentos de excecoes")
     @PostMapping
     public ResponseEntity<?> subscribe(@RequestBody RequestSubscriptionDTO requestSubscriptionDTO) {
         try {
@@ -36,7 +37,18 @@ public class SubscriptionController {
                     "/api/subscriptions"
             );
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
-        } catch (Exception e) {
+        }catch (PaymentException e) {
+            ResponseError responseError = new ResponseError(
+                    LocalDateTime.now(),
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Payment failed",
+                    e.getMessage(),
+                    "/api/subscriptions"
+            );
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
+        }
+        catch (Exception e) {
             ResponseError responseError = new ResponseError(
                     LocalDateTime.now(),
                     HttpStatus.INTERNAL_SERVER_ERROR.value(),

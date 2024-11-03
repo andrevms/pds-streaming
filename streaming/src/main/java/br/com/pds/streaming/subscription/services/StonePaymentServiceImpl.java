@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 @Service
-public class StonePaymentsServicesImpl implements PaymentServices{
+public class StonePaymentServiceImpl implements PaymentServices{
 
 
     @Override
