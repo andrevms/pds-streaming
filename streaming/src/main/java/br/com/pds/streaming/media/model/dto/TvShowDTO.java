@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TvShowDTO implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     private ObjectId id;

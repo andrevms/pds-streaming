@@ -1,6 +1,6 @@
-package br.com.pds.streaming.authentication.repository;
+package br.com.pds.streaming.authentication.repositories;
 
-import br.com.pds.streaming.authentication.models.entities.User;
+import br.com.pds.streaming.authentication.model.entities.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface UserRepository extends MongoRepository<User, String> {

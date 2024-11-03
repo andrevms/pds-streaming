@@ -1,15 +1,14 @@
 package br.com.pds.streaming.authentication.services;
 
-import br.com.pds.streaming.authentication.models.dto.login.LoginRequest;
-import br.com.pds.streaming.authentication.models.dto.login.LoginResponse;
-import br.com.pds.streaming.authentication.models.dto.register.RegisterRequest;
+import br.com.pds.streaming.authentication.model.dto.login.LoginRequest;
+import br.com.pds.streaming.authentication.model.dto.login.LoginResponse;
+import br.com.pds.streaming.authentication.model.dto.register.RegisterRequest;
 import br.com.pds.streaming.subscription.model.entities.Role;
-import br.com.pds.streaming.authentication.models.entities.User;
-import br.com.pds.streaming.authentication.repository.UserRepository;
+import br.com.pds.streaming.authentication.model.entities.User;
+import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.config.jwt.JwtUtils;
 import br.com.pds.streaming.subscription.model.entities.Subscription;
 import br.com.pds.streaming.subscription.model.enums.SubscriptionStatus;
-import br.com.pds.streaming.subscription.model.enums.SubscriptionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

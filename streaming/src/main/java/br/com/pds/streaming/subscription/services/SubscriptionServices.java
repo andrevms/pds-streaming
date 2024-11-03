@@ -1,7 +1,7 @@
 package br.com.pds.streaming.subscription.services;
 
-import br.com.pds.streaming.authentication.models.entities.User;
-import br.com.pds.streaming.authentication.repository.UserRepository;
+import br.com.pds.streaming.authentication.model.entities.User;
+import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.authentication.services.UserService;
 import br.com.pds.streaming.exceptions.InvalidSubscriptionTypeException;
 import br.com.pds.streaming.subscription.model.dto.RequestSubscriptionDTO;

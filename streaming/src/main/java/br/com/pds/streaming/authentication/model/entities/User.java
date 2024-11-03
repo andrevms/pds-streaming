@@ -1,4 +1,4 @@
-package br.com.pds.streaming.authentication.models.entities;
+package br.com.pds.streaming.authentication.model.entities;
 
 import br.com.pds.streaming.subscription.model.entities.Subscription;
 import lombok.AllArgsConstructor;

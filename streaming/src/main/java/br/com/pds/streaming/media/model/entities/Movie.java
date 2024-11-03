@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
@@ -24,17 +23,7 @@ public class Movie implements Serializable {
     private ObjectId id;
     private String title;
     private String description;
+    private String videoUrl;
     private String thumbnailUrl;
     private String animationUrl;
-
-    @DBRef(lazy = true)
-    private Video video;
-
-    public Movie(ObjectId id, String title, String description, String thumbnailUrl, String animationUrl) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.thumbnailUrl = thumbnailUrl;
-        this.animationUrl = animationUrl;
-    }
 }

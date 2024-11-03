@@ -11,21 +11,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovieDTO implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     private ObjectId id;
     private String title;
     private String description;
+    private String videoUrl;
     private String thumbnailUrl;
     private String animationUrl;
-
-    private VideoDTO video;
-
-    public MovieDTO(ObjectId id, String title, String description, String thumbnailUrl, String animationUrl) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.thumbnailUrl = thumbnailUrl;
-        this.animationUrl = animationUrl;
-    }
 }

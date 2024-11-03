@@ -1,4 +1,4 @@
-package br.com.pds.streaming.authentication.models.dto.login;
+package br.com.pds.streaming.authentication.model.dto.login;
 
 import lombok.Data;
 
