@@ -1,4 +1,4 @@
-package br.com.pds.streaming.authentication.repository;
+package br.com.pds.streaming.authentication.repositories;
 
 import br.com.pds.streaming.authentication.model.entities.Role;
 import org.springframework.data.mongodb.repository.MongoRepository;

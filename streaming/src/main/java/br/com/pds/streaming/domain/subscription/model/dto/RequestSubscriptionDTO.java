@@ -1,4 +1,4 @@
-package br.com.pds.streaming.subscription.model.dto;
+package br.com.pds.streaming.domain.subscription.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

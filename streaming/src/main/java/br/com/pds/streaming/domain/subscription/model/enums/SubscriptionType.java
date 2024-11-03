@@ -1,4 +1,4 @@
-package br.com.pds.streaming.subscription.model.enums;
+package br.com.pds.streaming.domain.subscription.model.enums;
 
 import lombok.Getter;
 

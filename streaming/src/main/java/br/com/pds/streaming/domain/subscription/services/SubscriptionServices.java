@@ -1,17 +1,17 @@
-package br.com.pds.streaming.subscription.services;
+package br.com.pds.streaming.domain.subscription.services;
 
 import br.com.pds.streaming.authentication.model.entities.Role;
 import br.com.pds.streaming.authentication.model.entities.User;
-import br.com.pds.streaming.authentication.repository.RoleRepository;
-import br.com.pds.streaming.authentication.repository.UserRepository;
+import br.com.pds.streaming.authentication.repositories.RoleRepository;
+import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.authentication.services.UserService;
+import br.com.pds.streaming.domain.subscription.model.dto.RequestSubscriptionDTO;
+import br.com.pds.streaming.domain.subscription.model.entities.Subscription;
+import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionStatus;
+import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionType;
+import br.com.pds.streaming.domain.subscription.repositories.SubscriptionRepository;
 import br.com.pds.streaming.exceptions.InvalidSubscriptionTypeException;
 import br.com.pds.streaming.exceptions.PaymentException;
-import br.com.pds.streaming.subscription.model.dto.RequestSubscriptionDTO;
-import br.com.pds.streaming.subscription.model.entities.Subscription;
-import br.com.pds.streaming.subscription.model.enums.SubscriptionStatus;
-import br.com.pds.streaming.subscription.model.enums.SubscriptionType;
-import br.com.pds.streaming.subscription.repositories.SubscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

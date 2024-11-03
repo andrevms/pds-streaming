@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,7 +22,9 @@ public class TvShowDTO implements Serializable {
     private String thumbnailUrl;
     private String animationUrl;
 
-    private List<SeasonDTO> seasons;
+    private List<SeasonDTO> seasons = new ArrayList<>();
+
+    private List<RatingDTO> ratings = new ArrayList<>();
 
     public TvShowDTO(ObjectId id, String title, String description, String thumbnailUrl, String animationUrl) {
         this.id = id;

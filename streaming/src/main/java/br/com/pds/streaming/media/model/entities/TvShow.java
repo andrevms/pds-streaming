@@ -32,6 +32,9 @@ public class TvShow implements Serializable {
     @DBRef(lazy = true)
     private List<Season> seasons = new ArrayList<>();
 
+    @DBRef(lazy = true)
+    private List<Rating> ratings = new ArrayList<>();
+
     public TvShow(ObjectId id, String title, String description, String thumbnailUrl, String animationUrl) {
         this.id = id;
         this.title = title;

@@ -1,10 +1,10 @@
-package br.com.pds.streaming.subscription.controllers;
+package br.com.pds.streaming.domain.subscription.controllers;
 
 import br.com.pds.streaming.exceptions.InvalidSubscriptionTypeException;
 import br.com.pds.streaming.exceptions.PaymentException;
 import br.com.pds.streaming.exceptions.response.ResponseError;
-import br.com.pds.streaming.subscription.model.dto.RequestSubscriptionDTO;
-import br.com.pds.streaming.subscription.services.SubscriptionServices;
+import br.com.pds.streaming.domain.subscription.model.dto.RequestSubscriptionDTO;
+import br.com.pds.streaming.domain.subscription.services.SubscriptionServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
-package br.com.pds.streaming.subscription.services;
+package br.com.pds.streaming.domain.subscription.services;
 
-import br.com.pds.streaming.subscription.model.dto.CreditCardDTO;
+import br.com.pds.streaming.domain.subscription.model.dto.CreditCardDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;

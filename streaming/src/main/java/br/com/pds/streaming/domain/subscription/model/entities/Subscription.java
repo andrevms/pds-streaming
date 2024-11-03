@@ -1,7 +1,7 @@
-package br.com.pds.streaming.subscription.model.entities;
+package br.com.pds.streaming.domain.subscription.model.entities;
 
-import br.com.pds.streaming.subscription.model.enums.SubscriptionStatus;
-import br.com.pds.streaming.subscription.model.enums.SubscriptionType;
+import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionStatus;
+import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;

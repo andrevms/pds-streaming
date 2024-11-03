@@ -1,4 +1,4 @@
-package br.com.pds.streaming.authentication.controller;
+package br.com.pds.streaming.authentication.controllers;
 
 import br.com.pds.streaming.authentication.model.dto.login.LoginRequest;
 import br.com.pds.streaming.authentication.model.dto.register.RegisterRequest;

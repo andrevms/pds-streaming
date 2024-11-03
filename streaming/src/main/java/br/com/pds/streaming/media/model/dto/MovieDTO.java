@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,4 +22,15 @@ public class MovieDTO implements Serializable {
     private String videoUrl;
     private String thumbnailUrl;
     private String animationUrl;
+
+    private List<RatingDTO> ratings = new ArrayList<>();
+
+    public MovieDTO(ObjectId id, String title, String description, String videoUrl, String thumbnailUrl, String animationUrl) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.videoUrl = videoUrl;
+        this.thumbnailUrl = thumbnailUrl;
+        this.animationUrl = animationUrl;
+    }
 }
