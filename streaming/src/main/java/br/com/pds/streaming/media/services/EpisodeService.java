@@ -1,5 +1,6 @@
 package br.com.pds.streaming.media.services;
 
+import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.media.model.entities.Episode;
 import br.com.pds.streaming.media.model.entities.Season;
 import br.com.pds.streaming.media.repositories.EpisodeRepository;
@@ -16,26 +17,26 @@ public class EpisodeService {
     @Autowired
     private EpisodeRepository episodeRepository;
 
-    public Episode findById(String id) {
+    public Episode findById(String id) throws ObjectNotFoundException {
         Optional<Episode> episode = episodeRepository.findById(id);
-        return episode.orElse(null); // throw an exception later
+        return episode.orElseThrow(() -> new ObjectNotFoundException("Episode not found."));
     }
 
     public List<Episode> findAll() {
         return episodeRepository.findAll();
     }
 
-    public List<Episode> findBySeason(Season season) {
-        return episodeRepository.findBySeason(season);
+    public List<Episode> findBySeasonId(String seasonId) {
+        return episodeRepository.findBySeasonId(seasonId);
     }
 
     public Episode insert(Episode episode) {
         return episodeRepository.save(episode);
     }
 
-    public Episode update(String id, Episode episode) {
+    public Episode update(String id, Episode episode) throws ObjectNotFoundException {
         if (!episodeRepository.existsById(id)) {
-            return null; // throw an exception later
+            throw new ObjectNotFoundException("Episode not found.");
         }
 
         episode.setId(new ObjectId(id));
