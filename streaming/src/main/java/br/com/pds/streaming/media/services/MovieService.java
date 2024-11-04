@@ -40,7 +40,7 @@ public class MovieService {
         return mapper.convertValue(createdMovie, MovieDTO.class);
     }
 
-    public Movie update(MovieDTO movieDTO, String id) throws ObjectNotFoundException {
+    public MovieDTO update(MovieDTO movieDTO, String id) throws ObjectNotFoundException {
 
         var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Movie not found"));
 
@@ -52,7 +52,7 @@ public class MovieService {
 
         var updatedMovie = movieRepository.save(movie);
 
-        return mapper.convertValue(updatedMovie, Movie.class);
+        return mapper.convertValue(updatedMovie, MovieDTO.class);
     }
 
     public void delete(String id) {
