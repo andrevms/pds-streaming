@@ -1,15 +1,17 @@
 package br.com.pds.streaming.authentication.services;
 
-import br.com.pds.streaming.authentication.models.dto.login.LoginRequest;
-import br.com.pds.streaming.authentication.models.dto.login.LoginResponse;
-import br.com.pds.streaming.authentication.models.dto.register.RegisterRequest;
-import br.com.pds.streaming.subscription.model.entities.Role;
-import br.com.pds.streaming.authentication.models.entities.User;
-import br.com.pds.streaming.authentication.repository.UserRepository;
+import br.com.pds.streaming.authentication.model.dto.login.LoginRequest;
+import br.com.pds.streaming.authentication.model.dto.login.LoginResponse;
+import br.com.pds.streaming.authentication.model.dto.register.RegisterRequest;
+import br.com.pds.streaming.authentication.model.entities.Role;
+import br.com.pds.streaming.authentication.model.entities.User;
+import br.com.pds.streaming.authentication.model.enums.RoleType;
+import br.com.pds.streaming.authentication.repositories.RoleRepository;
+import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.config.jwt.JwtUtils;
-import br.com.pds.streaming.subscription.model.entities.Subscription;
-import br.com.pds.streaming.subscription.model.enums.SubscriptionStatus;
-import br.com.pds.streaming.subscription.model.enums.SubscriptionType;
+import br.com.pds.streaming.domain.registration.model.entities.BusinessUser;
+import br.com.pds.streaming.domain.registration.repositories.BusinessUserRepository;
+import br.com.pds.streaming.exceptions.InvalidRoleException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,15 +33,16 @@ public class AuthService {
 
     @Autowired
     private JwtUtils jwtUtils;
-
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private BusinessUserRepository businessUserRepository;
 
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication;
@@ -70,25 +73,46 @@ public class AuthService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<?> registerUser(RegisterRequest registerRequest) {
+    public ResponseEntity<?> registerUser(RegisterRequest registerRequest) throws InvalidRoleException {
         try {
+            var roleType = RoleType.valueOf(registerRequest.getRole());
 
-            Role role = new Role("ROLE_PENDING_USER");
+
+            Role role = roleRepository.findByName(roleType.toString())
+                    .orElseGet(() -> {
+                        Role newRole = new Role(roleType.toString());
+                        return roleRepository.save(newRole);
+                    });
+
             Set<Role> roles = new HashSet<>(List.of(role));
-            Subscription plan = new Subscription(SubscriptionStatus.PENDING, roles);
+
             String encryptedPassword = passwordEncoder.encode(registerRequest.getPassword());
 
             userRepository.save(new User(registerRequest.getEmail(),
                     registerRequest.getUsername(),
                     encryptedPassword,
-                    registerRequest.getFirstName(),
-                    registerRequest.getLastName(),
-                    plan
+                    roles
             ));
 
-        } catch (Exception e) {
+            saveBusinessUser(registerRequest);
+
+        }catch (IllegalArgumentException e) {
+            throw new InvalidRoleException(e.getMessage());
+        }
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
         return ResponseEntity.ok(registerRequest);
+    }
+
+    private void saveBusinessUser(RegisterRequest registerRequest) {
+
+        var businessUser = new BusinessUser();
+
+        businessUser.setUsername(registerRequest.getUsername());
+        businessUser.setFirstName(registerRequest.getFirstName());
+        businessUser.setLastName(registerRequest.getLastName());
+
+        businessUserRepository.save(businessUser);
     }
 }
