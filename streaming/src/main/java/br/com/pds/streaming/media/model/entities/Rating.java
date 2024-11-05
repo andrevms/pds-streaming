@@ -1,6 +1,6 @@
 package br.com.pds.streaming.media.model.entities;
 
-import br.com.pds.streaming.domain.registration.model.entities.User;
+import br.com.pds.streaming.domain.registration.model.entities.BusinessUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class Rating implements Serializable {
     private Instant timestamp;
 
     @DBRef(lazy = true)
-    private User user;
+    private BusinessUser businessUser;
 
     public Rating(ObjectId id, Double stars) {
         this.id = id;
@@ -36,10 +36,10 @@ public class Rating implements Serializable {
         this.timestamp = Instant.now();
     }
 
-    public Rating(ObjectId id, Double stars, User user) {
+    public Rating(ObjectId id, Double stars, BusinessUser businessUser) {
         this.id = id;
         this.stars = stars;
         this.timestamp = Instant.now();
-        this.user = user;
+        this.businessUser = businessUser;
     }
 }

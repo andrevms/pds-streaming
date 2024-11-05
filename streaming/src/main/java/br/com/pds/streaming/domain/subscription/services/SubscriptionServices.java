@@ -5,6 +5,7 @@ import br.com.pds.streaming.authentication.model.entities.User;
 import br.com.pds.streaming.authentication.repositories.RoleRepository;
 import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.authentication.services.UserService;
+import br.com.pds.streaming.domain.registration.repositories.BusinessUserRepository;
 import br.com.pds.streaming.domain.subscription.model.dto.RequestSubscriptionDTO;
 import br.com.pds.streaming.domain.subscription.model.entities.Subscription;
 import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionStatus;
@@ -33,6 +34,8 @@ public class SubscriptionServices {
     private PaymentServices paymentServices;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private BusinessUserRepository businessUserRepository;
 
     @Transactional
     public void subscribeUser(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException, PaymentException {
@@ -45,6 +48,7 @@ public class SubscriptionServices {
         User user;
         user = getUser(requestSubscriptionDTO.getUsername());
 
+
         Subscription subscription;
         try {
             subscription = createSubscription(requestSubscriptionDTO);
@@ -54,6 +58,10 @@ public class SubscriptionServices {
 
         setUserRole(user);
         subscriptionRepository.save(subscription);
+
+        var businessUser = businessUserRepository.findByUsername(user.getUsername());
+        businessUser.setSubscription(subscription);
+        businessUserRepository.save(businessUser);
     }
 
     private User getUser(String username) {
@@ -89,8 +97,8 @@ public class SubscriptionServices {
                     return roleRepository.save(newRole);
                 });
 
-        user.setRoles(new HashSet<>(List.of(role)));
 
+        user.setRoles(new HashSet<>(List.of(role)));
         userRepository.save(user);
     }
 }

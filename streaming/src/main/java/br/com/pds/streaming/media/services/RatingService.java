@@ -28,7 +28,7 @@ public class RatingService {
 
     public RatingDTO findByUserId(String userId) {
 
-        var rating = ratingRepository.findByUserId(userId);
+        var rating = ratingRepository.findByBusinessUserId(userId);
 
         return mapper.convertValue(rating, RatingDTO.class);
     }

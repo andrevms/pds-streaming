@@ -9,6 +9,8 @@ import br.com.pds.streaming.authentication.model.enums.RoleType;
 import br.com.pds.streaming.authentication.repositories.RoleRepository;
 import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.config.jwt.JwtUtils;
+import br.com.pds.streaming.domain.registration.model.entities.BusinessUser;
+import br.com.pds.streaming.domain.registration.repositories.BusinessUserRepository;
 import br.com.pds.streaming.exceptions.InvalidRoleException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +41,8 @@ public class AuthService {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private BusinessUserRepository businessUserRepository;
 
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication;
@@ -87,10 +91,10 @@ public class AuthService {
             userRepository.save(new User(registerRequest.getEmail(),
                     registerRequest.getUsername(),
                     encryptedPassword,
-                    registerRequest.getFirstName(),
-                    registerRequest.getLastName(),
                     roles
             ));
+
+            saveBusinessUser(registerRequest);
 
         }catch (IllegalArgumentException e) {
             throw new InvalidRoleException(e.getMessage());
@@ -99,5 +103,16 @@ public class AuthService {
             throw new RuntimeException(e);
         }
         return ResponseEntity.ok(registerRequest);
+    }
+
+    private void saveBusinessUser(RegisterRequest registerRequest) {
+
+        var businessUser = new BusinessUser();
+
+        businessUser.setUsername(registerRequest.getUsername());
+        businessUser.setFirstName(registerRequest.getFirstName());
+        businessUser.setLastName(registerRequest.getLastName());
+
+        businessUserRepository.save(businessUser);
     }
 }

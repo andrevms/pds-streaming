@@ -28,6 +28,7 @@ public class Season implements Serializable {
     private String description;
     private String thumbnailUrl;
     private String animationUrl;
+    private TvShow tvShow;
 
     @DBRef(lazy = true)
     private List<Episode> episodes = new ArrayList<>();

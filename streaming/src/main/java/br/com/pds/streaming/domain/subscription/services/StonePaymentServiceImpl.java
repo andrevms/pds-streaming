@@ -8,7 +8,6 @@ import java.util.Random;
 @Service
 public class StonePaymentServiceImpl implements PaymentServices{
 
-
     @Override
     public boolean processCreditCardPayment(CreditCardDTO creditCardDTO) {
         Random random = new Random();

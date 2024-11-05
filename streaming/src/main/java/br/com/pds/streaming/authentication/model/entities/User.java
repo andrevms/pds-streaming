@@ -34,9 +34,6 @@ public class User implements UserDetails, Serializable {
     private String username;
     private String password;
 
-    private String firstName;
-    private String lastName;
-
     @DBRef
     private Set<Role> roles = new HashSet<>();
 
@@ -64,23 +61,19 @@ public class User implements UserDetails, Serializable {
         return isActive; // Implement as needed
     }
 
-    public User(String email, String username, String password, String firstName, String lastName) {
+    public User(String email, String username, String password) {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.isActive = true;
         this.dateCreated = new Date().toString();
         this.dateDeleted = new Date().toString();
     }
 
-    public User(String email, String username, String password, String firstName, String lastName, Set<Role> roles) {
+    public User(String email, String username, String password, Set<Role> roles) {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.isActive = true;
         this.dateCreated = new Date().toString();
         this.dateDeleted = new Date().toString();

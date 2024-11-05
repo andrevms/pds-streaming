@@ -26,4 +26,5 @@ public class Episode implements Serializable {
     private String videoUrl;
     private String thumbnailUrl;
     private String animationUrl;
+    private Season season;
 }
