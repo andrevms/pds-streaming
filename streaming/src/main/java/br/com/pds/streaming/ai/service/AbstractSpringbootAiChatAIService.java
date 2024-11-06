@@ -32,4 +32,13 @@ public abstract class AbstractSpringbootAiChatAIService extends AbstractChatAISe
                 ).call()
                 .content();
     }
+
+    @Override
+    public String createQuiz(String subject, String question) {
+        return chatClient.prompt()
+                .messages(
+                        createMessagesQuiz(subject, question)
+                ).call()
+                .content();
+    }
 }

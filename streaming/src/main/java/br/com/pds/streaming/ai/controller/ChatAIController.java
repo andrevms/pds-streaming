@@ -31,4 +31,24 @@ public class ChatAIController {
 
         return sb.toString().replace("\n", "<br>");
     }
+
+    @GetMapping("ask-llm-quiz")
+    public String askLlmquiz( @RequestParam(name = "subject", required = true) String subject,
+                          @RequestParam (name = "question", required = true) String question
+    ) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Assunto escolhido: ").append(subject).append("\n");
+        sb.append("Pergunta: ").append(question);
+
+        sb.append("\n\n-----------------------\n\n");
+        sb.append("Modelo da Ollama: ").append(ollamaAIService.getModel()).append("\n");
+        sb.append("Resposta da Ollama: ");
+        try {
+            sb.append(ollamaAIService.createQuiz(subject, question));
+        }catch (Exception e) {
+            sb.append("Erro...");
+        }
+
+        return sb.toString().replace("\n", "<br>");
+    }
 }
