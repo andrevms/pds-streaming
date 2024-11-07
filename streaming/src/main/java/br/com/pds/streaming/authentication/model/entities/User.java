@@ -3,11 +3,10 @@ package br.com.pds.streaming.authentication.model.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +24,8 @@ import java.util.stream.Collectors;
 @Document(collection = "users")
 public class User implements UserDetails, Serializable {
 
-    private @MongoId ObjectId id;
+    @Id
+    private String id;
 
     @Indexed(unique = true)
     private String email;

@@ -4,7 +4,6 @@ import br.com.pds.streaming.domain.registration.model.dto.BusinessUserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -18,13 +17,13 @@ public class RatingDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private ObjectId id;
+    private String id;
     private Double stars;
     private Instant timestamp;
 
     private BusinessUserDTO user;
 
-    public RatingDTO(ObjectId id, Double stars, Instant timestamp) {
+    public RatingDTO(String id, Double stars, Instant timestamp) {
         this.id = id;
         this.stars = stars;
         this.timestamp = timestamp;

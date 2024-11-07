@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bson.types.ObjectId;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @AllArgsConstructor
@@ -14,9 +14,13 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class BusinessUserDTO implements Serializable {
-    ObjectId id;
-    String username;
-    String firstName;
-    String lastName;
-    SubscriptionDTO subscription;
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private String id;
+    private String username;
+    private String firstName;
+    private String lastName;
+    private SubscriptionDTO subscription;
 }

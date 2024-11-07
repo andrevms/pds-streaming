@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -22,8 +22,8 @@ public class TvShow implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @MongoId
-    private ObjectId id;
+    @Id
+    private String id;
     private String title;
     private String description;
     private String thumbnailUrl;
@@ -35,7 +35,7 @@ public class TvShow implements Serializable {
     @DBRef(lazy = true)
     private List<Rating> ratings = new ArrayList<>();
 
-    public TvShow(ObjectId id, String title, String description, String thumbnailUrl, String animationUrl) {
+    public TvShow(String id, String title, String description, String thumbnailUrl, String animationUrl) {
         this.id = id;
         this.title = title;
         this.description = description;

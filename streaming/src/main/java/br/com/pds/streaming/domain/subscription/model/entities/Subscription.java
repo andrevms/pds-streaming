@@ -5,6 +5,7 @@ import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
@@ -20,8 +21,8 @@ public class Subscription implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @MongoId
-    private ObjectId id;
+    @Id
+    private String id;
     private SubscriptionType type;
     private SubscriptionStatus status;
     private LocalDate startDate;

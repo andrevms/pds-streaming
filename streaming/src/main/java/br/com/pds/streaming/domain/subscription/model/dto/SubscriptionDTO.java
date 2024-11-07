@@ -19,7 +19,7 @@ public class SubscriptionDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private ObjectId id;
+    private String id;
     private SubscriptionType type;
     private SubscriptionStatus status;
     private LocalDate startDate;
