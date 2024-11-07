@@ -37,7 +37,7 @@ public class TvShowController {
         return new ResponseEntity<>(tvShowService.update(tvShowDTO, id), HttpStatus.OK);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTvShow(@PathVariable String id) {
         tvShowService.delete(id);
         return ResponseEntity.noContent().build();
