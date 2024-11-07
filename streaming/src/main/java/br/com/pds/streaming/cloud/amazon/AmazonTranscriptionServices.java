@@ -25,7 +25,7 @@ public class AmazonTranscriptionServices {
     @Autowired
     private AmazonTranscribe transcribeClient;
 
-    Logger log = Logger.getLogger(AmazonS3Services.class.getName());
+    Logger log = Logger.getLogger(AmazonTranscriptionServices.class.getName());
 
     @Value("${cloud.aws.bucket-name}")
     private String bucketName;

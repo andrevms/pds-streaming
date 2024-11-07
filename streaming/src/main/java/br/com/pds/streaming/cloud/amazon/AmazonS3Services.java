@@ -16,6 +16,7 @@ public class AmazonS3Services {
 
     @Autowired
     private S3Client s3Client;
+    private static String BASE_URL = "https://d9j489z4vxsgb.cloudfront.net/";
 
     @Value("${cloud.aws.bucket-name}")
     private String bucketName;
@@ -31,6 +32,6 @@ public class AmazonS3Services {
 
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
 
-        return key;
+        return  BASE_URL + key;
     }
 }
