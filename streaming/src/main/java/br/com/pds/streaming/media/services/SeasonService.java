@@ -5,6 +5,7 @@ import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.SeasonDTO;
 import br.com.pds.streaming.media.model.entities.Season;
 import br.com.pds.streaming.media.repositories.SeasonRepository;
+import br.com.pds.streaming.media.repositories.TvShowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +14,16 @@ import java.util.List;
 @Service
 public class SeasonService {
 
-    @Autowired
     private SeasonRepository seasonRepository;
+    private TvShowRepository tvShowRepository;
+    private MyModelMapper mapper;
 
     @Autowired
-    private MyModelMapper mapper;
+    public SeasonService(SeasonRepository seasonRepository, TvShowRepository tvShowRepository, MyModelMapper mapper) {
+        this.seasonRepository = seasonRepository;
+        this.tvShowRepository = tvShowRepository;
+        this.mapper = mapper;
+    }
 
     public List<SeasonDTO> findAll() {
 
@@ -40,9 +46,15 @@ public class SeasonService {
         return mapper.convertValue(season, SeasonDTO.class);
     }
 
-    public SeasonDTO insert(SeasonDTO seasonDTO) {
+    public SeasonDTO insert(SeasonDTO seasonDTO, String tvShowId) throws ObjectNotFoundException {
+
+        var tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new ObjectNotFoundException("TvShow not found."));
 
         var createdSeason = seasonRepository.save(mapper.convertValue(seasonDTO, Season.class));
+
+        tvShow.getSeasons().add(createdSeason);
+
+        tvShowRepository.save(tvShow);
 
         return mapper.convertValue(createdSeason, SeasonDTO.class);
     }

@@ -13,24 +13,35 @@ import java.util.List;
 @Service
 public class MovieService {
 
-    @Autowired
     private MovieRepository movieRepository;
+    private MyModelMapper mapper;
 
     @Autowired
-    private MyModelMapper mapper;
+    public MovieService(MovieRepository movieRepository, MyModelMapper mapper) {
+        this.movieRepository = movieRepository;
+        this.mapper = mapper;
+    }
 
     public List<MovieDTO> findAll() {
 
         var movies = movieRepository.findAll();
 
-        return mapper.convertList(movies, MovieDTO.class);
+        var moviesDTO = mapper.convertList(movies, MovieDTO.class);
+
+        moviesDTO.forEach(MovieDTO::setRatingsAverage);
+
+        return moviesDTO;
     }
 
     public MovieDTO findById(String id) throws ObjectNotFoundException {
 
         var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Movie not found"));
 
-        return mapper.convertValue(movie, MovieDTO.class);
+        var movieDTO = mapper.convertValue(movie, MovieDTO.class);
+
+        movieDTO.setRatingsAverage();
+
+        return movieDTO;
     }
 
     public MovieDTO insert(MovieDTO movieDTO) {

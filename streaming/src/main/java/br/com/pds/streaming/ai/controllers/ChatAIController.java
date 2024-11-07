@@ -1,6 +1,6 @@
-package br.com.pds.streaming.ai.controller;
+package br.com.pds.streaming.ai.controllers;
 
-import br.com.pds.streaming.ai.service.ollama.OllamaAIService;
+import br.com.pds.streaming.ai.services.ollama.OllamaAIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

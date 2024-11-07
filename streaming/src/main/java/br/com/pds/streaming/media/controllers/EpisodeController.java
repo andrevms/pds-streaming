@@ -22,8 +22,8 @@ public class EpisodeController {
         return new ResponseEntity<>(episodeService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/season/{seasonId}")
-    public ResponseEntity<List<EpisodeDTO>> getEpisodesBySeasonId(@PathVariable String seasonId) {
+    @GetMapping("/season")
+    public ResponseEntity<List<EpisodeDTO>> getEpisodesBySeasonId(@RequestParam(name = "seasonId") String seasonId) {
         return new ResponseEntity<>(episodeService.findBySeasonId(seasonId), HttpStatus.OK);
     }
 
@@ -33,8 +33,8 @@ public class EpisodeController {
     }
 
     @PostMapping
-    public ResponseEntity<EpisodeDTO> createEpisode(@RequestBody EpisodeDTO episodeDTO) {
-        return new ResponseEntity<>(episodeService.insert(episodeDTO), HttpStatus.CREATED);
+    public ResponseEntity<EpisodeDTO> createEpisode(@RequestBody EpisodeDTO episodeDTO, @RequestParam(name = "seasonId") String seasonId) throws ObjectNotFoundException {
+        return new ResponseEntity<>(episodeService.insert(episodeDTO, seasonId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -45,7 +45,6 @@ public class EpisodeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEpisode(@PathVariable String id) {
         episodeService.delete(id);
-
         return ResponseEntity.noContent().build();
     }
 }

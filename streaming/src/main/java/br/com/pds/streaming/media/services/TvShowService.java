@@ -13,24 +13,35 @@ import java.util.List;
 @Service
 public class TvShowService {
 
-    @Autowired
     private TvShowRepository tvShowRepository;
+    private MyModelMapper mapper;
 
     @Autowired
-    private MyModelMapper mapper;
+    public TvShowService(TvShowRepository tvShowRepository, MyModelMapper mapper) {
+        this.tvShowRepository = tvShowRepository;
+        this.mapper = mapper;
+    }
 
     public List<TvShowDTO> findAll() {
 
         var tvShows = tvShowRepository.findAll();
 
-        return mapper.convertList(tvShows, TvShowDTO.class);
+        var tvShowsDTO = mapper.convertList(tvShows, TvShowDTO.class);
+
+        tvShowsDTO.forEach(TvShowDTO::setRatingsAverage);
+
+        return tvShowsDTO;
     }
 
     public TvShowDTO findById(String id) throws ObjectNotFoundException {
 
         var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("TvShow not found."));
 
-        return mapper.convertValue(tvShow, TvShowDTO.class);
+        var tvShowDTO = mapper.convertValue(tvShow, TvShowDTO.class);
+
+        tvShowDTO.setRatingsAverage();
+
+        return tvShowDTO;
     }
 
     public TvShowDTO insert(TvShowDTO tvShowDTO) {

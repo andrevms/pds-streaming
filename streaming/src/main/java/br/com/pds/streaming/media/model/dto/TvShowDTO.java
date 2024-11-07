@@ -20,16 +20,15 @@ public class TvShowDTO implements Serializable {
     private String description;
     private String thumbnailUrl;
     private String animationUrl;
+    private String ratingsAverage;
 
     private List<SeasonDTO> seasons = new ArrayList<>();
 
     private List<RatingDTO> ratings = new ArrayList<>();
 
-    public TvShowDTO(String id, String title, String description, String thumbnailUrl, String animationUrl) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.thumbnailUrl = thumbnailUrl;
-        this.animationUrl = animationUrl;
+    public void setRatingsAverage() {
+        this.ratingsAverage = !ratings.isEmpty()
+                ? String.format("%.2f", ratings.stream().mapToDouble(RatingDTO::getStars).sum() / ratings.size())
+                : "Não há avaliações para esta série.";
     }
 }

@@ -1,4 +1,4 @@
-package br.com.pds.streaming.ai.service;
+package br.com.pds.streaming.ai.services;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;

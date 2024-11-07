@@ -22,8 +22,8 @@ public class RatingController {
         return new ResponseEntity<>(ratingService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<RatingDTO> getRatingsByUserId(@PathVariable String userId) {
+    @GetMapping("/user")
+    public ResponseEntity<RatingDTO> getRatingsByUserId(@RequestParam(name = "userId") String userId) {
         return new ResponseEntity<>(ratingService.findByUserId(userId), HttpStatus.OK);
     }
 
@@ -33,8 +33,16 @@ public class RatingController {
     }
 
     @PostMapping
-    public ResponseEntity<RatingDTO> createRating(@RequestBody RatingDTO ratingDTO) {
-        return new ResponseEntity<>(ratingService.insert(ratingDTO), HttpStatus.CREATED);
+    public ResponseEntity<RatingDTO> createRating(@RequestBody RatingDTO ratingDTO, @RequestParam(name = "movieId", required = false) String movieId, @RequestParam(name = "tvShowId", required = false) String tvShowId) throws ObjectNotFoundException {
+        if (tvShowId != null) {
+            return new ResponseEntity<>(ratingService.insert(ratingDTO, tvShowId), HttpStatus.CREATED);
+        }
+
+        if (movieId != null) {
+            return new ResponseEntity<>(ratingService.insert(movieId, ratingDTO), HttpStatus.CREATED);
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     @PutMapping("/{id}")

@@ -21,15 +21,13 @@ public class MovieDTO implements Serializable {
     private String videoUrl;
     private String thumbnailUrl;
     private String animationUrl;
+    private String ratingsAverage;
 
     private List<RatingDTO> ratings = new ArrayList<>();
 
-    public MovieDTO(String id, String title, String description, String videoUrl, String thumbnailUrl, String animationUrl) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.videoUrl = videoUrl;
-        this.thumbnailUrl = thumbnailUrl;
-        this.animationUrl = animationUrl;
+    public void setRatingsAverage() {
+        this.ratingsAverage = !ratings.isEmpty()
+            ? String.format("%d", ratings.stream().mapToDouble(RatingDTO::getStars).sum() / ratings.size())
+            : "Não há avaliações para este filme.";
     }
 }

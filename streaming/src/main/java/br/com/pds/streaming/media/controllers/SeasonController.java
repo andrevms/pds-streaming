@@ -22,8 +22,8 @@ public class SeasonController {
         return new ResponseEntity<>(seasonService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/tvShow/{tvShowId}")
-    public ResponseEntity<List<SeasonDTO>> getSeasonsByTvShowId(@PathVariable String tvShowId) {
+    @GetMapping("/tvShow")
+    public ResponseEntity<List<SeasonDTO>> getSeasonsByTvShowId(@RequestParam(name = "tvShowId") String tvShowId) {
         return new ResponseEntity<>(seasonService.findByTvShowId(tvShowId), HttpStatus.OK);
     }
 
@@ -33,8 +33,8 @@ public class SeasonController {
     }
 
     @PostMapping
-    public ResponseEntity<SeasonDTO> createSeason(@RequestBody SeasonDTO seasonDTO) {
-        return new ResponseEntity<>(seasonService.insert(seasonDTO), HttpStatus.CREATED);
+    public ResponseEntity<SeasonDTO> createSeason(@RequestBody SeasonDTO seasonDTO, @RequestParam(name = "tvShowId") String tvShowId) throws ObjectNotFoundException {
+        return new ResponseEntity<>(seasonService.insert(seasonDTO, tvShowId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
