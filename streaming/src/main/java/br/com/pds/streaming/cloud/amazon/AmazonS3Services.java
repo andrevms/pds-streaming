@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Service
-public class AmazonServices {
+public class AmazonS3Services {
 
     @Autowired
     private S3Client s3Client;
