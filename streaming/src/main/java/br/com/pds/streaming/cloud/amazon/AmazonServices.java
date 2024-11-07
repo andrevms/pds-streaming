@@ -1,4 +1,4 @@
-package com.yuri.testingS3.services;
+package br.com.pds.streaming.cloud.amazon;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

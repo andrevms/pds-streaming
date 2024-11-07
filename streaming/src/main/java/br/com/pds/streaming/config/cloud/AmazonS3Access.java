@@ -1,5 +1,9 @@
 package br.com.pds.streaming.config.cloud;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.transcribe.AmazonTranscribe;
+import com.amazonaws.services.transcribe.AmazonTranscribeClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,9 +13,12 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
+import java.util.logging.Logger;
+
 @Configuration
 public class AmazonS3Access {
 
+    Logger log = Logger.getLogger(AmazonS3Access.class.getName());
 
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
@@ -28,5 +35,14 @@ public class AmazonS3Access {
                 .region(Region.of("sa-east-1"))
                 .credentialsProvider(StaticCredentialsProvider.create(credentials))
                 .build();
+    }
+
+    @Bean
+    AmazonTranscribe transcribeClient() {
+        log.info("Intialize Transcribe Client");
+        BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
+        AWSStaticCredentialsProvider awsStaticCredentialsProvider = new AWSStaticCredentialsProvider(awsCreds);
+        return AmazonTranscribeClientBuilder.standard().withCredentials(awsStaticCredentialsProvider)
+                .withRegion(region).build();
     }
 }
