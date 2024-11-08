@@ -1,5 +1,6 @@
 package br.com.pds.streaming.cloud.amazon;
 
+import br.com.pds.streaming.cloud.services.CloudStorageServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,12 +13,13 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Service
-public class AmazonS3Services {
+public class AmazonS3Services implements CloudStorageServices {
 
     @Autowired
     private S3Client s3Client;
-    private static String BASE_URL = "https://d9j489z4vxsgb.cloudfront.net/";
 
+    @Value("${cloud.aws.cloudfront}")
+    private String BASE_URL;
     @Value("${cloud.aws.bucket-name}")
     private String bucketName;
 
