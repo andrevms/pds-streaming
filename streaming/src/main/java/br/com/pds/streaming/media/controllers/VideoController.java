@@ -1,6 +1,7 @@
 package br.com.pds.streaming.media.controllers;
 
 import br.com.pds.streaming.cloud.amazon.AmazonS3Services;
+import br.com.pds.streaming.cloud.services.CloudStorageServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,16 +15,16 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping(value = "api/v1/videos")
+@RequestMapping(value = "api/videos")
 public class VideoController {
 
     @Autowired
-    private AmazonS3Services amazonServices;
+    private AmazonS3Services amazonS3Services;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadVideo(@RequestParam("file") MultipartFile file) {
         try {
-            String videoUrl = amazonServices.uploadVideo(file);
+            String videoUrl = amazonS3Services.uploadVideo(file);
             return ResponseEntity.ok("Video uploaded successfully. Video URL: " + videoUrl);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
