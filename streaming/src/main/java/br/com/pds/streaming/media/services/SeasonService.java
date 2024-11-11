@@ -4,6 +4,7 @@ import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.SeasonDTO;
 import br.com.pds.streaming.media.model.entities.Season;
+import br.com.pds.streaming.media.repositories.EpisodeRepository;
 import br.com.pds.streaming.media.repositories.SeasonRepository;
 import br.com.pds.streaming.media.repositories.TvShowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,14 @@ public class SeasonService {
 
     private SeasonRepository seasonRepository;
     private TvShowRepository tvShowRepository;
+    private EpisodeRepository episodeRepository;
     private MyModelMapper mapper;
 
     @Autowired
-    public SeasonService(SeasonRepository seasonRepository, TvShowRepository tvShowRepository, MyModelMapper mapper) {
+    public SeasonService(SeasonRepository seasonRepository, TvShowRepository tvShowRepository, EpisodeRepository episodeRepository, MyModelMapper mapper) {
         this.seasonRepository = seasonRepository;
         this.tvShowRepository = tvShowRepository;
+        this.episodeRepository = episodeRepository;
         this.mapper = mapper;
     }
 
@@ -50,7 +53,10 @@ public class SeasonService {
 
         var tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new ObjectNotFoundException("TvShow not found."));
 
-        var createdSeason = seasonRepository.save(mapper.convertValue(seasonDTO, Season.class));
+        Season season = mapper.convertValue(seasonDTO, Season.class);
+        season.setTvShowId(tvShowId);
+
+        var createdSeason = seasonRepository.save(season);
 
         tvShow.getSeasons().add(createdSeason);
 
@@ -74,6 +80,14 @@ public class SeasonService {
     }
 
     public void delete(String id) {
+        deleteOrphanEpisodes(id);
+
         seasonRepository.deleteById(id);
+    }
+
+    private void deleteOrphanEpisodes(String seasonId) {
+        var episodes = episodeRepository.findBySeasonId(seasonId);
+
+        episodeRepository.deleteAll(episodes);
     }
 }

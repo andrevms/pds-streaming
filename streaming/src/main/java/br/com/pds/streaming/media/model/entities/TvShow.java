@@ -29,10 +29,10 @@ public class TvShow implements Serializable {
     private String thumbnailUrl;
     private String animationUrl;
 
-    @DBRef(lazy = true)
+    @DBRef
     private List<Season> seasons = new ArrayList<>();
 
-    @DBRef(lazy = true)
+    @DBRef
     private List<Rating> ratings = new ArrayList<>();
 
     public TvShow(String id, String title, String description, String thumbnailUrl, String animationUrl) {

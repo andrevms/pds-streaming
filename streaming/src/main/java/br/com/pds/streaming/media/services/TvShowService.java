@@ -4,6 +4,8 @@ import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.TvShowDTO;
 import br.com.pds.streaming.media.model.entities.TvShow;
+import br.com.pds.streaming.media.repositories.EpisodeRepository;
+import br.com.pds.streaming.media.repositories.SeasonRepository;
 import br.com.pds.streaming.media.repositories.TvShowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +16,15 @@ import java.util.List;
 public class TvShowService {
 
     private TvShowRepository tvShowRepository;
+    private SeasonRepository seasonRepository;
+    private EpisodeRepository episodeRepository;
     private MyModelMapper mapper;
 
     @Autowired
-    public TvShowService(TvShowRepository tvShowRepository, MyModelMapper mapper) {
+    public TvShowService(TvShowRepository tvShowRepository, SeasonRepository seasonRepository, EpisodeRepository episodeRepository, MyModelMapper mapper) {
         this.tvShowRepository = tvShowRepository;
+        this.seasonRepository = seasonRepository;
+        this.episodeRepository = episodeRepository;
         this.mapper = mapper;
     }
 
@@ -66,6 +72,22 @@ public class TvShowService {
     }
 
     public void delete(String id) {
+        deleteOrphanSeasons(id);
+
         tvShowRepository.deleteById(id);
+    }
+
+    private void deleteOrphanSeasons(String tvShowId) {
+        var seasons = seasonRepository.findByTvShowId(tvShowId);
+
+        seasons.forEach(season -> deleteOrphanSeasons(season.getId()));
+
+        seasonRepository.deleteAll(seasons);
+    }
+
+    private void deleteOrphanEpisodes(String seasonId) {
+        var episodes = episodeRepository.findBySeasonId(seasonId);
+
+        episodeRepository.deleteAll(episodes);
     }
 }

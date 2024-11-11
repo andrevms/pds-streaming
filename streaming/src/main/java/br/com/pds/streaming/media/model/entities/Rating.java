@@ -26,7 +26,7 @@ public class Rating implements Serializable {
     private Double stars;
     private Instant timestamp;
 
-    @DBRef(lazy = true)
+    @DBRef
     private BusinessUser businessUser;
 
     public Rating(String id, Double stars) {

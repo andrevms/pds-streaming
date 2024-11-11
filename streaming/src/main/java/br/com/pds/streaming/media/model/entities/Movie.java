@@ -29,7 +29,7 @@ public class Movie implements Serializable {
     private String thumbnailUrl;
     private String animationUrl;
 
-    @DBRef(lazy = true)
+    @DBRef
     private List<Rating> ratings = new ArrayList<>();
 
     public Movie(String id, String title, String description, String videoUrl, String thumbnailUrl, String animationUrl) {

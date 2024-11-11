@@ -50,7 +50,10 @@ public class EpisodeService {
 
         var season = seasonRepository.findById(seasonId).orElseThrow(() -> new ObjectNotFoundException("Season not found."));
 
-        var createdEpisode = episodeRepository.save(mapper.convertValue(episodeDTO, Episode.class));
+        Episode episode = mapper.convertValue(episodeDTO, Episode.class);
+        episode.setSeasonId(seasonId);
+
+        var createdEpisode = episodeRepository.save(episode);
 
         season.getEpisodes().add(createdEpisode);
 
