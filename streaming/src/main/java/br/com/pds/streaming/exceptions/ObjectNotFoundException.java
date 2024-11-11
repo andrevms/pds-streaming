@@ -11,11 +11,19 @@ public class ObjectNotFoundException extends Exception {
         super(message);
     }
 
-    public ObjectNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public ObjectNotFoundException(Class<?> clazz) {
+        super(clazz.getSimpleName() + " not found.");
     }
 
     public ObjectNotFoundException(Throwable cause) {
         super(cause);
+    }
+
+    public ObjectNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ObjectNotFoundException(Class<?> clazz, Throwable cause) {
+        super(clazz.getSimpleName() + " not found.", cause);
     }
 }

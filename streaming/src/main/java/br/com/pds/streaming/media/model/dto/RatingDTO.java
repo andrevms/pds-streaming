@@ -22,10 +22,4 @@ public class RatingDTO implements Serializable {
     private Instant timestamp;
 
     private BusinessUserDTO user;
-
-    public RatingDTO(String id, Double stars, Instant timestamp) {
-        this.id = id;
-        this.stars = stars;
-        this.timestamp = timestamp;
-    }
 }

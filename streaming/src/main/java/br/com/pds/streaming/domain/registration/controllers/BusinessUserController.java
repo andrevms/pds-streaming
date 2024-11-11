@@ -4,6 +4,7 @@ import br.com.pds.streaming.domain.registration.model.dto.BusinessUserDTO;
 import br.com.pds.streaming.domain.registration.services.BusinessUserServices;
 import br.com.pds.streaming.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +32,12 @@ public class BusinessUserController {
     @PostMapping
     public ResponseEntity<BusinessUserDTO> create(@RequestBody BusinessUserDTO businessUserDTO) {
         BusinessUserDTO createdUser = businessUserServices.create(businessUserDTO);
-        return ResponseEntity.ok(createdUser);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BusinessUserDTO> updateBusinessUser(@PathVariable String id, @RequestBody BusinessUserDTO businessUserDTO) throws UserNotFoundException {
-        BusinessUserDTO updatedUser = businessUserServices.update(businessUserDTO);
+    public ResponseEntity<BusinessUserDTO> updateBusinessUser(@RequestBody BusinessUserDTO businessUserDTO, @PathVariable String id) throws UserNotFoundException {
+        BusinessUserDTO updatedUser = businessUserServices.update(businessUserDTO, id);
         return ResponseEntity.ok(updatedUser);
     }
 

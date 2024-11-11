@@ -23,7 +23,7 @@ public class BusinessUserServices {
     }
 
     public BusinessUserDTO findById(String id) throws UserNotFoundException {
-        var businessUser = businessUserRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        var businessUser = businessUserRepository.findById(id).orElseThrow(UserNotFoundException::new);
         return mapper.convertValue(businessUser, BusinessUserDTO.class);
     }
 
@@ -36,9 +36,9 @@ public class BusinessUserServices {
         return mapper.convertValue(businessUserRepository.save(businessUser), BusinessUserDTO.class);
     }
 
-    public BusinessUserDTO update(BusinessUserDTO businessUserDTO) throws UserNotFoundException {
+    public BusinessUserDTO update(BusinessUserDTO businessUserDTO, String id) throws UserNotFoundException {
 
-        var businessUser = businessUserRepository.findById(String.valueOf(businessUserDTO.getId())).orElseThrow(() -> new UserNotFoundException("User not found"));
+        var businessUser = businessUserRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         businessUser.setUsername(businessUserDTO.getUsername());
         businessUser.setFirstName(businessUserDTO.getFirstName());
@@ -52,7 +52,7 @@ public class BusinessUserServices {
 
 
     public void deleteById(String id) throws UserNotFoundException {
-        var user = businessUserRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        var user = businessUserRepository.findById(id).orElseThrow(UserNotFoundException::new);
         businessUserRepository.delete(user);
     }
 }

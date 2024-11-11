@@ -34,18 +34,18 @@ public class TvShowService {
 
         var tvShowsDTO = mapper.convertList(tvShows, TvShowDTO.class);
 
-        tvShowsDTO.forEach(TvShowDTO::setRatingsAverage);
+//        tvShowsDTO.forEach(TvShowDTO::setRatingsAverage);
 
         return tvShowsDTO;
     }
 
     public TvShowDTO findById(String id) throws ObjectNotFoundException {
 
-        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("TvShow not found."));
+        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
 
         var tvShowDTO = mapper.convertValue(tvShow, TvShowDTO.class);
 
-        tvShowDTO.setRatingsAverage();
+//        tvShowDTO.setRatingsAverage();
 
         return tvShowDTO;
     }
@@ -59,7 +59,7 @@ public class TvShowService {
 
     public TvShowDTO update(TvShowDTO tvShowDTO, String id) throws ObjectNotFoundException {
 
-        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("TvShow not found."));
+        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
 
         tvShow.setTitle(tvShowDTO.getTitle());
         tvShow.setDescription(tvShowDTO.getDescription());
@@ -80,7 +80,7 @@ public class TvShowService {
     private void deleteOrphanSeasons(String tvShowId) {
         var seasons = seasonRepository.findByTvShowId(tvShowId);
 
-        seasons.forEach(season -> deleteOrphanSeasons(season.getId()));
+        seasons.forEach(season -> deleteOrphanEpisodes(season.getId()));
 
         seasonRepository.deleteAll(seasons);
     }

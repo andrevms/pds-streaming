@@ -1,9 +1,13 @@
 package br.com.pds.streaming.media.services;
 
+import br.com.pds.streaming.domain.registration.model.entities.BusinessUser;
+import br.com.pds.streaming.domain.registration.repositories.BusinessUserRepository;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.RatingDTO;
+import br.com.pds.streaming.media.model.entities.Movie;
 import br.com.pds.streaming.media.model.entities.Rating;
+import br.com.pds.streaming.media.model.entities.TvShow;
 import br.com.pds.streaming.media.repositories.MovieRepository;
 import br.com.pds.streaming.media.repositories.RatingRepository;
 import br.com.pds.streaming.media.repositories.TvShowRepository;
@@ -18,13 +22,15 @@ public class RatingService {
     private RatingRepository ratingRepository;
     private MovieRepository movieRepository;
     private TvShowRepository tvShowRepository;
+    private BusinessUserRepository businessUserRepository;
     private MyModelMapper mapper;
 
     @Autowired
-    public RatingService(RatingRepository ratingRepository, MovieRepository movieRepository, TvShowRepository tvShowRepository, MyModelMapper mapper) {
+    public RatingService(RatingRepository ratingRepository, MovieRepository movieRepository, TvShowRepository tvShowRepository, BusinessUserRepository businessUserRepository, MyModelMapper mapper) {
         this.ratingRepository = ratingRepository;
         this.movieRepository = movieRepository;
         this.tvShowRepository = tvShowRepository;
+        this.businessUserRepository = businessUserRepository;
         this.mapper = mapper;
     }
 
@@ -44,16 +50,22 @@ public class RatingService {
 
     public RatingDTO findById(String id) throws ObjectNotFoundException {
 
-        var rating = ratingRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Rating not found."));
+        var rating = ratingRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Rating.class));
 
         return mapper.convertValue(rating, RatingDTO.class);
     }
 
-    public RatingDTO insert(String movieId, RatingDTO ratingDTO) throws ObjectNotFoundException {
+    public RatingDTO insert(String movieId, RatingDTO ratingDTO, String userId) throws ObjectNotFoundException {
 
-        var movie = movieRepository.findById(movieId).orElseThrow(() -> new ObjectNotFoundException("Movie not found"));
+        var businessUser = businessUserRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(BusinessUser.class));
 
-        var createdRating = ratingRepository.save(mapper.convertValue(ratingDTO, Rating.class));
+        var movie = movieRepository.findById(movieId).orElseThrow(() -> new ObjectNotFoundException(Movie.class));
+
+        var rating = mapper.convertValue(ratingDTO, Rating.class);
+        rating.setBusinessUser(businessUser);
+        rating.setTvShowId(movieId);
+
+        var createdRating = ratingRepository.save(rating);
 
         movie.getRatings().add(createdRating);
 
@@ -62,11 +74,17 @@ public class RatingService {
         return mapper.convertValue(createdRating, RatingDTO.class);
     }
 
-    public RatingDTO insert(RatingDTO ratingDTO, String tvShowId) throws ObjectNotFoundException {
+    public RatingDTO insert(RatingDTO ratingDTO, String tvShowId, String userId) throws ObjectNotFoundException {
 
-        var tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new ObjectNotFoundException("TvShow not found."));
+        var businessUser = businessUserRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(BusinessUser.class));
 
-        var createdRating = ratingRepository.save(mapper.convertValue(ratingDTO, Rating.class));
+        var tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
+
+        var rating = mapper.convertValue(ratingDTO, Rating.class);
+        rating.setBusinessUser(businessUser);
+        rating.setTvShowId(tvShowId);
+
+        var createdRating = ratingRepository.save(rating);
 
         tvShow.getRatings().add(createdRating);
 
@@ -77,7 +95,7 @@ public class RatingService {
 
     public RatingDTO update(RatingDTO ratingDTO, String id) throws ObjectNotFoundException {
 
-        var rating = ratingRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Rating not found."));
+        var rating = ratingRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Rating.class));
 
         rating.setStars(ratingDTO.getStars());
         rating.setTimestamp(ratingDTO.getTimestamp());

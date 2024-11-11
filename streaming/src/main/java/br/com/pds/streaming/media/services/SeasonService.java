@@ -4,6 +4,7 @@ import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.SeasonDTO;
 import br.com.pds.streaming.media.model.entities.Season;
+import br.com.pds.streaming.media.model.entities.TvShow;
 import br.com.pds.streaming.media.repositories.EpisodeRepository;
 import br.com.pds.streaming.media.repositories.SeasonRepository;
 import br.com.pds.streaming.media.repositories.TvShowRepository;
@@ -44,14 +45,14 @@ public class SeasonService {
 
     public SeasonDTO findById(String id) throws ObjectNotFoundException {
 
-        var season = seasonRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Season not found."));
+        var season = seasonRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Season.class));
 
         return mapper.convertValue(season, SeasonDTO.class);
     }
 
     public SeasonDTO insert(SeasonDTO seasonDTO, String tvShowId) throws ObjectNotFoundException {
 
-        var tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new ObjectNotFoundException("TvShow not found."));
+        var tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
 
         Season season = mapper.convertValue(seasonDTO, Season.class);
         season.setTvShowId(tvShowId);
@@ -67,7 +68,7 @@ public class SeasonService {
 
     public SeasonDTO update(SeasonDTO seasonDTO, String id) throws ObjectNotFoundException {
 
-        var season = seasonRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Season not found."));
+        var season = seasonRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Season.class));
 
         season.setTitle(seasonDTO.getTitle());
         season.setDescription(seasonDTO.getDescription());

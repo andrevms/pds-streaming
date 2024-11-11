@@ -4,6 +4,7 @@ import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.EpisodeDTO;
 import br.com.pds.streaming.media.model.entities.Episode;
+import br.com.pds.streaming.media.model.entities.Season;
 import br.com.pds.streaming.media.repositories.EpisodeRepository;
 import br.com.pds.streaming.media.repositories.SeasonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,14 +42,14 @@ public class EpisodeService {
 
     public EpisodeDTO findById(String id) throws ObjectNotFoundException {
 
-        var episode = episodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Episode not found."));
+        var episode = episodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Episode.class));
 
         return mapper.convertValue(episode, EpisodeDTO.class);
     }
 
     public EpisodeDTO insert(EpisodeDTO episodeDTO, String seasonId) throws ObjectNotFoundException {
 
-        var season = seasonRepository.findById(seasonId).orElseThrow(() -> new ObjectNotFoundException("Season not found."));
+        var season = seasonRepository.findById(seasonId).orElseThrow(() -> new ObjectNotFoundException(Season.class));
 
         Episode episode = mapper.convertValue(episodeDTO, Episode.class);
         episode.setSeasonId(seasonId);
@@ -64,7 +65,7 @@ public class EpisodeService {
 
     public EpisodeDTO update(EpisodeDTO episodeDTO, String id) throws ObjectNotFoundException {
 
-        var episode = episodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Episode not found."));
+        var episode = episodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Episode.class));
 
         episode.setTitle(episodeDTO.getTitle());
         episode.setDescription(episodeDTO.getDescription());

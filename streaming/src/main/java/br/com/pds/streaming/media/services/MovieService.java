@@ -28,18 +28,18 @@ public class MovieService {
 
         var moviesDTO = mapper.convertList(movies, MovieDTO.class);
 
-        moviesDTO.forEach(MovieDTO::setRatingsAverage);
+//        moviesDTO.forEach(MovieDTO::setRatingsAverage);
 
         return moviesDTO;
     }
 
     public MovieDTO findById(String id) throws ObjectNotFoundException {
 
-        var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Movie not found"));
+        var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Movie.class));
 
         var movieDTO = mapper.convertValue(movie, MovieDTO.class);
 
-        movieDTO.setRatingsAverage();
+//        movieDTO.setRatingsAverage();
 
         return movieDTO;
     }
@@ -53,7 +53,7 @@ public class MovieService {
 
     public MovieDTO update(MovieDTO movieDTO, String id) throws ObjectNotFoundException {
 
-        var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Movie not found"));
+        var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Movie.class));
 
         movie.setTitle(movieDTO.getTitle());
         movie.setDescription(movieDTO.getDescription());

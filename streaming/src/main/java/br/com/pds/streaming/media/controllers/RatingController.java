@@ -33,13 +33,13 @@ public class RatingController {
     }
 
     @PostMapping
-    public ResponseEntity<RatingDTO> createRating(@RequestBody RatingDTO ratingDTO, @RequestParam(name = "movieId", required = false) String movieId, @RequestParam(name = "tvShowId", required = false) String tvShowId) throws ObjectNotFoundException {
+    public ResponseEntity<RatingDTO> createRating(@RequestBody RatingDTO ratingDTO, @RequestParam(name = "userId") String userId, @RequestParam(name = "movieId", required = false) String movieId, @RequestParam(name = "tvShowId", required = false) String tvShowId) throws ObjectNotFoundException {
         if (tvShowId != null) {
-            return new ResponseEntity<>(ratingService.insert(ratingDTO, tvShowId), HttpStatus.CREATED);
+            return new ResponseEntity<>(ratingService.insert(ratingDTO, tvShowId, userId), HttpStatus.CREATED);
         }
 
         if (movieId != null) {
-            return new ResponseEntity<>(ratingService.insert(movieId, ratingDTO), HttpStatus.CREATED);
+            return new ResponseEntity<>(ratingService.insert(movieId, ratingDTO, userId), HttpStatus.CREATED);
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
