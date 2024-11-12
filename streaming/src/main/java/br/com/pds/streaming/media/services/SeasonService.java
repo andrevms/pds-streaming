@@ -81,12 +81,14 @@ public class SeasonService {
     }
 
     public void delete(String id) {
+
         deleteOrphanEpisodes(id);
 
         seasonRepository.deleteById(id);
     }
 
     private void deleteOrphanEpisodes(String seasonId) {
+
         var episodes = episodeRepository.findBySeasonId(seasonId);
 
         episodeRepository.deleteAll(episodes);

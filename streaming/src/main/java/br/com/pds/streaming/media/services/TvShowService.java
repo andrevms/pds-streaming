@@ -3,8 +3,10 @@ package br.com.pds.streaming.media.services;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.TvShowDTO;
+import br.com.pds.streaming.media.model.entities.Rating;
 import br.com.pds.streaming.media.model.entities.TvShow;
 import br.com.pds.streaming.media.repositories.EpisodeRepository;
+import br.com.pds.streaming.media.repositories.RatingRepository;
 import br.com.pds.streaming.media.repositories.SeasonRepository;
 import br.com.pds.streaming.media.repositories.TvShowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +20,15 @@ public class TvShowService {
     private TvShowRepository tvShowRepository;
     private SeasonRepository seasonRepository;
     private EpisodeRepository episodeRepository;
+    private RatingRepository ratingRepository;
     private MyModelMapper mapper;
 
     @Autowired
-    public TvShowService(TvShowRepository tvShowRepository, SeasonRepository seasonRepository, EpisodeRepository episodeRepository, MyModelMapper mapper) {
+    public TvShowService(TvShowRepository tvShowRepository, SeasonRepository seasonRepository, EpisodeRepository episodeRepository, RatingRepository ratingRepository, MyModelMapper mapper) {
         this.tvShowRepository = tvShowRepository;
         this.seasonRepository = seasonRepository;
         this.episodeRepository = episodeRepository;
+        this.ratingRepository = ratingRepository;
         this.mapper = mapper;
     }
 
@@ -34,7 +38,10 @@ public class TvShowService {
 
         var tvShowsDTO = mapper.convertList(tvShows, TvShowDTO.class);
 
-//        tvShowsDTO.forEach(TvShowDTO::setRatingsAverage);
+        tvShowsDTO.forEach(x -> {
+            var tvShowRatings = ratingRepository.findAll().stream().filter(r -> r.getTvShowId() != null).filter(r -> r.getTvShowId().equals(x.getId())).toList();
+            x.setRatingsAverage(!tvShowRatings.isEmpty() ? String.format("%.1f", tvShowRatings.stream().mapToDouble(Rating::getStars).sum() / tvShowRatings.size()) : "Não há avaliações para esta série.");
+        });
 
         return tvShowsDTO;
     }
@@ -45,7 +52,9 @@ public class TvShowService {
 
         var tvShowDTO = mapper.convertValue(tvShow, TvShowDTO.class);
 
-//        tvShowDTO.setRatingsAverage();
+        var tvShowRatings = ratingRepository.findAll().stream().filter(r -> r.getTvShowId() != null).filter(r -> r.getTvShowId().equals(id)).toList();
+
+        tvShowDTO.setRatingsAverage(!tvShowRatings.isEmpty() ? String.format("%.1f", tvShowRatings.stream().mapToDouble(Rating::getStars).sum() / tvShowRatings.size()) : "Não há avaliações para esta série.");
 
         return tvShowDTO;
     }
@@ -72,12 +81,14 @@ public class TvShowService {
     }
 
     public void delete(String id) {
+
         deleteOrphanSeasons(id);
 
         tvShowRepository.deleteById(id);
     }
 
     private void deleteOrphanSeasons(String tvShowId) {
+
         var seasons = seasonRepository.findByTvShowId(tvShowId);
 
         seasons.forEach(season -> deleteOrphanEpisodes(season.getId()));
@@ -86,6 +97,7 @@ public class TvShowService {
     }
 
     private void deleteOrphanEpisodes(String seasonId) {
+
         var episodes = episodeRepository.findBySeasonId(seasonId);
 
         episodeRepository.deleteAll(episodes);

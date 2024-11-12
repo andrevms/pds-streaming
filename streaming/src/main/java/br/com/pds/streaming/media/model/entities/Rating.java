@@ -28,34 +28,4 @@ public class Rating implements Serializable {
 
     @DBRef
     private BusinessUser businessUser;
-
-    public Rating(String id, String movieId, Double stars) {
-        this.id = id;
-        this.stars = stars;
-        this.movieId = movieId;
-        this.timestamp = Instant.now();
-    }
-
-    public Rating(String id, Double stars, String tvShowId) {
-        this.id = id;
-        this.stars = stars;
-        this.tvShowId = tvShowId;
-        this.timestamp = Instant.now();
-    }
-
-    public Rating(String id, String movieId, Double stars, BusinessUser businessUser) {
-        this.id = id;
-        this.stars = stars;
-        this.movieId = movieId;
-        this.timestamp = Instant.now();
-        this.businessUser = businessUser;
-    }
-
-    public Rating(String id, Double stars, String tvShowId, BusinessUser businessUser) {
-        this.id = id;
-        this.stars = stars;
-        this.tvShowId = tvShowId;
-        this.timestamp = Instant.now();
-        this.businessUser = businessUser;
-    }
 }

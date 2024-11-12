@@ -25,11 +25,4 @@ public class TvShowDTO implements Serializable {
     private List<SeasonDTO> seasons = new ArrayList<>();
 
     private List<RatingDTO> ratings = new ArrayList<>();
-
-// Maybe will be removed or replaced in the next commit
-//    public void setRatingsAverage() {
-//        this.ratingsAverage = !ratings.isEmpty()
-//                ? String.format("%.2f", ratings.stream().mapToDouble(RatingDTO::getStars).sum() / ratings.size())
-//                : "Não há avaliações para esta série.";
-//    }
 }

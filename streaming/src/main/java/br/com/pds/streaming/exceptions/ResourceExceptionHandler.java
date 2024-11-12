@@ -12,9 +12,15 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class ResourceExceptionHandler {
 
+    @ExceptionHandler(DuplicatedRatingException.class)
+    public ResponseEntity<ResponseError> duplicatedRating(DuplicatedRatingException e, HttpServletRequest request) {
+        ResponseError err = new ResponseError(LocalDateTime.now(), HttpStatus.CONFLICT.value(), "Duplicated rating", e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(err);
+    }
+
     @ExceptionHandler(ObjectNotFoundException.class)
     public ResponseEntity<ResponseError> objectNotFound(ObjectNotFoundException e, HttpServletRequest request){
-        ResponseError err = new ResponseError(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "Não encontrado", e.getMessage(), request.getRequestURI());
+        ResponseError err = new ResponseError(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "Not found", e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
     }
 }

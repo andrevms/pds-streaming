@@ -4,7 +4,9 @@ import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.MovieDTO;
 import br.com.pds.streaming.media.model.entities.Movie;
+import br.com.pds.streaming.media.model.entities.Rating;
 import br.com.pds.streaming.media.repositories.MovieRepository;
+import br.com.pds.streaming.media.repositories.RatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +16,13 @@ import java.util.List;
 public class MovieService {
 
     private MovieRepository movieRepository;
+    private RatingRepository ratingRepository;
     private MyModelMapper mapper;
 
     @Autowired
-    public MovieService(MovieRepository movieRepository, MyModelMapper mapper) {
+    public MovieService(MovieRepository movieRepository, RatingRepository ratingRepository, MyModelMapper mapper) {
         this.movieRepository = movieRepository;
+        this.ratingRepository = ratingRepository;
         this.mapper = mapper;
     }
 
@@ -28,7 +32,10 @@ public class MovieService {
 
         var moviesDTO = mapper.convertList(movies, MovieDTO.class);
 
-//        moviesDTO.forEach(MovieDTO::setRatingsAverage);
+        moviesDTO.forEach(x -> {
+            var movieRatings = ratingRepository.findAll().stream().filter(r -> r.getMovieId() != null).filter(r -> r.getMovieId().equals(x.getId())).toList();
+            x.setRatingsAverage(!movieRatings.isEmpty() ? String.format("%.1f", movieRatings.stream().mapToDouble(Rating::getStars).sum() / movieRatings.size()) : "Não há avaliações para este filme.");
+        });
 
         return moviesDTO;
     }
@@ -39,7 +46,9 @@ public class MovieService {
 
         var movieDTO = mapper.convertValue(movie, MovieDTO.class);
 
-//        movieDTO.setRatingsAverage();
+        var movieRatings = ratingRepository.findAll().stream().filter(r -> r.getMovieId() != null).filter(r -> r.getMovieId().equals(id)).toList();
+
+        movieDTO.setRatingsAverage(!movieRatings.isEmpty() ? String.format("%.1f", movieRatings.stream().mapToDouble(Rating::getStars).sum() / movieRatings.size()) : "Não há avaliações para este filme.");
 
         return movieDTO;
     }

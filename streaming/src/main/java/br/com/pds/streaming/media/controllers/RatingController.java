@@ -1,5 +1,6 @@
 package br.com.pds.streaming.media.controllers;
 
+import br.com.pds.streaming.exceptions.DuplicatedRatingException;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.media.model.dto.RatingDTO;
 import br.com.pds.streaming.media.services.RatingService;
@@ -23,7 +24,7 @@ public class RatingController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<RatingDTO> getRatingsByUserId(@RequestParam(name = "userId") String userId) {
+    public ResponseEntity<List<RatingDTO>> getRatingsByUserId(@RequestParam(name = "userId") String userId) {
         return new ResponseEntity<>(ratingService.findByUserId(userId), HttpStatus.OK);
     }
 
@@ -33,7 +34,7 @@ public class RatingController {
     }
 
     @PostMapping
-    public ResponseEntity<RatingDTO> createRating(@RequestBody RatingDTO ratingDTO, @RequestParam(name = "userId") String userId, @RequestParam(name = "movieId", required = false) String movieId, @RequestParam(name = "tvShowId", required = false) String tvShowId) throws ObjectNotFoundException {
+    public ResponseEntity<RatingDTO> createRating(@RequestBody RatingDTO ratingDTO, @RequestParam(name = "userId") String userId, @RequestParam(name = "movieId", required = false) String movieId, @RequestParam(name = "tvShowId", required = false) String tvShowId) throws ObjectNotFoundException, DuplicatedRatingException {
         if (tvShowId != null) {
             return new ResponseEntity<>(ratingService.insert(ratingDTO, tvShowId, userId), HttpStatus.CREATED);
         }
