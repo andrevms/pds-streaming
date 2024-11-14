@@ -83,6 +83,7 @@ public class TvShowService {
     public void delete(String id) {
 
         deleteOrphanSeasons(id);
+        deleteOrphanRatings(id);
 
         tvShowRepository.deleteById(id);
     }
@@ -101,5 +102,12 @@ public class TvShowService {
         var episodes = episodeRepository.findBySeasonId(seasonId);
 
         episodeRepository.deleteAll(episodes);
+    }
+
+    private void deleteOrphanRatings(String tvShowId) {
+
+        var ratings = ratingRepository.findByTvShowId(tvShowId);
+
+        ratingRepository.deleteAll(ratings);
     }
 }

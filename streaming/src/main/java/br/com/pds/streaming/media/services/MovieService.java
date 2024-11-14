@@ -76,6 +76,16 @@ public class MovieService {
     }
 
     public void delete(String id) {
+
+        deleteOrphanRatings(id);
+
         movieRepository.deleteById(id);
+    }
+
+    private void deleteOrphanRatings(String movieId) {
+
+        var ratings = ratingRepository.findByMovieId(movieId);
+
+        ratingRepository.deleteAll(ratings);
     }
 }
