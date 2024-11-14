@@ -42,6 +42,11 @@ public class SeasonController {
         return new ResponseEntity<>(seasonService.update(seasonDTO, id), HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<SeasonDTO> patchSeason(@RequestBody SeasonDTO seasonDTO, @PathVariable String id) throws ObjectNotFoundException {
+        return new ResponseEntity<>(seasonService.patch(seasonDTO, id), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSeason(@PathVariable String id) {
         seasonService.delete(id);

@@ -78,6 +78,35 @@ public class EpisodeService {
         return mapper.convertValue(updatedEpisode, EpisodeDTO.class);
     }
 
+    public EpisodeDTO patch(EpisodeDTO episodeDTO, String id) throws ObjectNotFoundException {
+
+        var episode = episodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Episode.class));
+
+        if (episodeDTO.getTitle() != null) {
+            episode.setTitle(episodeDTO.getTitle());
+        }
+
+        if (episodeDTO.getDescription() != null) {
+            episode.setDescription(episodeDTO.getDescription());
+        }
+
+        if (episodeDTO.getVideoUrl() != null) {
+            episode.setVideoUrl(episodeDTO.getVideoUrl());
+        }
+
+        if (episodeDTO.getThumbnailUrl() != null) {
+            episode.setThumbnailUrl(episodeDTO.getThumbnailUrl());
+        }
+
+        if (episodeDTO.getAnimationUrl() != null) {
+            episode.setAnimationUrl(episodeDTO.getAnimationUrl());
+        }
+
+        var patchedEpisode = episodeRepository.save(episode);
+
+        return mapper.convertValue(patchedEpisode, EpisodeDTO.class);
+    }
+
     public void delete(String id) {
         episodeRepository.deleteById(id);
     }

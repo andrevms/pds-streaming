@@ -119,6 +119,25 @@ public class RatingService {
         return mapper.convertValue(updatedRating, RatingDTO.class);
     }
 
+    public RatingDTO patch(RatingDTO ratingDTO, String id) throws ObjectNotFoundException {
+
+        var rating = ratingRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Rating.class));
+
+        if (ratingDTO.getStars() != null) {
+            rating.setStars(ratingDTO.getStars());
+        }
+
+        if (ratingDTO.getTimestamp() != null) {
+            rating.setTimestamp(ratingDTO.getTimestamp());
+        }
+
+        adjustRatingSpecifications(rating);
+
+        var patchedRating = ratingRepository.save(rating);
+
+        return mapper.convertValue(patchedRating, RatingDTO.class);
+    }
+
     public void delete(String id) {
         ratingRepository.deleteById(id);
     }

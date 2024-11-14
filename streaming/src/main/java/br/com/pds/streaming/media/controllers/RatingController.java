@@ -51,6 +51,11 @@ public class RatingController {
         return new ResponseEntity<>(ratingService.update(ratingDTO, id), HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<RatingDTO> patchRating(@RequestBody RatingDTO ratingDTO, @PathVariable String id) throws ObjectNotFoundException {
+        return new ResponseEntity<>(ratingService.patch(ratingDTO, id), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<RatingDTO> deleteRating(@PathVariable String id) {
         ratingService.delete(id);

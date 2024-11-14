@@ -80,6 +80,31 @@ public class SeasonService {
         return mapper.convertValue(updatedSeason, SeasonDTO.class);
     }
 
+    public SeasonDTO patch(SeasonDTO seasonDTO, String id) throws ObjectNotFoundException {
+
+        var season = seasonRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Season.class));
+
+        if (seasonDTO.getTitle() != null) {
+            season.setTitle(seasonDTO.getTitle());
+        }
+
+        if (seasonDTO.getDescription() != null) {
+            season.setDescription(seasonDTO.getDescription());
+        }
+
+        if (seasonDTO.getThumbnailUrl() != null) {
+            season.setThumbnailUrl(seasonDTO.getThumbnailUrl());
+        }
+
+        if (seasonDTO.getAnimationUrl() != null) {
+            season.setAnimationUrl(seasonDTO.getAnimationUrl());
+        }
+
+        var patchedSeason = seasonRepository.save(season);
+
+        return mapper.convertValue(patchedSeason, SeasonDTO.class);
+    }
+
     public void delete(String id) {
 
         deleteOrphanEpisodes(id);

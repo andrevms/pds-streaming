@@ -46,18 +46,14 @@ public class MovieService {
 
         var movieDTO = mapper.convertValue(movie, MovieDTO.class);
 
-        var movieRatings = ratingRepository.findAll().stream().filter(r -> r.getMovieId() != null).filter(r -> r.getMovieId().equals(id)).toList();
-
-        movieDTO.setRatingsAverage(!movieRatings.isEmpty() ? String.format("%.1f", movieRatings.stream().mapToDouble(Rating::getStars).sum() / movieRatings.size()) : "Não há avaliações para este filme.");
-
-        return movieDTO;
+        return refreshRatingsAverage(movieDTO, id);
     }
 
     public MovieDTO insert(MovieDTO movieDTO) {
 
         var createdMovie = movieRepository.save(mapper.convertValue(movieDTO, Movie.class));
 
-        return mapper.convertValue(createdMovie, MovieDTO.class);
+        return mapper.convertValue(createdMovie, MovieDTO.class); // To be reviewed later
     }
 
     public MovieDTO update(MovieDTO movieDTO, String id) throws ObjectNotFoundException {
@@ -72,7 +68,36 @@ public class MovieService {
 
         var updatedMovie = movieRepository.save(movie);
 
-        return mapper.convertValue(updatedMovie, MovieDTO.class);
+        return refreshRatingsAverage(mapper.convertValue(updatedMovie, MovieDTO.class), id); // To be reviewed later
+    }
+
+    public MovieDTO patch(MovieDTO movieDTO, String id) throws ObjectNotFoundException {
+
+        var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Movie.class));
+
+        if (movieDTO.getTitle() != null) {
+            movie.setTitle(movieDTO.getTitle());
+        }
+
+        if (movieDTO.getDescription() != null) {
+            movie.setDescription(movieDTO.getDescription());
+        }
+
+        if (movieDTO.getVideoUrl() != null) {
+            movie.setVideoUrl(movieDTO.getVideoUrl());
+        }
+
+        if (movieDTO.getThumbnailUrl() != null) {
+            movie.setThumbnailUrl(movieDTO.getThumbnailUrl());
+        }
+
+        if (movieDTO.getAnimationUrl() != null) {
+            movie.setAnimationUrl(movieDTO.getAnimationUrl());
+        }
+
+        var patchedMovie = movieRepository.save(movie);
+
+        return refreshRatingsAverage(mapper.convertValue(patchedMovie, MovieDTO.class), id); // To be reviewed later
     }
 
     public void delete(String id) {
@@ -87,5 +112,14 @@ public class MovieService {
         var ratings = ratingRepository.findByMovieId(movieId);
 
         ratingRepository.deleteAll(ratings);
+    }
+
+    private MovieDTO refreshRatingsAverage(MovieDTO movieDTO, String id) {
+
+        var movieRatings = ratingRepository.findAll().stream().filter(r -> r.getMovieId() != null).filter(r -> r.getMovieId().equals(id)).toList();
+
+        movieDTO.setRatingsAverage(!movieRatings.isEmpty() ? String.format("%.1f", movieRatings.stream().mapToDouble(Rating::getStars).sum() / movieRatings.size()) : "Não há avaliações para este filme.");
+
+        return movieDTO; // To be reviewed later
     }
 }

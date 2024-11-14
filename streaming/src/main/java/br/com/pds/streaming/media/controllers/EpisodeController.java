@@ -42,6 +42,11 @@ public class EpisodeController {
         return new ResponseEntity<>(episodeService.update(episodeDTO, id), HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<EpisodeDTO> patchEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) throws ObjectNotFoundException {
+        return new ResponseEntity<>(episodeService.patch(episodeDTO, id), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEpisode(@PathVariable String id) {
         episodeService.delete(id);

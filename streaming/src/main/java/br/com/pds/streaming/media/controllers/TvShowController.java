@@ -37,6 +37,11 @@ public class TvShowController {
         return new ResponseEntity<>(tvShowService.update(tvShowDTO, id), HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<TvShowDTO> patchTvShow(@RequestBody TvShowDTO tvShowDTO, @PathVariable String id) throws ObjectNotFoundException {
+        return new ResponseEntity<>(tvShowService.patch(tvShowDTO, id), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTvShow(@PathVariable String id) {
         tvShowService.delete(id);

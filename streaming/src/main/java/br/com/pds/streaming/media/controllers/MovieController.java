@@ -37,6 +37,11 @@ public class MovieController {
         return new ResponseEntity<>(movieService.update(movieDTO, id), HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<MovieDTO> patchMovie(@RequestBody MovieDTO movieDTO, @PathVariable String id) throws ObjectNotFoundException {
+        return new ResponseEntity<>(movieService.patch(movieDTO, id), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMovie(@PathVariable String id) {
         movieService.delete(id);

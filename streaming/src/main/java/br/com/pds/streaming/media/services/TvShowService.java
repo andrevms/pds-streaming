@@ -52,18 +52,14 @@ public class TvShowService {
 
         var tvShowDTO = mapper.convertValue(tvShow, TvShowDTO.class);
 
-        var tvShowRatings = ratingRepository.findAll().stream().filter(r -> r.getTvShowId() != null).filter(r -> r.getTvShowId().equals(id)).toList();
-
-        tvShowDTO.setRatingsAverage(!tvShowRatings.isEmpty() ? String.format("%.1f", tvShowRatings.stream().mapToDouble(Rating::getStars).sum() / tvShowRatings.size()) : "Não há avaliações para esta série.");
-
-        return tvShowDTO;
+        return refreshRatingsAverage(tvShowDTO, id); // To be reviewed later
     }
 
     public TvShowDTO insert(TvShowDTO tvShowDTO) {
 
         var createdTvShow = tvShowRepository.save(mapper.convertValue(tvShowDTO, TvShow.class));
 
-        return mapper.convertValue(createdTvShow, TvShowDTO.class);
+        return mapper.convertValue(createdTvShow, TvShowDTO.class); // To be reviewed later
     }
 
     public TvShowDTO update(TvShowDTO tvShowDTO, String id) throws ObjectNotFoundException {
@@ -77,7 +73,32 @@ public class TvShowService {
 
         var updatedTvShow = tvShowRepository.save(tvShow);
 
-        return mapper.convertValue(updatedTvShow, TvShowDTO.class);
+        return refreshRatingsAverage(mapper.convertValue(updatedTvShow, TvShowDTO.class), id); // To be reviewed later
+    }
+
+    public TvShowDTO patch(TvShowDTO tvShowDTO, String id) throws ObjectNotFoundException {
+
+        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
+
+        if (tvShowDTO.getTitle() != null) {
+            tvShow.setTitle(tvShowDTO.getTitle());
+        }
+
+        if (tvShowDTO.getDescription() != null) {
+            tvShow.setDescription(tvShowDTO.getDescription());
+        }
+
+        if (tvShowDTO.getThumbnailUrl() != null) {
+            tvShow.setThumbnailUrl(tvShowDTO.getThumbnailUrl());
+        }
+
+        if (tvShowDTO.getAnimationUrl() != null) {
+            tvShow.setAnimationUrl(tvShowDTO.getAnimationUrl());
+        }
+
+        var patchedTvShow = tvShowRepository.save(tvShow);
+
+        return refreshRatingsAverage(mapper.convertValue(patchedTvShow, TvShowDTO.class), id); // To be reviewed later
     }
 
     public void delete(String id) {
@@ -109,5 +130,14 @@ public class TvShowService {
         var ratings = ratingRepository.findByTvShowId(tvShowId);
 
         ratingRepository.deleteAll(ratings);
+    }
+
+    private TvShowDTO refreshRatingsAverage(TvShowDTO tvShowDTO, String id) {
+
+        var tvShowRatings = ratingRepository.findAll().stream().filter(r -> r.getTvShowId() != null).filter(r -> r.getTvShowId().equals(id)).toList();
+
+        tvShowDTO.setRatingsAverage(!tvShowRatings.isEmpty() ? String.format("%.1f", tvShowRatings.stream().mapToDouble(Rating::getStars).sum() / tvShowRatings.size()) : "Não há avaliações para esta série.");
+
+        return tvShowDTO; // To be reviewed later
     }
 }
