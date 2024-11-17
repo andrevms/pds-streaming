@@ -1,4 +1,4 @@
-package br.com.pds.streaming.domain.registration.model.dto;
+package br.com.pds.streaming.authentication.model.dto.domain;
 
 import br.com.pds.streaming.domain.subscription.model.dto.SubscriptionDTO;
 import lombok.AllArgsConstructor;
@@ -13,12 +13,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
-public class BusinessUserDTO implements Serializable {
+public class UserDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     private String id;
+    private String email;
     private String username;
     private String firstName;
     private String lastName;

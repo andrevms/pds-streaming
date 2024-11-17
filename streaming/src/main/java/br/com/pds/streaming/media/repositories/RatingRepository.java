@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface RatingRepository extends MongoRepository<Rating, String> {
-    List<Rating> findByBusinessUserId(String userId);
+    List<Rating> findByUserId(String userId);
     List<Rating> findByMovieId(String movieId);
     List<Rating> findByTvShowId(String tvShowId);
 }

@@ -1,6 +1,6 @@
 package br.com.pds.streaming.media.model.entities;
 
-import br.com.pds.streaming.domain.registration.model.entities.BusinessUser;
+import br.com.pds.streaming.authentication.model.entities.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -27,5 +27,5 @@ public class Rating implements Serializable {
     private String tvShowId;
 
     @DBRef
-    private BusinessUser businessUser;
+    private User user;
 }

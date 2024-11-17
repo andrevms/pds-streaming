@@ -1,5 +1,6 @@
 package br.com.pds.streaming.authentication.services;
 
+import br.com.pds.streaming.authentication.model.dto.domain.UserDTO;
 import br.com.pds.streaming.authentication.model.dto.login.LoginRequest;
 import br.com.pds.streaming.authentication.model.dto.login.LoginResponse;
 import br.com.pds.streaming.authentication.model.dto.register.RegisterRequest;
@@ -9,9 +10,8 @@ import br.com.pds.streaming.authentication.model.enums.RoleType;
 import br.com.pds.streaming.authentication.repositories.RoleRepository;
 import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.config.jwt.JwtUtils;
-import br.com.pds.streaming.domain.registration.model.entities.BusinessUser;
-import br.com.pds.streaming.domain.registration.repositories.BusinessUserRepository;
 import br.com.pds.streaming.exceptions.InvalidRoleException;
+import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +42,7 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private BusinessUserRepository businessUserRepository;
+    private MyModelMapper mapper;
 
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication;
@@ -79,8 +79,9 @@ public class AuthService {
             User user = mountUser(registerRequest);
 
             userRepository.save(user);
-            // saveBusinessUser(registerRequest);
-            return ResponseEntity.ok(user);
+
+            var userDTO = mapper.convertValue(user, UserDTO.class);
+            return ResponseEntity.ok(userDTO);
 
         }catch (IllegalArgumentException e) {
             throw new InvalidRoleException(e.getMessage());
@@ -109,16 +110,5 @@ public class AuthService {
         var roles = new HashSet<>(List.of(role));
 
         return new User(email, username, encryptedPassword, firstName, lastName, roles, null);
-    }
-
-    private void saveBusinessUser(RegisterRequest registerRequest) {
-
-        var businessUser = new BusinessUser();
-
-        businessUser.setUsername(registerRequest.getUsername());
-        businessUser.setFirstName(registerRequest.getFirstName());
-        businessUser.setLastName(registerRequest.getLastName());
-
-        businessUserRepository.save(businessUser);
     }
 }
