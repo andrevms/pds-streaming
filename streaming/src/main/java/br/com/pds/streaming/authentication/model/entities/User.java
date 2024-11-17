@@ -1,5 +1,9 @@
 package br.com.pds.streaming.authentication.model.entities;
 
+import br.com.pds.streaming.domain.subscription.model.entities.Subscription;
+import br.com.pds.streaming.media.model.entities.Movie;
+import br.com.pds.streaming.media.model.entities.Rating;
+import br.com.pds.streaming.media.model.entities.TvShow;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,12 +34,23 @@ public class User implements UserDetails, Serializable {
     @Indexed(unique = true)
     private String email;
 
+    private String firstName;
+    private String lastName;
+
     @Indexed(unique = true)
     private String username;
     private String password;
 
     @DBRef
     private Set<Role> roles = new HashSet<>();
+    @DBRef
+    private Subscription subscription;
+    @DBRef
+    Set<Rating> ratings = new HashSet<>();
+    @DBRef
+    Set<TvShow> tvShows = new HashSet<>();
+    @DBRef
+    Set<Movie> movies = new HashSet<>();
 
     private boolean isActive;
     private String dateCreated;
@@ -70,13 +85,19 @@ public class User implements UserDetails, Serializable {
         this.dateDeleted = new Date().toString();
     }
 
-    public User(String email, String username, String password, Set<Role> roles) {
+    public User(String email, String username, String password, String firstName, String lastName, Set<Role> roles, Subscription subscription) {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.isActive = true;
         this.dateCreated = new Date().toString();
         this.dateDeleted = new Date().toString();
         this.roles = roles;
+        this.subscription = subscription;
+        this.ratings = new HashSet<>();
+        this.tvShows = new HashSet<>();
+        this.movies = new HashSet<>();
     }
 }

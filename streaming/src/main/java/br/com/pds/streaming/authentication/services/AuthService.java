@@ -75,26 +75,12 @@ public class AuthService {
 
     public ResponseEntity<?> registerUser(RegisterRequest registerRequest) throws InvalidRoleException {
         try {
-            var roleType = RoleType.valueOf(registerRequest.getRole());
 
+            User user = mountUser(registerRequest);
 
-            Role role = roleRepository.findByName(roleType.toString())
-                    .orElseGet(() -> {
-                        Role newRole = new Role(roleType.toString());
-                        return roleRepository.save(newRole);
-                    });
-
-            Set<Role> roles = new HashSet<>(List.of(role));
-
-            String encryptedPassword = passwordEncoder.encode(registerRequest.getPassword());
-
-            userRepository.save(new User(registerRequest.getEmail(),
-                    registerRequest.getUsername(),
-                    encryptedPassword,
-                    roles
-            ));
-
-            saveBusinessUser(registerRequest);
+            userRepository.save(user);
+            // saveBusinessUser(registerRequest);
+            return ResponseEntity.ok(user);
 
         }catch (IllegalArgumentException e) {
             throw new InvalidRoleException(e.getMessage());
@@ -102,7 +88,27 @@ public class AuthService {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return ResponseEntity.ok(registerRequest);
+    }
+
+    private User mountUser(RegisterRequest registerRequest) {
+
+        String email = registerRequest.getEmail();
+        String username = registerRequest.getUsername();
+        String encryptedPassword = passwordEncoder.encode(registerRequest.getPassword());
+        String firstName = registerRequest.getFirstName();
+        String lastName = registerRequest.getLastName();
+
+        var roleType = RoleType.ROLE_PENDING_USER;
+
+        Role role = roleRepository.findByName(roleType.toString())
+                .orElseGet(() -> {
+                    Role newRole = new Role(roleType.toString());
+                    return roleRepository.save(newRole);
+                });
+
+        var roles = new HashSet<>(List.of(role));
+
+        return new User(email, username, encryptedPassword, firstName, lastName, roles, null);
     }
 
     private void saveBusinessUser(RegisterRequest registerRequest) {
