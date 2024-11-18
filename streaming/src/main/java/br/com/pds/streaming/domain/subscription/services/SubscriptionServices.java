@@ -31,6 +31,8 @@ public class SubscriptionServices {
     @Autowired
     private UserService userService;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private PaymentServices paymentServices;
     @Autowired
     private RoleRepository roleRepository;
@@ -47,23 +49,20 @@ public class SubscriptionServices {
 
         var user = userService.loadUserByUsername(requestSubscriptionDTO.getUsername());
 
-        Subscription subscription;
         try {
-            subscription = createSubscription(requestSubscriptionDTO);
+            Subscription subscription = createSubscription(requestSubscriptionDTO);
+
+            System.out.println("Subscription started");
+            subscription.setUserId(user.getId());
+            subscription = subscriptionRepository.save(subscription);
+            System.out.println("Subscription ended");
+
+            System.out.println("User subscribed");
+            userService.updateUserSubscription(user.getId(), subscription);
+            System.out.println("User subscribed");
         } catch (InvalidSubscriptionTypeException e) {
             throw e;
         }
-
-        subscription.setUserId(user.getId());
-        System.out.println("Subscription started: " + subscription.getUserId());
-        System.out.println(user.getEmail());
-        var entitySubscription = subscriptionRepository.save(subscription);
-        System.out.println("Subscription ended: " + subscription.getUserId());
-
-        setUserRole(user);
-        user.setSubscription(entitySubscription);
-        var userDTO = mapper.convertValue(user, UserDTO.class);
-        userService.update(userDTO, userDTO.getId());
     }
 
     private Subscription createSubscription(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException {
@@ -88,14 +87,4 @@ public class SubscriptionServices {
         );
     }
 
-    private void setUserRole(User user) {
-        Role role = roleRepository.findByName("ROLE_USER_PREMIUM")
-                .orElseGet(() -> {
-                    Role newRole = new Role("ROLE_USER_PREMIUM");
-                    return roleRepository.save(newRole);
-                });
-
-
-        user.setRoles(new HashSet<>(List.of(role)));
-    }
 }
