@@ -1,6 +1,6 @@
 package br.com.pds.streaming.media.model.dto;
 
-import br.com.pds.streaming.domain.registration.model.dto.BusinessUserDTO;
+import br.com.pds.streaming.authentication.model.dto.domain.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,5 +21,5 @@ public class RatingDTO implements Serializable {
     private Double stars;
     private Instant timestamp;
 
-    private BusinessUserDTO user;
+    private UserDTO user;
 }

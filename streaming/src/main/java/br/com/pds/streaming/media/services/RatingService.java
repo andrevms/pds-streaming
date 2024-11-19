@@ -1,7 +1,7 @@
 package br.com.pds.streaming.media.services;
 
-import br.com.pds.streaming.domain.registration.model.entities.BusinessUser;
-import br.com.pds.streaming.domain.registration.repositories.BusinessUserRepository;
+import br.com.pds.streaming.authentication.model.entities.User;
+import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.exceptions.DuplicatedRatingException;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
@@ -27,15 +27,15 @@ public class RatingService {
     private RatingRepository ratingRepository;
     private MovieRepository movieRepository;
     private TvShowRepository tvShowRepository;
-    private BusinessUserRepository businessUserRepository;
+    private UserRepository userRepository;
     private MyModelMapper mapper;
 
     @Autowired
-    public RatingService(RatingRepository ratingRepository, MovieRepository movieRepository, TvShowRepository tvShowRepository, BusinessUserRepository businessUserRepository, MyModelMapper mapper) {
+    public RatingService(RatingRepository ratingRepository, MovieRepository movieRepository, TvShowRepository tvShowRepository, UserRepository userRepository, MyModelMapper mapper) {
         this.ratingRepository = ratingRepository;
         this.movieRepository = movieRepository;
         this.tvShowRepository = tvShowRepository;
-        this.businessUserRepository = businessUserRepository;
+        this.userRepository = userRepository;
         this.mapper = mapper;
     }
 
@@ -48,7 +48,7 @@ public class RatingService {
 
     public List<RatingDTO> findByUserId(String userId) {
 
-        var ratings = ratingRepository.findByBusinessUserId(userId);
+        var ratings = ratingRepository.findByUserId(userId);
 
         return mapper.convertList(ratings, RatingDTO.class);
     }
@@ -62,17 +62,17 @@ public class RatingService {
 
     public RatingDTO insert(String movieId, RatingDTO ratingDTO, String userId) throws ObjectNotFoundException, DuplicatedRatingException {
 
-        if (!ratingRepository.findByBusinessUserId(userId).stream().filter(r -> r.getMovieId() != null).filter(r -> r.getMovieId().equals(movieId)).toList().isEmpty()) {
+        if (!ratingRepository.findByUserId(userId).stream().filter(r -> r.getMovieId() != null).filter(r -> r.getMovieId().equals(movieId)).toList().isEmpty()) {
             throw new DuplicatedRatingException();
         }
 
-        var businessUser = businessUserRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(BusinessUser.class));
+        var user = userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(User.class));
 
         var movie = movieRepository.findById(movieId).orElseThrow(() -> new ObjectNotFoundException(Movie.class));
 
         var rating = mapper.convertValue(ratingDTO, Rating.class);
         rating.setMovieId(movieId);
-        adjustRatingSpecifications(rating, businessUser);
+        adjustRatingSpecifications(rating, user);
 
         var createdRating = ratingRepository.save(rating);
 
@@ -85,17 +85,17 @@ public class RatingService {
 
     public RatingDTO insert(RatingDTO ratingDTO, String tvShowId, String userId) throws ObjectNotFoundException, DuplicatedRatingException {
 
-        if (!ratingRepository.findByBusinessUserId(userId).stream().filter(r -> r.getTvShowId() != null).filter(r -> r.getTvShowId().equals(tvShowId)).toList().isEmpty()) {
+        if (!ratingRepository.findByUserId(userId).stream().filter(r -> r.getTvShowId() != null).filter(r -> r.getTvShowId().equals(tvShowId)).toList().isEmpty()) {
             throw new DuplicatedRatingException();
         }
 
-        var businessUser = businessUserRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(BusinessUser.class));
+        var user = userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(User.class));
 
         var tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
 
         var rating = mapper.convertValue(ratingDTO, Rating.class);
         rating.setTvShowId(tvShowId);
-        adjustRatingSpecifications(rating, businessUser);
+        adjustRatingSpecifications(rating, user);
 
         var createdRating = ratingRepository.save(rating);
 
@@ -151,9 +151,9 @@ public class RatingService {
         rating.setStars(min(5.0, max(1.0, rating.getStars())));
     }
 
-    private void adjustRatingSpecifications(Rating rating, BusinessUser businessUser) {
+    private void adjustRatingSpecifications(Rating rating, User user) {
 
-        rating.setBusinessUser(businessUser);
+        rating.setUser(user);
 
         adjustRatingSpecifications(rating);
     }

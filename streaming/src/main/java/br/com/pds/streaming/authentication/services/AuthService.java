@@ -1,5 +1,6 @@
 package br.com.pds.streaming.authentication.services;
 
+import br.com.pds.streaming.authentication.model.dto.domain.UserDTO;
 import br.com.pds.streaming.authentication.model.dto.login.LoginRequest;
 import br.com.pds.streaming.authentication.model.dto.login.LoginResponse;
 import br.com.pds.streaming.authentication.model.dto.register.RegisterRequest;
@@ -9,9 +10,8 @@ import br.com.pds.streaming.authentication.model.enums.RoleType;
 import br.com.pds.streaming.authentication.repositories.RoleRepository;
 import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.config.jwt.JwtUtils;
-import br.com.pds.streaming.domain.registration.model.entities.BusinessUser;
-import br.com.pds.streaming.domain.registration.repositories.BusinessUserRepository;
 import br.com.pds.streaming.exceptions.InvalidRoleException;
+import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +42,7 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private BusinessUserRepository businessUserRepository;
+    private MyModelMapper mapper;
 
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication;
@@ -75,26 +75,13 @@ public class AuthService {
 
     public ResponseEntity<?> registerUser(RegisterRequest registerRequest) throws InvalidRoleException {
         try {
-            var roleType = RoleType.valueOf(registerRequest.getRole());
 
+            User user = mountUser(registerRequest);
 
-            Role role = roleRepository.findByName(roleType.toString())
-                    .orElseGet(() -> {
-                        Role newRole = new Role(roleType.toString());
-                        return roleRepository.save(newRole);
-                    });
+            userRepository.save(user);
 
-            Set<Role> roles = new HashSet<>(List.of(role));
-
-            String encryptedPassword = passwordEncoder.encode(registerRequest.getPassword());
-
-            userRepository.save(new User(registerRequest.getEmail(),
-                    registerRequest.getUsername(),
-                    encryptedPassword,
-                    roles
-            ));
-
-            saveBusinessUser(registerRequest);
+            var userDTO = mapper.convertValue(user, UserDTO.class);
+            return ResponseEntity.ok(userDTO);
 
         }catch (IllegalArgumentException e) {
             throw new InvalidRoleException(e.getMessage());
@@ -102,17 +89,26 @@ public class AuthService {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return ResponseEntity.ok(registerRequest);
     }
 
-    private void saveBusinessUser(RegisterRequest registerRequest) {
+    private User mountUser(RegisterRequest registerRequest) {
 
-        var businessUser = new BusinessUser();
+        String email = registerRequest.getEmail();
+        String username = registerRequest.getUsername();
+        String encryptedPassword = passwordEncoder.encode(registerRequest.getPassword());
+        String firstName = registerRequest.getFirstName();
+        String lastName = registerRequest.getLastName();
 
-        businessUser.setUsername(registerRequest.getUsername());
-        businessUser.setFirstName(registerRequest.getFirstName());
-        businessUser.setLastName(registerRequest.getLastName());
+        var roleType = RoleType.ROLE_PENDING_USER;
 
-        businessUserRepository.save(businessUser);
+        Role role = roleRepository.findByName(roleType.toString())
+                .orElseGet(() -> {
+                    Role newRole = new Role(roleType.toString());
+                    return roleRepository.save(newRole);
+                });
+
+        var roles = new HashSet<>(List.of(role));
+
+        return new User(email, username, encryptedPassword, firstName, lastName, roles, null);
     }
 }

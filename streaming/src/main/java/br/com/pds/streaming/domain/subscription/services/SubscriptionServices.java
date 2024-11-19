@@ -1,11 +1,11 @@
 package br.com.pds.streaming.domain.subscription.services;
 
+import br.com.pds.streaming.authentication.model.dto.domain.UserDTO;
 import br.com.pds.streaming.authentication.model.entities.Role;
 import br.com.pds.streaming.authentication.model.entities.User;
 import br.com.pds.streaming.authentication.repositories.RoleRepository;
 import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.authentication.services.UserService;
-import br.com.pds.streaming.domain.registration.repositories.BusinessUserRepository;
 import br.com.pds.streaming.domain.subscription.model.dto.RequestSubscriptionDTO;
 import br.com.pds.streaming.domain.subscription.model.entities.Subscription;
 import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionStatus;
@@ -13,6 +13,8 @@ import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionType;
 import br.com.pds.streaming.domain.subscription.repositories.SubscriptionRepository;
 import br.com.pds.streaming.exceptions.InvalidSubscriptionTypeException;
 import br.com.pds.streaming.exceptions.PaymentException;
+import br.com.pds.streaming.exceptions.UserNotFoundException;
+import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,44 +29,40 @@ public class SubscriptionServices {
     @Autowired
     private SubscriptionRepository subscriptionRepository;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private PaymentServices paymentServices;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
-    private BusinessUserRepository businessUserRepository;
+    private MyModelMapper mapper;
 
     @Transactional
-    public void subscribeUser(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException, PaymentException {
+    public void subscribeUser(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException, PaymentException, UserNotFoundException {
 
         var creditCard = requestSubscriptionDTO.getCreditCardDTO();
         if (!paymentServices.processCreditCardPayment(creditCard)) {
             throw new PaymentException("Payment failed");
         }
 
-        User user;
-        user = getUser(requestSubscriptionDTO.getUsername());
+        var user = userService.loadUserByUsername(requestSubscriptionDTO.getUsername());
 
-        Subscription subscription;
         try {
-            subscription = createSubscription(requestSubscriptionDTO);
+            Subscription subscription = createSubscription(requestSubscriptionDTO);
+
+            System.out.println("Subscription started");
+            subscription.setUserId(user.getId());
+            subscription = subscriptionRepository.save(subscription);
+            System.out.println("Subscription ended");
+
+            System.out.println("User subscribed");
+            userService.updateUserSubscription(user.getId(), subscription);
+            System.out.println("User subscribed");
         } catch (InvalidSubscriptionTypeException e) {
             throw e;
         }
-
-        setUserRole(user);
-        subscriptionRepository.save(subscription);
-
-        var businessUser = businessUserRepository.findByUsername(user.getUsername());
-        businessUser.setSubscription(subscription);
-        businessUserRepository.save(businessUser);
-    }
-
-    private User getUser(String username) {
-        return userService.loadUserByUsername(username);
     }
 
     private Subscription createSubscription(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException {
@@ -89,15 +87,4 @@ public class SubscriptionServices {
         );
     }
 
-    private void setUserRole(User user) {
-        Role role = roleRepository.findByName("ROLE_USER_PREMIUM")
-                .orElseGet(() -> {
-                    Role newRole = new Role("ROLE_USER_PREMIUM");
-                    return roleRepository.save(newRole);
-                });
-
-
-        user.setRoles(new HashSet<>(List.of(role)));
-        userRepository.save(user);
-    }
 }
