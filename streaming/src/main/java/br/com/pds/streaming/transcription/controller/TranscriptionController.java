@@ -2,12 +2,14 @@ package br.com.pds.streaming.transcription.controller;
 
 import br.com.pds.streaming.transcription.services.TranscriptionServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "api/video-transcriptions")
 public class TranscriptionController {
 
+    @Qualifier("assemblyAITranscribeService")
     @Autowired
     private TranscriptionServices transcriptionServices;
 
@@ -21,7 +23,7 @@ public class TranscriptionController {
 //        return amazonTranscriptionServices.getTranscriptionJobUri(jobName);
 //    }
 
-    @GetMapping("/transcript/{key}")
+    @PostMapping("/transcript/{key}")
     public String getTranscriptionText(@PathVariable String key) {
         return transcriptionServices.transcribe(key);
     }
