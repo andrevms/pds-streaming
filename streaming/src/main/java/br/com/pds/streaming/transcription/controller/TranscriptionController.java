@@ -1,7 +1,6 @@
 package br.com.pds.streaming.transcription.controller;
 
 import br.com.pds.streaming.transcription.services.TranscriptionServices;
-import br.com.pds.streaming.transcription.services.amazon.AmazonTranscribeServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

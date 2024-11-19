@@ -19,14 +19,14 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
-public class AmazonTranscribeServices implements TranscriptionServices {
+public class AmazonTranscribeService implements TranscriptionServices {
 
     @Autowired
     private S3Client s3Client;
     @Autowired
     private AmazonTranscribe transcribeClient;
 
-    Logger log = Logger.getLogger(AmazonTranscribeServices.class.getName());
+    Logger log = Logger.getLogger(AmazonTranscribeService.class.getName());
 
     @Value("${cloud.aws.bucket-name}")
     private String bucketName;

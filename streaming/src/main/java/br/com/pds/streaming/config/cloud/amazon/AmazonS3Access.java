@@ -1,4 +1,4 @@
-package br.com.pds.streaming.config.cloud;
+package br.com.pds.streaming.config.cloud.amazon;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
