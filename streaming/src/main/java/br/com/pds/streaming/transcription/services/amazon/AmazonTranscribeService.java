@@ -1,5 +1,7 @@
 package br.com.pds.streaming.transcription.services.amazon;
 
+import br.com.pds.streaming.transcription.model.dto.requests.TranscriptionRequest;
+import br.com.pds.streaming.transcription.model.dto.responses.TranscriptionResponse;
 import br.com.pds.streaming.transcription.services.TranscriptionServices;
 import com.amazonaws.services.transcribe.AmazonTranscribe;
 import com.amazonaws.services.transcribe.model.*;
@@ -31,10 +33,11 @@ public class AmazonTranscribeService implements TranscriptionServices {
     @Value("${cloud.aws.bucket-name}")
     private String bucketName;
 
-    public String transcribe(String key) {
+    public TranscriptionResponse transcribe(TranscriptionRequest transcriptionRequest) {
         try {
 
-            String jobName = startTranscriptionJob(key).getTranscriptionJob().getTranscriptionJobName();
+            String source = transcriptionRequest.getSource();
+            String jobName = startTranscriptionJob(source).getTranscriptionJob().getTranscriptionJobName();
             String uri = getTranscriptionJobUri(jobName);
             URL url = new URL(uri);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -51,11 +54,13 @@ public class AmazonTranscribeService implements TranscriptionServices {
 
                 JsonNode rootNode = objectMapper.readTree(content.toString());
 
-                return rootNode.path("results")
+                String text = rootNode.path("results")
                         .path("transcripts")
                         .get(0)
                         .path("transcript")
                         .asText();
+
+                return new TranscriptionResponse(text);
             }
         } catch (IOException e) {
             log.warning(e.getMessage());

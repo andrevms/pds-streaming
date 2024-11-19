@@ -1,5 +1,7 @@
 package br.com.pds.streaming.transcription.controller;
 
+import br.com.pds.streaming.transcription.model.dto.requests.TranscriptionRequest;
+import br.com.pds.streaming.transcription.model.dto.responses.TranscriptionResponse;
 import br.com.pds.streaming.transcription.services.TranscriptionServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,8 +25,8 @@ public class TranscriptionController {
 //        return amazonTranscriptionServices.getTranscriptionJobUri(jobName);
 //    }
 
-    @PostMapping("/transcript/{key}")
-    public String getTranscriptionText(@PathVariable String key) {
-        return transcriptionServices.transcribe(key);
+    @PostMapping("/transcribe")
+    public TranscriptionResponse transcribe(@RequestBody TranscriptionRequest transcriptionRequest) {
+        return transcriptionServices.transcribe(transcriptionRequest);
     }
 }
