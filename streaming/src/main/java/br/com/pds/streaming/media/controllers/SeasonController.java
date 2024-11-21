@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/seasons")
+@RequestMapping({"/api/season", "/api/seasons"})
 public class SeasonController {
 
     @Autowired

@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping(value = {"api/archive", "api/archives", "api/file", "api/files"})
+@RequestMapping(value = {"/api/archive", "/api/archives", "/api/file", "/api/files"})
 public class ArchiveController {
 
     @Autowired

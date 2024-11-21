@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "api/video-transcriptions")
+@RequestMapping(value = {"/api/videotranscription", "/api/videotranscriptions", "/api/video-transcription", "/api/video-transcriptions", "/api/video_transcription", "/api/video_transcriptions"})
 public class TranscriptionController {
 
     @Qualifier("assemblyAITranscribeService")

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tvshows")
+@RequestMapping({"/api/tvshow", "/api/tvshows", "/api/tv-show", "/api/tv-shows", "/api/tv_show", "/api/tv_shows"})
 public class TvShowController {
 
     @Autowired
