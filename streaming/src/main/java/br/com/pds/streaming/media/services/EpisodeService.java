@@ -15,9 +15,9 @@ import java.util.List;
 @Service
 public class EpisodeService {
 
-    private EpisodeRepository episodeRepository;
-    private SeasonRepository seasonRepository;
-    private MyModelMapper mapper;
+    private final EpisodeRepository episodeRepository;
+    private final SeasonRepository seasonRepository;
+    private final MyModelMapper mapper;
 
     @Autowired
     public EpisodeService(EpisodeRepository episodeRepository, SeasonRepository seasonRepository, MyModelMapper mapper) {

@@ -17,11 +17,11 @@ import java.util.List;
 @Service
 public class TvShowService {
 
-    private TvShowRepository tvShowRepository;
-    private SeasonRepository seasonRepository;
-    private EpisodeRepository episodeRepository;
-    private RatingRepository ratingRepository;
-    private MyModelMapper mapper;
+    private final TvShowRepository tvShowRepository;
+    private final SeasonRepository seasonRepository;
+    private final EpisodeRepository episodeRepository;
+    private final RatingRepository ratingRepository;
+    private final MyModelMapper mapper;
 
     @Autowired
     public TvShowService(TvShowRepository tvShowRepository, SeasonRepository seasonRepository, EpisodeRepository episodeRepository, RatingRepository ratingRepository, MyModelMapper mapper) {
@@ -52,14 +52,20 @@ public class TvShowService {
 
         var tvShowDTO = mapper.convertValue(tvShow, TvShowDTO.class);
 
-        return refreshRatingsAverage(tvShowDTO, id); // To be reviewed later
+        refreshRatingsAverage(tvShowDTO);
+
+        return tvShowDTO;
     }
 
     public TvShowDTO insert(TvShowDTO tvShowDTO) {
 
         var createdTvShow = tvShowRepository.save(mapper.convertValue(tvShowDTO, TvShow.class));
 
-        return mapper.convertValue(createdTvShow, TvShowDTO.class); // To be reviewed later
+        var mappedTvShow = mapper.convertValue(createdTvShow, TvShowDTO.class);
+
+        refreshRatingsAverage(mappedTvShow);
+
+        return mappedTvShow;
     }
 
     public TvShowDTO update(TvShowDTO tvShowDTO, String id) throws ObjectNotFoundException {
@@ -73,7 +79,11 @@ public class TvShowService {
 
         var updatedTvShow = tvShowRepository.save(tvShow);
 
-        return refreshRatingsAverage(mapper.convertValue(updatedTvShow, TvShowDTO.class), id); // To be reviewed later
+        var mappedTvShow = mapper.convertValue(updatedTvShow, TvShowDTO.class);
+
+        refreshRatingsAverage(mappedTvShow);
+
+        return mappedTvShow;
     }
 
     public TvShowDTO patch(TvShowDTO tvShowDTO, String id) throws ObjectNotFoundException {
@@ -98,7 +108,11 @@ public class TvShowService {
 
         var patchedTvShow = tvShowRepository.save(tvShow);
 
-        return refreshRatingsAverage(mapper.convertValue(patchedTvShow, TvShowDTO.class), id); // To be reviewed later
+        var mappedTvShow = mapper.convertValue(patchedTvShow, TvShowDTO.class);
+
+        refreshRatingsAverage(mappedTvShow);
+
+        return mappedTvShow;
     }
 
     public void delete(String id) {
@@ -132,12 +146,10 @@ public class TvShowService {
         ratingRepository.deleteAll(ratings);
     }
 
-    private TvShowDTO refreshRatingsAverage(TvShowDTO tvShowDTO, String id) {
+    private void refreshRatingsAverage(TvShowDTO tvShowDTO) {
 
-        var tvShowRatings = ratingRepository.findAll().stream().filter(r -> r.getTvShowId() != null).filter(r -> r.getTvShowId().equals(id)).toList();
+        var tvShowRatings = ratingRepository.findAll().stream().filter(r -> r.getTvShowId() != null).filter(r -> r.getTvShowId().equals(tvShowDTO.getId())).toList();
 
         tvShowDTO.setRatingsAverage(!tvShowRatings.isEmpty() ? String.format("%.1f", tvShowRatings.stream().mapToDouble(Rating::getStars).sum() / tvShowRatings.size()) : "Não há avaliações para esta série.");
-
-        return tvShowDTO; // To be reviewed later
     }
 }

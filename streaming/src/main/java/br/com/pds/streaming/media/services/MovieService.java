@@ -33,8 +33,7 @@ public class MovieService {
         var moviesDTO = mapper.convertList(movies, MovieDTO.class);
 
         moviesDTO.forEach(x -> {
-            var movieRatings = ratingRepository.findAll().stream().filter(r -> r.getMovieId() != null).filter(r -> r.getMovieId().equals(x.getId())).toList();
-            x.setRatingsAverage(!movieRatings.isEmpty() ? String.format("%.1f", movieRatings.stream().mapToDouble(Rating::getStars).sum() / movieRatings.size()) : "Não há avaliações para este filme.");
+            refreshRatingsAverage(x);
         });
 
         return moviesDTO;
@@ -46,14 +45,20 @@ public class MovieService {
 
         var movieDTO = mapper.convertValue(movie, MovieDTO.class);
 
-        return refreshRatingsAverage(movieDTO, id);
+        refreshRatingsAverage(movieDTO);
+
+        return movieDTO;
     }
 
     public MovieDTO insert(MovieDTO movieDTO) {
 
         var createdMovie = movieRepository.save(mapper.convertValue(movieDTO, Movie.class));
 
-        return mapper.convertValue(createdMovie, MovieDTO.class); // To be reviewed later
+        var mappedMovie = mapper.convertValue(createdMovie, MovieDTO.class);
+
+        refreshRatingsAverage(mappedMovie);
+
+        return mappedMovie;
     }
 
     public MovieDTO update(MovieDTO movieDTO, String id) throws ObjectNotFoundException {
@@ -68,7 +73,11 @@ public class MovieService {
 
         var updatedMovie = movieRepository.save(movie);
 
-        return refreshRatingsAverage(mapper.convertValue(updatedMovie, MovieDTO.class), id); // To be reviewed later
+        var mappedMovie = mapper.convertValue(updatedMovie, MovieDTO.class);
+
+        refreshRatingsAverage(mappedMovie);
+
+        return mappedMovie;
     }
 
     public MovieDTO patch(MovieDTO movieDTO, String id) throws ObjectNotFoundException {
@@ -97,7 +106,11 @@ public class MovieService {
 
         var patchedMovie = movieRepository.save(movie);
 
-        return refreshRatingsAverage(mapper.convertValue(patchedMovie, MovieDTO.class), id); // To be reviewed later
+        var mappedMovie = mapper.convertValue(patchedMovie, MovieDTO.class);
+
+        refreshRatingsAverage(mappedMovie);
+
+        return mappedMovie;
     }
 
     public void delete(String id) {
@@ -114,12 +127,10 @@ public class MovieService {
         ratingRepository.deleteAll(ratings);
     }
 
-    private MovieDTO refreshRatingsAverage(MovieDTO movieDTO, String id) {
+    private void refreshRatingsAverage(MovieDTO movieDTO) {
 
-        var movieRatings = ratingRepository.findAll().stream().filter(r -> r.getMovieId() != null).filter(r -> r.getMovieId().equals(id)).toList();
+        var movieRatings = ratingRepository.findAll().stream().filter(r -> r.getMovieId() != null).filter(r -> r.getMovieId().equals(movieDTO.getId())).toList();
 
         movieDTO.setRatingsAverage(!movieRatings.isEmpty() ? String.format("%.1f", movieRatings.stream().mapToDouble(Rating::getStars).sum() / movieRatings.size()) : "Não há avaliações para este filme.");
-
-        return movieDTO; // To be reviewed later
     }
 }
