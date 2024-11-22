@@ -1,5 +1,7 @@
 package br.com.pds.streaming.media.controllers;
 
+import br.com.pds.streaming.exceptions.InvalidAnimationException;
+import br.com.pds.streaming.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.media.model.dto.SeasonDTO;
 import br.com.pds.streaming.media.services.SeasonService;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/seasons")
+@RequestMapping({"/api/season", "/api/seasons"})
 public class SeasonController {
 
     @Autowired
@@ -33,17 +35,17 @@ public class SeasonController {
     }
 
     @PostMapping
-    public ResponseEntity<SeasonDTO> createSeason(@RequestBody SeasonDTO seasonDTO, @RequestParam(name = "tvShowId") String tvShowId) throws ObjectNotFoundException {
+    public ResponseEntity<SeasonDTO> createSeason(@RequestBody SeasonDTO seasonDTO, @RequestParam(name = "tvShowId") String tvShowId) throws ObjectNotFoundException, InvalidAnimationException, InvalidThumbnailException {
         return new ResponseEntity<>(seasonService.insert(seasonDTO, tvShowId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SeasonDTO> updateSeason(@RequestBody SeasonDTO seasonDTO, @PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<SeasonDTO> updateSeason(@RequestBody SeasonDTO seasonDTO, @PathVariable String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidThumbnailException {
         return new ResponseEntity<>(seasonService.update(seasonDTO, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<SeasonDTO> patchSeason(@RequestBody SeasonDTO seasonDTO, @PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<SeasonDTO> patchSeason(@RequestBody SeasonDTO seasonDTO, @PathVariable String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidThumbnailException {
         return new ResponseEntity<>(seasonService.patch(seasonDTO, id), HttpStatus.OK);
     }
 

@@ -1,5 +1,8 @@
 package br.com.pds.streaming.media.services;
 
+import br.com.pds.streaming.exceptions.InvalidAnimationException;
+import br.com.pds.streaming.exceptions.InvalidThumbnailException;
+import br.com.pds.streaming.exceptions.InvalidVideoException;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.EpisodeDTO;
@@ -7,6 +10,8 @@ import br.com.pds.streaming.media.model.entities.Episode;
 import br.com.pds.streaming.media.model.entities.Season;
 import br.com.pds.streaming.media.repositories.EpisodeRepository;
 import br.com.pds.streaming.media.repositories.SeasonRepository;
+import br.com.pds.streaming.media.util.FileExtensionValidator;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +20,9 @@ import java.util.List;
 @Service
 public class EpisodeService {
 
-    private EpisodeRepository episodeRepository;
-    private SeasonRepository seasonRepository;
-    private MyModelMapper mapper;
+    private final EpisodeRepository episodeRepository;
+    private final SeasonRepository seasonRepository;
+    private final MyModelMapper mapper;
 
     @Autowired
     public EpisodeService(EpisodeRepository episodeRepository, SeasonRepository seasonRepository, MyModelMapper mapper) {
@@ -47,7 +52,9 @@ public class EpisodeService {
         return mapper.convertValue(episode, EpisodeDTO.class);
     }
 
-    public EpisodeDTO insert(EpisodeDTO episodeDTO, String seasonId) throws ObjectNotFoundException {
+    public EpisodeDTO insert(EpisodeDTO episodeDTO, String seasonId) throws ObjectNotFoundException, InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {
+
+        verifyFilesUrl(episodeDTO);
 
         var season = seasonRepository.findById(seasonId).orElseThrow(() -> new ObjectNotFoundException(Season.class));
 
@@ -63,7 +70,9 @@ public class EpisodeService {
         return mapper.convertValue(createdEpisode, EpisodeDTO.class);
     }
 
-    public EpisodeDTO update(EpisodeDTO episodeDTO, String id) throws ObjectNotFoundException {
+    public EpisodeDTO update(EpisodeDTO episodeDTO, String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+
+        verifyFilesUrl(episodeDTO);
 
         var episode = episodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Episode.class));
 
@@ -78,7 +87,7 @@ public class EpisodeService {
         return mapper.convertValue(updatedEpisode, EpisodeDTO.class);
     }
 
-    public EpisodeDTO patch(EpisodeDTO episodeDTO, String id) throws ObjectNotFoundException {
+    public EpisodeDTO patch(EpisodeDTO episodeDTO, String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
 
         var episode = episodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Episode.class));
 
@@ -91,14 +100,29 @@ public class EpisodeService {
         }
 
         if (episodeDTO.getVideoUrl() != null) {
+
+            if (!FileExtensionValidator.validateVideoFileExtension(episodeDTO.getVideoUrl())) {
+                throw new InvalidVideoException(episodeDTO.getVideoUrl());
+            }
+
             episode.setVideoUrl(episodeDTO.getVideoUrl());
         }
 
         if (episodeDTO.getThumbnailUrl() != null) {
+
+            if (!FileExtensionValidator.validateThumbnailFileExtension(episodeDTO.getThumbnailUrl())) {
+                throw new InvalidThumbnailException(episodeDTO.getThumbnailUrl());
+            }
+
             episode.setThumbnailUrl(episodeDTO.getThumbnailUrl());
         }
 
         if (episodeDTO.getAnimationUrl() != null) {
+
+            if (!FileExtensionValidator.validateAnimationFileExtension(episodeDTO.getAnimationUrl())) {
+                throw new InvalidAnimationException(episodeDTO.getAnimationUrl());
+            }
+
             episode.setAnimationUrl(episodeDTO.getAnimationUrl());
         }
 
@@ -109,5 +133,20 @@ public class EpisodeService {
 
     public void delete(String id) {
         episodeRepository.deleteById(id);
+    }
+
+    private void verifyFilesUrl(@NotNull EpisodeDTO episodeDTO) throws InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {
+
+        if (!FileExtensionValidator.validateVideoFileExtension(episodeDTO.getVideoUrl())) {
+            throw new InvalidVideoException(episodeDTO.getVideoUrl());
+        }
+
+        if (!FileExtensionValidator.validateThumbnailFileExtension(episodeDTO.getThumbnailUrl())) {
+            throw new InvalidThumbnailException(episodeDTO.getThumbnailUrl());
+        }
+
+        if (!FileExtensionValidator.validateAnimationFileExtension(episodeDTO.getAnimationUrl())) {
+            throw new InvalidAnimationException(episodeDTO.getAnimationUrl());
+        }
     }
 }

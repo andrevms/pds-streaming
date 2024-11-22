@@ -24,11 +24,11 @@ import static java.lang.Math.max;
 @Service
 public class RatingService {
 
-    private RatingRepository ratingRepository;
-    private MovieRepository movieRepository;
-    private TvShowRepository tvShowRepository;
-    private UserRepository userRepository;
-    private MyModelMapper mapper;
+    private final RatingRepository ratingRepository;
+    private final MovieRepository movieRepository;
+    private final TvShowRepository tvShowRepository;
+    private final UserRepository userRepository;
+    private final MyModelMapper mapper;
 
     @Autowired
     public RatingService(RatingRepository ratingRepository, MovieRepository movieRepository, TvShowRepository tvShowRepository, UserRepository userRepository, MyModelMapper mapper) {

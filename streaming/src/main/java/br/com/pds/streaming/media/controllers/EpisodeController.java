@@ -1,5 +1,8 @@
 package br.com.pds.streaming.media.controllers;
 
+import br.com.pds.streaming.exceptions.InvalidAnimationException;
+import br.com.pds.streaming.exceptions.InvalidThumbnailException;
+import br.com.pds.streaming.exceptions.InvalidVideoException;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.media.model.dto.EpisodeDTO;
 import br.com.pds.streaming.media.services.EpisodeService;
@@ -11,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/episodes")
+@RequestMapping({"/api/episode", "/api/episodes"})
 public class EpisodeController {
 
     @Autowired
@@ -33,17 +36,17 @@ public class EpisodeController {
     }
 
     @PostMapping
-    public ResponseEntity<EpisodeDTO> createEpisode(@RequestBody EpisodeDTO episodeDTO, @RequestParam(name = "seasonId") String seasonId) throws ObjectNotFoundException {
+    public ResponseEntity<EpisodeDTO> createEpisode(@RequestBody EpisodeDTO episodeDTO, @RequestParam(name = "seasonId") String seasonId) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
         return new ResponseEntity<>(episodeService.insert(episodeDTO, seasonId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EpisodeDTO> updateEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<EpisodeDTO> updateEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
         return new ResponseEntity<>(episodeService.update(episodeDTO, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<EpisodeDTO> patchEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<EpisodeDTO> patchEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
         return new ResponseEntity<>(episodeService.patch(episodeDTO, id), HttpStatus.OK);
     }
 

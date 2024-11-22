@@ -1,5 +1,7 @@
 package br.com.pds.streaming.media.services;
 
+import br.com.pds.streaming.exceptions.InvalidAnimationException;
+import br.com.pds.streaming.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.SeasonDTO;
@@ -8,6 +10,7 @@ import br.com.pds.streaming.media.model.entities.TvShow;
 import br.com.pds.streaming.media.repositories.EpisodeRepository;
 import br.com.pds.streaming.media.repositories.SeasonRepository;
 import br.com.pds.streaming.media.repositories.TvShowRepository;
+import br.com.pds.streaming.media.util.FileExtensionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +19,10 @@ import java.util.List;
 @Service
 public class SeasonService {
 
-    private SeasonRepository seasonRepository;
-    private TvShowRepository tvShowRepository;
-    private EpisodeRepository episodeRepository;
-    private MyModelMapper mapper;
+    private final SeasonRepository seasonRepository;
+    private final TvShowRepository tvShowRepository;
+    private final EpisodeRepository episodeRepository;
+    private final MyModelMapper mapper;
 
     @Autowired
     public SeasonService(SeasonRepository seasonRepository, TvShowRepository tvShowRepository, EpisodeRepository episodeRepository, MyModelMapper mapper) {
@@ -50,7 +53,9 @@ public class SeasonService {
         return mapper.convertValue(season, SeasonDTO.class);
     }
 
-    public SeasonDTO insert(SeasonDTO seasonDTO, String tvShowId) throws ObjectNotFoundException {
+    public SeasonDTO insert(SeasonDTO seasonDTO, String tvShowId) throws ObjectNotFoundException, InvalidAnimationException, InvalidThumbnailException {
+
+        verifyFilesUrl(seasonDTO);
 
         var tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
 
@@ -66,7 +71,9 @@ public class SeasonService {
         return mapper.convertValue(createdSeason, SeasonDTO.class);
     }
 
-    public SeasonDTO update(SeasonDTO seasonDTO, String id) throws ObjectNotFoundException {
+    public SeasonDTO update(SeasonDTO seasonDTO, String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidThumbnailException {
+
+        verifyFilesUrl(seasonDTO);
 
         var season = seasonRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Season.class));
 
@@ -80,7 +87,7 @@ public class SeasonService {
         return mapper.convertValue(updatedSeason, SeasonDTO.class);
     }
 
-    public SeasonDTO patch(SeasonDTO seasonDTO, String id) throws ObjectNotFoundException {
+    public SeasonDTO patch(SeasonDTO seasonDTO, String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidThumbnailException {
 
         var season = seasonRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Season.class));
 
@@ -93,10 +100,20 @@ public class SeasonService {
         }
 
         if (seasonDTO.getThumbnailUrl() != null) {
+
+            if (!FileExtensionValidator.validateThumbnailFileExtension(seasonDTO.getThumbnailUrl())) {
+                throw new InvalidThumbnailException(seasonDTO.getThumbnailUrl());
+            }
+
             season.setThumbnailUrl(seasonDTO.getThumbnailUrl());
         }
 
         if (seasonDTO.getAnimationUrl() != null) {
+
+            if (!FileExtensionValidator.validateAnimationFileExtension(seasonDTO.getAnimationUrl())) {
+                throw new InvalidAnimationException(seasonDTO.getAnimationUrl());
+            }
+
             season.setAnimationUrl(seasonDTO.getAnimationUrl());
         }
 
@@ -117,5 +134,16 @@ public class SeasonService {
         var episodes = episodeRepository.findBySeasonId(seasonId);
 
         episodeRepository.deleteAll(episodes);
+    }
+
+    private void verifyFilesUrl(SeasonDTO seasonDTO) throws InvalidThumbnailException, InvalidAnimationException {
+
+        if (!FileExtensionValidator.validateThumbnailFileExtension(seasonDTO.getThumbnailUrl())) {
+            throw new InvalidThumbnailException(seasonDTO.getThumbnailUrl());
+        }
+
+        if (!FileExtensionValidator.validateAnimationFileExtension(seasonDTO.getAnimationUrl())) {
+            throw new InvalidAnimationException(seasonDTO.getAnimationUrl());
+        }
     }
 }
