@@ -1,5 +1,7 @@
 package br.com.pds.streaming.media.services;
 
+import br.com.pds.streaming.exceptions.InvalidAnimationException;
+import br.com.pds.streaming.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.TvShowDTO;
@@ -9,6 +11,7 @@ import br.com.pds.streaming.media.repositories.EpisodeRepository;
 import br.com.pds.streaming.media.repositories.RatingRepository;
 import br.com.pds.streaming.media.repositories.SeasonRepository;
 import br.com.pds.streaming.media.repositories.TvShowRepository;
+import br.com.pds.streaming.media.util.FileExtensionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +60,9 @@ public class TvShowService {
         return tvShowDTO;
     }
 
-    public TvShowDTO insert(TvShowDTO tvShowDTO) {
+    public TvShowDTO insert(TvShowDTO tvShowDTO) throws InvalidThumbnailException, InvalidAnimationException {
+
+        verifyFilesUrl(tvShowDTO);
 
         var createdTvShow = tvShowRepository.save(mapper.convertValue(tvShowDTO, TvShow.class));
 
@@ -68,7 +73,9 @@ public class TvShowService {
         return mappedTvShow;
     }
 
-    public TvShowDTO update(TvShowDTO tvShowDTO, String id) throws ObjectNotFoundException {
+    public TvShowDTO update(TvShowDTO tvShowDTO, String id) throws ObjectNotFoundException, InvalidThumbnailException, InvalidAnimationException {
+
+        verifyFilesUrl(tvShowDTO);
 
         var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
 
@@ -86,7 +93,7 @@ public class TvShowService {
         return mappedTvShow;
     }
 
-    public TvShowDTO patch(TvShowDTO tvShowDTO, String id) throws ObjectNotFoundException {
+    public TvShowDTO patch(TvShowDTO tvShowDTO, String id) throws ObjectNotFoundException, InvalidThumbnailException, InvalidAnimationException {
 
         var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
 
@@ -99,10 +106,20 @@ public class TvShowService {
         }
 
         if (tvShowDTO.getThumbnailUrl() != null) {
+
+            if (!FileExtensionValidator.validateThumbnailFileExtension(tvShowDTO.getThumbnailUrl())) {
+                throw new InvalidThumbnailException(tvShowDTO.getThumbnailUrl());
+            }
+
             tvShow.setThumbnailUrl(tvShowDTO.getThumbnailUrl());
         }
 
         if (tvShowDTO.getAnimationUrl() != null) {
+
+            if (!FileExtensionValidator.validateAnimationFileExtension(tvShowDTO.getAnimationUrl())) {
+                throw new InvalidAnimationException(tvShowDTO.getAnimationUrl());
+            }
+
             tvShow.setAnimationUrl(tvShowDTO.getAnimationUrl());
         }
 
@@ -151,5 +168,16 @@ public class TvShowService {
         var tvShowRatings = ratingRepository.findAll().stream().filter(r -> r.getTvShowId() != null).filter(r -> r.getTvShowId().equals(tvShowDTO.getId())).toList();
 
         tvShowDTO.setRatingsAverage(!tvShowRatings.isEmpty() ? String.format("%.1f", tvShowRatings.stream().mapToDouble(Rating::getStars).sum() / tvShowRatings.size()) : "Não há avaliações para esta série.");
+    }
+
+    private void verifyFilesUrl(TvShowDTO tvShowDTO) throws InvalidThumbnailException, InvalidAnimationException {
+
+        if (!FileExtensionValidator.validateThumbnailFileExtension(tvShowDTO.getThumbnailUrl())) {
+            throw new InvalidThumbnailException(tvShowDTO.getThumbnailUrl());
+        }
+
+        if (!FileExtensionValidator.validateAnimationFileExtension(tvShowDTO.getAnimationUrl())) {
+            throw new InvalidAnimationException(tvShowDTO.getAnimationUrl());
+        }
     }
 }

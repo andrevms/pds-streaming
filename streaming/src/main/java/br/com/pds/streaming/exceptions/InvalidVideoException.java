@@ -8,10 +8,10 @@ public class InvalidVideoException extends InvalidFileException {
     private static final long serialVersionUID = 1L;
 
     public InvalidVideoException(String fileName) {
-        super(fileName, "video", ".mkv, .mp4, .avi and .vob");
+        super(fileName, "video", ".mp4, .avi, .mkv, .mov, .flv, .webm, .wmv, .mpg, .mpeg, .ts, .ogv, .3gp, .f4v and .m4v");
     }
 
     public InvalidVideoException(String fileName, Throwable cause) {
-        super(fileName, "video", ".mkv, .mp4, .avi and .vob", cause);
+        super(fileName, "video", ".mp4, .avi, .mkv, .mov, .flv, .webm, .wmv, .mpg, .mpeg, .ts, .ogv, .3gp, .f4v and .m4v", cause);
     }
 }

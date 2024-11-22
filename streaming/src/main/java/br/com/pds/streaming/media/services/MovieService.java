@@ -1,5 +1,8 @@
 package br.com.pds.streaming.media.services;
 
+import br.com.pds.streaming.exceptions.InvalidAnimationException;
+import br.com.pds.streaming.exceptions.InvalidThumbnailException;
+import br.com.pds.streaming.exceptions.InvalidVideoException;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.MovieDTO;
@@ -7,6 +10,7 @@ import br.com.pds.streaming.media.model.entities.Movie;
 import br.com.pds.streaming.media.model.entities.Rating;
 import br.com.pds.streaming.media.repositories.MovieRepository;
 import br.com.pds.streaming.media.repositories.RatingRepository;
+import br.com.pds.streaming.media.util.FileExtensionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +19,9 @@ import java.util.List;
 @Service
 public class MovieService {
 
-    private MovieRepository movieRepository;
-    private RatingRepository ratingRepository;
-    private MyModelMapper mapper;
+    private final MovieRepository movieRepository;
+    private final RatingRepository ratingRepository;
+    private final MyModelMapper mapper;
 
     @Autowired
     public MovieService(MovieRepository movieRepository, RatingRepository ratingRepository, MyModelMapper mapper) {
@@ -50,7 +54,9 @@ public class MovieService {
         return movieDTO;
     }
 
-    public MovieDTO insert(MovieDTO movieDTO) {
+    public MovieDTO insert(MovieDTO movieDTO) throws InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+
+        verifyFilesUrl(movieDTO);
 
         var createdMovie = movieRepository.save(mapper.convertValue(movieDTO, Movie.class));
 
@@ -61,7 +67,9 @@ public class MovieService {
         return mappedMovie;
     }
 
-    public MovieDTO update(MovieDTO movieDTO, String id) throws ObjectNotFoundException {
+    public MovieDTO update(MovieDTO movieDTO, String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+
+        verifyFilesUrl(movieDTO);
 
         var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Movie.class));
 
@@ -80,7 +88,7 @@ public class MovieService {
         return mappedMovie;
     }
 
-    public MovieDTO patch(MovieDTO movieDTO, String id) throws ObjectNotFoundException {
+    public MovieDTO patch(MovieDTO movieDTO, String id) throws ObjectNotFoundException, InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {
 
         var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Movie.class));
 
@@ -93,14 +101,29 @@ public class MovieService {
         }
 
         if (movieDTO.getVideoUrl() != null) {
+
+            if (!FileExtensionValidator.validateVideoFileExtension(movieDTO.getVideoUrl())) {
+                throw new InvalidVideoException(movieDTO.getVideoUrl());
+            }
+
             movie.setVideoUrl(movieDTO.getVideoUrl());
         }
 
         if (movieDTO.getThumbnailUrl() != null) {
+
+            if (!FileExtensionValidator.validateThumbnailFileExtension(movieDTO.getThumbnailUrl())) {
+                throw new InvalidThumbnailException(movieDTO.getThumbnailUrl());
+            }
+
             movie.setThumbnailUrl(movieDTO.getThumbnailUrl());
         }
 
         if (movieDTO.getAnimationUrl() != null) {
+
+            if (!FileExtensionValidator.validateAnimationFileExtension(movieDTO.getAnimationUrl())) {
+                throw new InvalidAnimationException(movieDTO.getAnimationUrl());
+            }
+
             movie.setAnimationUrl(movieDTO.getAnimationUrl());
         }
 
@@ -132,5 +155,20 @@ public class MovieService {
         var movieRatings = ratingRepository.findAll().stream().filter(r -> r.getMovieId() != null).filter(r -> r.getMovieId().equals(movieDTO.getId())).toList();
 
         movieDTO.setRatingsAverage(!movieRatings.isEmpty() ? String.format("%.1f", movieRatings.stream().mapToDouble(Rating::getStars).sum() / movieRatings.size()) : "Não há avaliações para este filme.");
+    }
+
+    private void verifyFilesUrl(MovieDTO movieDTO) throws InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {
+
+        if (!FileExtensionValidator.validateVideoFileExtension(movieDTO.getVideoUrl())) {
+            throw new InvalidVideoException(movieDTO.getVideoUrl());
+        }
+
+        if (!FileExtensionValidator.validateThumbnailFileExtension(movieDTO.getThumbnailUrl())) {
+            throw new InvalidThumbnailException(movieDTO.getThumbnailUrl());
+        }
+
+        if (!FileExtensionValidator.validateAnimationFileExtension(movieDTO.getAnimationUrl())) {
+            throw new InvalidAnimationException(movieDTO.getAnimationUrl());
+        }
     }
 }

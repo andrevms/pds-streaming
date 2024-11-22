@@ -8,10 +8,10 @@ public class InvalidAnimationException extends InvalidFileException {
     private static final long serialVersionUID = 1L;
 
     public InvalidAnimationException(String fileName) {
-        super(fileName, "animation", ".gif and .webp");
+        super(fileName, "animation", ".gif, .webp and .heic");
     }
 
     public InvalidAnimationException(String fileName, Throwable cause) {
-        super(fileName, "animation", ".gif and .webp", cause);
+        super(fileName, "animation", ".gif, .webp and .heic", cause);
     }
 }

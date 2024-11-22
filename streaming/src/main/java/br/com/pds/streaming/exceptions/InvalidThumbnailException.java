@@ -8,10 +8,10 @@ public class InvalidThumbnailException extends InvalidFileException {
     private static final long serialVersionUID = 1L;
 
     public InvalidThumbnailException(String fileName) {
-        super(fileName, "thumbnail", ".jpg, .jpeg, .png, .gif and .webp");
+        super(fileName, "thumbnail", ".jpg, .jpeg, .png, .gif, .bmp, .tiff, .webp, .heif, .heic and .svg");
     }
 
     public InvalidThumbnailException(String fileName, Throwable cause) {
-        super(fileName, "thumbnail", ".jpg, .jpeg, .png, .gif and .webp", cause);
+        super(fileName, "thumbnail", ".jpg, .jpeg, .png, .gif, .bmp, .tiff, .webp, .heif, .heic and .svg", cause);
     }
 }

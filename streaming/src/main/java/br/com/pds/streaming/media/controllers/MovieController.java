@@ -1,5 +1,8 @@
 package br.com.pds.streaming.media.controllers;
 
+import br.com.pds.streaming.exceptions.InvalidAnimationException;
+import br.com.pds.streaming.exceptions.InvalidThumbnailException;
+import br.com.pds.streaming.exceptions.InvalidVideoException;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.media.model.dto.MovieDTO;
 import br.com.pds.streaming.media.services.MovieService;
@@ -28,17 +31,17 @@ public class MovieController {
     }
 
     @PostMapping
-    public ResponseEntity<MovieDTO> createMovie(@RequestBody MovieDTO movieDTO) {
+    public ResponseEntity<MovieDTO> createMovie(@RequestBody MovieDTO movieDTO) throws InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
         return new ResponseEntity<>(movieService.insert(movieDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MovieDTO> updateMovie(@RequestBody MovieDTO movieDTO, @PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<MovieDTO> updateMovie(@RequestBody MovieDTO movieDTO, @PathVariable String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
         return new ResponseEntity<>(movieService.update(movieDTO, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<MovieDTO> patchMovie(@RequestBody MovieDTO movieDTO, @PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<MovieDTO> patchMovie(@RequestBody MovieDTO movieDTO, @PathVariable String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
         return new ResponseEntity<>(movieService.patch(movieDTO, id), HttpStatus.OK);
     }
 
