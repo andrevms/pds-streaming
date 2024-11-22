@@ -24,7 +24,7 @@ public abstract class AbstractChatAIService implements IChatAIService {
     public List<Message> createMessagesQuiz(String subject, String text) {
         List<Message> messages = new ArrayList<>();
         StringBuilder systemConfigMessage = new StringBuilder(
-                "Você deve agir como uma especialista no assunto \"" + subject + "\". E criar perguntas sobre o texto"
+                "Você deve agir como uma especialista no assunto \"" + subject + "\". E criar 5 perguntas de multipla escolha sobre o texto e mostrar suas respostas"
         );
 
         messages.add(new SystemMessage(systemConfigMessage.toString()));

@@ -1,0 +1,79 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    restart: unless-stopped
+    networks:
+      - backend
+
+  springboot-app:
+    container_name: springboot-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      BUCKET-NAME: ${BUCKET_NAME}
+      AWS-ACCESS-KEY: ${AWS_ACCESS_KEY}
+      AWS-SECRET-KEY: ${AWS_SECRET_KEY}
+      ASSEMBLY-AI-KEY: ${ASSEMBLY_AI_KEY}
+      REGION: ${REGION}
+      CLOUDFRONT-URL: ${CLOUDFRONT_URL}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+      - ollama
+    restart: unless-stopped
+    networks:
+      - backend
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 11434:11434
+    volumes:
+      - ollama:/root/.ollama
+    networks:
+      - backend
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+    container_name: open-webui
+    volumes:
+      - open-webui:/app/backend/data
+    depends_on:
+      - ollama
+    ports:
+      - 3000:8080
+    environment:
+      - "OLLAMA_BASE_URL=http://ollama:11434"
+      - "WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
+    networks:
+      - backend
+
+volumes:
+  mongodb_data:
+    driver: local
+  ollama:
+    driver: local
+  open-webui:
+    driver: local
+
+networks:
+  backend:
+    driver: bridge
