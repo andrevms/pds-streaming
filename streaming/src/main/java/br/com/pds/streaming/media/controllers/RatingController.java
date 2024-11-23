@@ -35,6 +35,7 @@ public class RatingController {
 
     @PostMapping
     public ResponseEntity<RatingDTO> createRating(@RequestBody RatingDTO ratingDTO, @RequestParam(name = "userId") String userId, @RequestParam(name = "movieId", required = false) String movieId, @RequestParam(name = "tvShowId", required = false) String tvShowId) throws ObjectNotFoundException, DuplicatedRatingException {
+
         if (tvShowId != null) {
             return new ResponseEntity<>(ratingService.insert(ratingDTO, tvShowId, userId), HttpStatus.CREATED);
         }
@@ -57,7 +58,7 @@ public class RatingController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<RatingDTO> deleteRating(@PathVariable String id) {
+    public ResponseEntity<Void> deleteRating(@PathVariable String id) {
         ratingService.delete(id);
         return ResponseEntity.noContent().build();
     }
