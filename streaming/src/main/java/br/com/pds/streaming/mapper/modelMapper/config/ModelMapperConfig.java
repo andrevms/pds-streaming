@@ -1,13 +1,7 @@
 package br.com.pds.streaming.mapper.modelMapper.config;
 
-import br.com.pds.streaming.media.model.dto.EpisodeDTO;
-import br.com.pds.streaming.media.model.dto.MovieDTO;
-import br.com.pds.streaming.media.model.dto.RatingDTO;
-import br.com.pds.streaming.media.model.dto.SeasonDTO;
-import br.com.pds.streaming.media.model.entities.Episode;
-import br.com.pds.streaming.media.model.entities.Movie;
-import br.com.pds.streaming.media.model.entities.Rating;
-import br.com.pds.streaming.media.model.entities.Season;
+import br.com.pds.streaming.media.model.dto.*;
+import br.com.pds.streaming.media.model.entities.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +19,9 @@ public class ModelMapperConfig {
 
         modelMapper.createTypeMap(EpisodeDTO.class, Episode.class)
                 .addMapping(EpisodeDTO::getId, Episode::setId);
+
+        modelMapper.createTypeMap(History.class, HistoryDTO.class)
+                .addMapping(History::getId, HistoryDTO::setId);
 
         modelMapper.createTypeMap(Movie.class, MovieDTO.class)
                 .addMapping(Movie::getId, MovieDTO::setId);

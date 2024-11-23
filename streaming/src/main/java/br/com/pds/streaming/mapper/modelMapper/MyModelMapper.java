@@ -17,6 +17,7 @@ public class MyModelMapper {
     }
 
     public <O, D> List<D> convertList(List<O> origins, Class<D> destination) {
+
         List<D> destinations = new ArrayList<>();
 
         origins.stream().map(origin -> convertValue(origin, destination)).forEach(destinations::add);

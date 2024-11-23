@@ -9,14 +9,11 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EpisodeDTO implements Serializable, WatchableDTO {
+public class HistoryNodeDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private String id;
-    private String title;
-    private String description;
-    private String videoUrl;
-    private String thumbnailUrl;
-    private String animationUrl;
+    private WatchableDTO watchableDTO;
+    private long currentTime; // in milliseconds
 }
