@@ -1,6 +1,7 @@
 package br.com.pds.streaming.media.controllers;
 
 import br.com.pds.streaming.exceptions.InvalidAnimationException;
+import br.com.pds.streaming.exceptions.InvalidSourceException;
 import br.com.pds.streaming.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.media.model.dto.SeasonDTO;
@@ -50,7 +51,7 @@ public class SeasonController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSeason(@PathVariable String id) {
+    public ResponseEntity<Void> deleteSeason(@PathVariable String id) throws InvalidSourceException, ObjectNotFoundException {
         seasonService.delete(id);
         return ResponseEntity.noContent().build();
     }

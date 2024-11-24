@@ -1,10 +1,5 @@
 package br.com.pds.streaming.domain.subscription.services;
 
-import br.com.pds.streaming.authentication.model.dto.domain.UserDTO;
-import br.com.pds.streaming.authentication.model.entities.Role;
-import br.com.pds.streaming.authentication.model.entities.User;
-import br.com.pds.streaming.authentication.repositories.RoleRepository;
-import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.authentication.services.UserService;
 import br.com.pds.streaming.domain.subscription.model.dto.RequestSubscriptionDTO;
 import br.com.pds.streaming.domain.subscription.model.entities.Subscription;
@@ -14,36 +9,29 @@ import br.com.pds.streaming.domain.subscription.repositories.SubscriptionReposit
 import br.com.pds.streaming.exceptions.InvalidSubscriptionTypeException;
 import br.com.pds.streaming.exceptions.PaymentException;
 import br.com.pds.streaming.exceptions.UserNotFoundException;
-import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
 
 @Service
-public class SubscriptionServices {
+public class SubscriptionService {
 
     @Autowired
     private SubscriptionRepository subscriptionRepository;
     @Autowired
     private UserService userService;
+    @Qualifier("stonePaymentServiceImpl")
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PaymentServices paymentServices;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private MyModelMapper mapper;
+    private PaymentService paymentService;
 
     @Transactional
     public void subscribeUser(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException, PaymentException, UserNotFoundException {
 
         var creditCard = requestSubscriptionDTO.getCreditCardDTO();
-        if (!paymentServices.processCreditCardPayment(creditCard)) {
+        if (!paymentService.processCreditCardPayment(creditCard)) {
             throw new PaymentException("Payment failed");
         }
 

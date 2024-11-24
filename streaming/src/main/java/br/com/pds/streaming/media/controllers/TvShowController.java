@@ -1,6 +1,7 @@
 package br.com.pds.streaming.media.controllers;
 
 import br.com.pds.streaming.exceptions.InvalidAnimationException;
+import br.com.pds.streaming.exceptions.InvalidSourceException;
 import br.com.pds.streaming.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.media.model.dto.TvShowDTO;
@@ -45,7 +46,7 @@ public class TvShowController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTvShow(@PathVariable String id) {
+    public ResponseEntity<Void> deleteTvShow(@PathVariable String id) throws InvalidSourceException, ObjectNotFoundException {
         tvShowService.delete(id);
         return ResponseEntity.noContent().build();
     }

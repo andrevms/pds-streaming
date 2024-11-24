@@ -15,16 +15,6 @@ public class TranscriptionController {
     @Autowired
     private TranscriptionServices transcriptionServices;
 
-//    @PostMapping("/start/{key}")
-//    public StartTranscriptionJobResult startTranscriptionJob(@PathVariable String key) {
-//        return amazonTranscriptionServices.startTranscriptionJob(key);
-//    }
-//
-//    @GetMapping("/status/{jobName}")
-//    public String getTranscriptionJobStatus(@PathVariable String jobName) {
-//        return amazonTranscriptionServices.getTranscriptionJobUri(jobName);
-//    }
-
     @PostMapping("/transcribe")
     public TranscriptionResponse transcribe(@RequestBody TranscriptionRequest transcriptionRequest) {
         return transcriptionServices.transcribe(transcriptionRequest);

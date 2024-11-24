@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 @Service
-public class StonePaymentServiceImpl implements PaymentServices{
+public class StonePaymentServiceImpl implements PaymentService {
 
     @Override
     public boolean processCreditCardPayment(CreditCardDTO creditCardDTO) {

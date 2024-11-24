@@ -1,9 +1,7 @@
 package br.com.pds.streaming.media.services;
 
-import br.com.pds.streaming.exceptions.InvalidAnimationException;
-import br.com.pds.streaming.exceptions.InvalidThumbnailException;
-import br.com.pds.streaming.exceptions.InvalidVideoException;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.cloud.services.CloudStorageService;
+import br.com.pds.streaming.exceptions.*;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.MovieDTO;
 import br.com.pds.streaming.media.model.entities.Movie;
@@ -22,12 +20,14 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final RatingRepository ratingRepository;
     private final MyModelMapper mapper;
+    private final CloudStorageService cloudStorageService;
 
     @Autowired
-    public MovieService(MovieRepository movieRepository, RatingRepository ratingRepository, MyModelMapper mapper) {
+    public MovieService(MovieRepository movieRepository, RatingRepository ratingRepository, MyModelMapper mapper, CloudStorageService cloudStorageService) {
         this.movieRepository = movieRepository;
         this.ratingRepository = ratingRepository;
         this.mapper = mapper;
+        this.cloudStorageService = cloudStorageService;
     }
 
     public List<MovieDTO> findAll() {
@@ -136,9 +136,18 @@ public class MovieService {
         return mappedMovie;
     }
 
-    public void delete(String id) {
+    public void delete(String id) throws ObjectNotFoundException, InvalidSourceException {
 
         deleteOrphanRatings(id);
+
+        var movie = findById(id);
+        var movieSource = movie.getVideoUrl();
+        var movieThumb = movie.getThumbnailUrl();
+        var movieAnimation = movie.getAnimationUrl();
+
+        cloudStorageService.deleteFile(movieSource);
+        cloudStorageService.deleteFile(movieThumb);
+        cloudStorageService.deleteFile(movieAnimation);
 
         movieRepository.deleteById(id);
     }
@@ -170,5 +179,11 @@ public class MovieService {
         if (!FileExtensionValidator.validateAnimationFileExtension(movieDTO.getAnimationUrl())) {
             throw new InvalidAnimationException(movieDTO.getAnimationUrl());
         }
+    }
+
+    public List<MovieDTO> findMovieByTitle(String title) {
+        var movies = movieRepository.findMovieByTitleContainingIgnoreCase(title);
+
+        return mapper.convertList(movies, MovieDTO.class);
     }
 }

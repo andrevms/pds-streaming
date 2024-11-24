@@ -1,9 +1,6 @@
 package br.com.pds.streaming.media.controllers;
 
-import br.com.pds.streaming.exceptions.InvalidAnimationException;
-import br.com.pds.streaming.exceptions.InvalidThumbnailException;
-import br.com.pds.streaming.exceptions.InvalidVideoException;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.exceptions.*;
 import br.com.pds.streaming.media.model.dto.MovieDTO;
 import br.com.pds.streaming.media.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +43,7 @@ public class MovieController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMovie(@PathVariable String id) {
+    public ResponseEntity<Void> deleteMovie(@PathVariable String id) throws InvalidSourceException, ObjectNotFoundException {
         movieService.delete(id);
         return ResponseEntity.noContent().build();
     }
