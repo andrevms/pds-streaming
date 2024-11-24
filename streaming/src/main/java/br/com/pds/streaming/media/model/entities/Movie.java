@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "movies")
-public class Movie implements Collectable, Serializable, Watchable {
+public class Movie implements Collectable, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

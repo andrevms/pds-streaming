@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "episodes")
-public class Episode implements Serializable, Watchable {
+public class Episode implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

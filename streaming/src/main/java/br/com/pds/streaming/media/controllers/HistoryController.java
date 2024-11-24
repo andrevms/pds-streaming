@@ -33,8 +33,8 @@ public class HistoryController {
     }
 
     @PostMapping
-    public ResponseEntity<HistoryDTO> createHistory(@RequestBody HistoryDTO historyDTO, @RequestParam(name = "userId") String userId) throws ObjectNotFoundException {
-        return new ResponseEntity<>(historyService.insert(historyDTO, userId), HttpStatus.CREATED);
+    public ResponseEntity<HistoryDTO> createHistory(@RequestParam(name = "userId") String userId) throws ObjectNotFoundException {
+        return new ResponseEntity<>(historyService.insert(userId), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")

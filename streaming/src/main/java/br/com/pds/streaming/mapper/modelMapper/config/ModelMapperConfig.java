@@ -23,6 +23,18 @@ public class ModelMapperConfig {
         modelMapper.createTypeMap(History.class, HistoryDTO.class)
                 .addMapping(History::getId, HistoryDTO::setId);
 
+        modelMapper.createTypeMap(HistoryDTO.class, History.class)
+                .addMapping(HistoryDTO::getId, History::setId);
+
+        modelMapper.createTypeMap(HistoryNode.class, HistoryNodeWithEpisodeDTO.class)
+                .addMapping(HistoryNode::getId, HistoryNodeWithEpisodeDTO::setId);
+
+        modelMapper.createTypeMap(HistoryNode.class, HistoryNodeWithMovieDTO.class)
+                .addMapping(HistoryNode::getId, HistoryNodeWithMovieDTO::setId);
+
+        modelMapper.createTypeMap(HistoryNodeWithBothDTO.class, HistoryNode.class)
+                .addMapping(HistoryNodeWithBothDTO::getId, HistoryNode::setId);
+
         modelMapper.createTypeMap(Movie.class, MovieDTO.class)
                 .addMapping(Movie::getId, MovieDTO::setId);
 

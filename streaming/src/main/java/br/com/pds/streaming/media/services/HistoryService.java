@@ -47,11 +47,11 @@ public class HistoryService {
         return mapper.convertValue(history, HistoryDTO.class);
     }
 
-    public HistoryDTO insert(HistoryDTO historyDTO, String userId) throws ObjectNotFoundException {
+    public HistoryDTO insert(String userId) throws ObjectNotFoundException {
 
         var user = userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(User.class));
 
-        var history = mapper.convertValue(historyDTO, History.class);
+        var history = new History();
         history.setUserId(userId);
 
         var createdHistory = historyRepository.save(history);
