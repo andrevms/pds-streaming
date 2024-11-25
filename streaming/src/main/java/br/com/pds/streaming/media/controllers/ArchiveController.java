@@ -1,14 +1,14 @@
 package br.com.pds.streaming.media.controllers;
 
-import br.com.pds.streaming.cloud.amazon.AmazonS3Services;
+import br.com.pds.streaming.cloud.services.CloudStorageService;
+import br.com.pds.streaming.exceptions.InvalidSourceException;
+import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,17 +17,29 @@ import java.io.IOException;
 @RequestMapping(value = {"/api/archive", "/api/archives", "/api/file", "/api/files"})
 public class ArchiveController {
 
+    @Qualifier("amazonS3Service")
     @Autowired
-    private AmazonS3Services amazonS3Services;
+    private CloudStorageService cloudStorageService;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            String fileUrl = amazonS3Services.uploadVideo(file);
+            String fileUrl = cloudStorageService.uploadFile(file);
             return ResponseEntity.ok("File uploaded successfully. File URL: " + fileUrl);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to upload file.");
+        }
+    }
+
+    @DeleteMapping(value = "/delete")
+    public ResponseEntity<?> deleteFile(@RequestParam("file") String file) {
+        try {
+            cloudStorageService.deleteFile(file);
+            return ResponseEntity.noContent().build();
+        } catch (ObjectNotFoundException | InvalidSourceException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
         }
     }
 }

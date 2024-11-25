@@ -1,9 +1,7 @@
 package br.com.pds.streaming.media.services;
 
-import br.com.pds.streaming.exceptions.InvalidAnimationException;
-import br.com.pds.streaming.exceptions.InvalidThumbnailException;
-import br.com.pds.streaming.exceptions.InvalidVideoException;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.cloud.services.CloudStorageService;
+import br.com.pds.streaming.exceptions.*;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.EpisodeDTO;
 import br.com.pds.streaming.media.model.entities.Episode;
@@ -23,12 +21,14 @@ public class EpisodeService {
     private final EpisodeRepository episodeRepository;
     private final SeasonRepository seasonRepository;
     private final MyModelMapper mapper;
+    private final CloudStorageService cloudStorageService;
 
     @Autowired
-    public EpisodeService(EpisodeRepository episodeRepository, SeasonRepository seasonRepository, MyModelMapper mapper) {
+    public EpisodeService(EpisodeRepository episodeRepository, SeasonRepository seasonRepository, MyModelMapper mapper, CloudStorageService cloudStorageService) {
         this.episodeRepository = episodeRepository;
         this.seasonRepository = seasonRepository;
         this.mapper = mapper;
+        this.cloudStorageService = cloudStorageService;
     }
 
     public List<EpisodeDTO> findAll() {
@@ -131,7 +131,17 @@ public class EpisodeService {
         return mapper.convertValue(patchedEpisode, EpisodeDTO.class);
     }
 
-    public void delete(String id) {
+    public void delete(String id) throws ObjectNotFoundException, InvalidSourceException {
+
+        var episode = findById(id);
+        var movieSource = episode.getVideoUrl();
+        var movieThumb = episode.getThumbnailUrl();
+        var movieAnimation = episode.getAnimationUrl();
+
+        cloudStorageService.deleteFile(movieSource);
+        cloudStorageService.deleteFile(movieThumb);
+        cloudStorageService.deleteFile(movieAnimation);
+
         episodeRepository.deleteById(id);
     }
 

@@ -1,9 +1,6 @@
 package br.com.pds.streaming.media.controllers;
 
-import br.com.pds.streaming.exceptions.InvalidAnimationException;
-import br.com.pds.streaming.exceptions.InvalidThumbnailException;
-import br.com.pds.streaming.exceptions.InvalidVideoException;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.exceptions.*;
 import br.com.pds.streaming.media.model.dto.EpisodeDTO;
 import br.com.pds.streaming.media.services.EpisodeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +48,7 @@ public class EpisodeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEpisode(@PathVariable String id) {
+    public ResponseEntity<Void> deleteEpisode(@PathVariable String id) throws InvalidSourceException, ObjectNotFoundException {
         episodeService.delete(id);
         return ResponseEntity.noContent().build();
     }

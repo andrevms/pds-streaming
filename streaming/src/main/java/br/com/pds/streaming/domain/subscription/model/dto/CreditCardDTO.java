@@ -1,10 +1,12 @@
 package br.com.pds.streaming.domain.subscription.model.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class CreditCardDTO {
 
     private String cardHolderName;

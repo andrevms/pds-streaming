@@ -1,6 +1,8 @@
 package br.com.pds.streaming.media.services;
 
+import br.com.pds.streaming.cloud.services.CloudStorageService;
 import br.com.pds.streaming.exceptions.InvalidAnimationException;
+import br.com.pds.streaming.exceptions.InvalidSourceException;
 import br.com.pds.streaming.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.exceptions.ObjectNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
@@ -23,13 +25,15 @@ public class SeasonService {
     private final TvShowRepository tvShowRepository;
     private final EpisodeRepository episodeRepository;
     private final MyModelMapper mapper;
+    private final CloudStorageService cloudStorageService;
 
     @Autowired
-    public SeasonService(SeasonRepository seasonRepository, TvShowRepository tvShowRepository, EpisodeRepository episodeRepository, MyModelMapper mapper) {
+    public SeasonService(SeasonRepository seasonRepository, TvShowRepository tvShowRepository, EpisodeRepository episodeRepository, MyModelMapper mapper, CloudStorageService cloudStorageService) {
         this.seasonRepository = seasonRepository;
         this.tvShowRepository = tvShowRepository;
         this.episodeRepository = episodeRepository;
         this.mapper = mapper;
+        this.cloudStorageService = cloudStorageService;
     }
 
     public List<SeasonDTO> findAll() {
@@ -122,9 +126,16 @@ public class SeasonService {
         return mapper.convertValue(patchedSeason, SeasonDTO.class);
     }
 
-    public void delete(String id) {
+    public void delete(String id) throws ObjectNotFoundException, InvalidSourceException {
 
         deleteOrphanEpisodes(id);
+
+        var season = findById(id);
+        var movieThumb = season.getThumbnailUrl();
+        var movieAnimation = season.getAnimationUrl();
+
+        cloudStorageService.deleteFile(movieThumb);
+        cloudStorageService.deleteFile(movieAnimation);
 
         seasonRepository.deleteById(id);
     }
