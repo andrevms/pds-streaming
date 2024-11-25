@@ -1,16 +1,12 @@
 package br.com.pds.streaming.domain.subscription.model.entities;
 
-import br.com.pds.streaming.authentication.model.entities.User;
 import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionStatus;
 import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.io.Serial;
 import java.io.Serializable;
