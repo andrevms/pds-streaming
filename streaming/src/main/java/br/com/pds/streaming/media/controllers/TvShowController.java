@@ -3,7 +3,7 @@ package br.com.pds.streaming.media.controllers;
 import br.com.pds.streaming.exceptions.InvalidAnimationException;
 import br.com.pds.streaming.exceptions.InvalidSourceException;
 import br.com.pds.streaming.exceptions.InvalidThumbnailException;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.media.model.dto.TvShowDTO;
 import br.com.pds.streaming.media.services.TvShowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class TvShowController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TvShowDTO> getTvShowById(@PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<TvShowDTO> getTvShowById(@PathVariable String id) throws EntityNotFoundException {
         return new ResponseEntity<>(tvShowService.findById(id), HttpStatus.OK);
     }
 
@@ -36,17 +36,17 @@ public class TvShowController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TvShowDTO> updateTvShow(@RequestBody TvShowDTO tvShowDTO, @PathVariable String id) throws ObjectNotFoundException, InvalidThumbnailException, InvalidAnimationException {
+    public ResponseEntity<TvShowDTO> updateTvShow(@RequestBody TvShowDTO tvShowDTO, @PathVariable String id) throws EntityNotFoundException, InvalidThumbnailException, InvalidAnimationException {
         return new ResponseEntity<>(tvShowService.update(tvShowDTO, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TvShowDTO> patchTvShow(@RequestBody TvShowDTO tvShowDTO, @PathVariable String id) throws ObjectNotFoundException, InvalidThumbnailException, InvalidAnimationException {
+    public ResponseEntity<TvShowDTO> patchTvShow(@RequestBody TvShowDTO tvShowDTO, @PathVariable String id) throws EntityNotFoundException, InvalidThumbnailException, InvalidAnimationException {
         return new ResponseEntity<>(tvShowService.patch(tvShowDTO, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTvShow(@PathVariable String id) throws InvalidSourceException, ObjectNotFoundException {
+    public ResponseEntity<Void> deleteTvShow(@PathVariable String id) throws InvalidSourceException, EntityNotFoundException {
         tvShowService.delete(id);
         return ResponseEntity.noContent().build();
     }

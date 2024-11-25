@@ -2,7 +2,7 @@ package br.com.pds.streaming.cloud.amazon;
 
 import br.com.pds.streaming.cloud.services.CloudStorageService;
 import br.com.pds.streaming.exceptions.InvalidSourceException;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class AmazonS3Service implements CloudStorageService {
     }
 
     @Override
-    public void deleteFile(String source) throws ObjectNotFoundException, InvalidSourceException {
+    public void deleteFile(String source) throws EntityNotFoundException, InvalidSourceException {
 
         if (source.indexOf(BASE_URL) == -1) {
             throw new InvalidSourceException("Invalid source.");
@@ -48,7 +48,7 @@ public class AmazonS3Service implements CloudStorageService {
         String key = source.replaceFirst(BASE_URL, "");
 
         if (!fileExists(key)) {
-            throw new ObjectNotFoundException("File not found.");
+            throw new EntityNotFoundException("File not found.");
         }
 
         DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()

@@ -2,7 +2,7 @@ package br.com.pds.streaming.media.controllers;
 
 import br.com.pds.streaming.cloud.services.CloudStorageService;
 import br.com.pds.streaming.exceptions.InvalidSourceException;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -37,7 +37,7 @@ public class ArchiveController {
         try {
             cloudStorageService.deleteFile(file);
             return ResponseEntity.noContent().build();
-        } catch (ObjectNotFoundException | InvalidSourceException e) {
+        } catch (EntityNotFoundException | InvalidSourceException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
         }

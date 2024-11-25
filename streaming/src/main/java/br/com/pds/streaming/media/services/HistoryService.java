@@ -2,7 +2,7 @@ package br.com.pds.streaming.media.services;
 
 import br.com.pds.streaming.authentication.model.entities.User;
 import br.com.pds.streaming.authentication.repositories.UserRepository;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.HistoryDTO;
 import br.com.pds.streaming.media.model.entities.History;
@@ -40,16 +40,16 @@ public class HistoryService {
         return mapper.convertList(histories, HistoryDTO.class);
     }
 
-    public HistoryDTO findById(String id) throws ObjectNotFoundException {
+    public HistoryDTO findById(String id) throws EntityNotFoundException {
 
-        var history = historyRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(History.class));
+        var history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(History.class));
 
         return mapper.convertValue(history, HistoryDTO.class);
     }
 
-    public HistoryDTO insert(String userId) throws ObjectNotFoundException {
+    public HistoryDTO insert(String userId) throws EntityNotFoundException {
 
-        var user = userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(User.class));
+        var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class));
 
         var history = new History();
         history.setUserId(userId);
