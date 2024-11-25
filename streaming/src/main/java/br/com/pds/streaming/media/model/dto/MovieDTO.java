@@ -23,5 +23,6 @@ public class MovieDTO implements CollectableDTO, Serializable {
     private String animationUrl;
     private String ratingsAverage;
 
+    private List<String> categories = new ArrayList<>();
     private List<RatingDTO> ratings = new ArrayList<>();
 }

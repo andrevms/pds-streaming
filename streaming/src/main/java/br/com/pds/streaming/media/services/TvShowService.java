@@ -87,6 +87,7 @@ public class TvShowService {
         tvShow.setDescription(tvShowDTO.getDescription());
         tvShow.setThumbnailUrl(tvShowDTO.getThumbnailUrl());
         tvShow.setAnimationUrl(tvShowDTO.getAnimationUrl());
+        tvShow.setCategories(tvShow.getCategories());
 
         var updatedTvShow = tvShowRepository.save(tvShow);
 

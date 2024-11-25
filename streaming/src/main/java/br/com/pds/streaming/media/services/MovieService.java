@@ -76,6 +76,7 @@ public class MovieService {
         movie.setVideoUrl(movieDTO.getVideoUrl());
         movie.setThumbnailUrl(movieDTO.getThumbnailUrl());
         movie.setAnimationUrl(movieDTO.getAnimationUrl());
+        movie.setCategories(movieDTO.getCategories());
 
         var updatedMovie = movieRepository.save(movie);
 

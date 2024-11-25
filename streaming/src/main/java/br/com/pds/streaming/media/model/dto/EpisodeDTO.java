@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,4 +21,6 @@ public class EpisodeDTO implements Serializable {
     private String videoUrl;
     private String thumbnailUrl;
     private String animationUrl;
+
+    List<String> categories = new ArrayList<>();
 }

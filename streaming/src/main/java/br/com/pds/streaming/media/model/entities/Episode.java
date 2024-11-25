@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -26,4 +28,6 @@ public class Episode implements Serializable {
     private String thumbnailUrl;
     private String animationUrl;
     private String seasonId;
+
+    private List<String> categories = new ArrayList<>();
 }

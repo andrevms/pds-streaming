@@ -22,7 +22,7 @@ public class TvShowDTO implements CollectableDTO, Serializable {
     private String animationUrl;
     private String ratingsAverage;
 
+    private List<String> categories = new ArrayList<>();
     private List<SeasonDTO> seasons = new ArrayList<>();
-
     private List<RatingDTO> ratings = new ArrayList<>();
 }
