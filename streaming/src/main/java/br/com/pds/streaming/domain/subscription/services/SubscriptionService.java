@@ -6,8 +6,8 @@ import br.com.pds.streaming.domain.subscription.model.entities.Subscription;
 import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionStatus;
 import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionType;
 import br.com.pds.streaming.domain.subscription.repositories.SubscriptionRepository;
+import br.com.pds.streaming.exceptions.InvalidCreditCardNumberException;
 import br.com.pds.streaming.exceptions.InvalidSubscriptionTypeException;
-import br.com.pds.streaming.exceptions.PaymentException;
 import br.com.pds.streaming.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,11 +28,11 @@ public class SubscriptionService {
     private PaymentService paymentService;
 
     @Transactional
-    public void subscribeUser(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException, PaymentException, UserNotFoundException {
+    public void subscribeUser(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException, UserNotFoundException, InvalidCreditCardNumberException {
 
         var creditCard = requestSubscriptionDTO.getCreditCardDTO();
         if (!paymentService.processCreditCardPayment(creditCard)) {
-            throw new PaymentException("Payment failed");
+            throw new InvalidCreditCardNumberException();
         }
 
         var user = userService.loadUserByUsername(requestSubscriptionDTO.getUsername());
