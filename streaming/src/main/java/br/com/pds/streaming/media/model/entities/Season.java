@@ -29,6 +29,8 @@ public class Season implements Serializable {
     private String animationUrl;
     private String tvShowId;
 
+    private List<String> categories = new ArrayList<>();
+
     @DBRef
     private List<Episode> episodes = new ArrayList<>();
 

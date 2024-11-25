@@ -28,6 +28,8 @@ public class TvShow implements Collectable, Serializable {
     private String thumbnailUrl;
     private String animationUrl;
 
+    private List<String> categories = new ArrayList<>();
+
     @DBRef
     private List<Season> seasons = new ArrayList<>();
 

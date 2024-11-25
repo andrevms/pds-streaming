@@ -29,6 +29,8 @@ public class Movie implements Collectable, Serializable {
     private String thumbnailUrl;
     private String animationUrl;
 
+    private List<String> categories = new ArrayList<>();
+
     @DBRef
     private List<Rating> ratings = new ArrayList<>();
 
