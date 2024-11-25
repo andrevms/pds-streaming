@@ -18,11 +18,11 @@ public class ChatAIController {
 
     @GetMapping("/ask-llm")
     public String askLlm( @RequestBody SummarizeRequest content) {
-        return chatService.askLlm(content.getSource());
+        return chatService.askLlm(content.getSubject(), content.getDescription());
     }
 
     @GetMapping("/ask-llm-quiz")
     public String askLlmquiz( @RequestBody SummarizeRequest content) {
-        return chatService.askLlmquiz(content.getSource());
+        return chatService.askLlmquiz(content.getSubject(), content.getDescription());
     }
 }

@@ -9,6 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
 @Service
 public class ChatService {
     @Qualifier("ollamaAIService")
@@ -22,7 +28,7 @@ public class ChatService {
     @Autowired
     TranscriptionRepository transcriptionRepository;
 
-    public String askLlm(String source) {
+    public String askLlm(String subject, String source) {
 
         Transcription transcription = transcriptionRepository.getTranscriptionBySource(source);
 
@@ -43,7 +49,10 @@ public class ChatService {
         sb.append("Modelo da Ollama: ").append(aIService.getModel()).append("\n");
         sb.append("Resposta da Ollama: ");
         try {
-            sb.append(aIService.askLlm("Rick and Morty", transcription.getContent()));
+
+            String body = "{\"model\": \"llama3.2\",\"messages\": [{\"role\": \"system\",\"content\": \"Você deve agir como uma especialista no assunto "+ subject +" e ira sumarizar o texto recebido.\"}, { \"role\": \"user\", \"content\": \""+transcription.getContent() +"\"}],\"stream\": false}";
+
+            sb.append(askLlmHttpRequest(body));
         }catch (Exception e) {
             sb.append(e.getMessage());
             sb.append("Erro...");
@@ -52,7 +61,7 @@ public class ChatService {
         return sb.toString().replace("\n", "<br>");
     }
 
-    public String askLlmquiz(String source) {
+    public String askLlmquiz(String subject, String source) {
         Transcription transcription = transcriptionRepository.getTranscriptionBySource(source);
 
         StringBuilder sb = new StringBuilder();
@@ -68,11 +77,42 @@ public class ChatService {
         }
 
         try {
-            sb.append(aIService.createQuiz("Rick and Morty", transcription.getContent()));
+
+            String body = "{\"model\": \"llama3.2\",\"messages\": [{\"role\": \"system\",\"content\": \"Você deve agir como uma especialista no assunto "+ subject +" E criar 5 perguntas de multipla escolha sobre o texto e mostrar suas respostas\"}, { \"role\": \"user\", \"content\": \""+transcription.getContent() +"\"}],\"stream\": false}";
+            sb.append(askLlmHttpRequest(body));
         }catch (Exception e) {
             sb.append("Erro...");
         }
 
         return sb.toString().replace("\n", "<br>");
+    }
+
+    private String askLlmHttpRequest(String body) {
+        try {
+            // Define the URL endpoint
+            String url = "http://ollama:11434/api/chat";
+
+            // Create a HttpClient
+            HttpClient client = HttpClient.newHttpClient();
+
+
+            // Create the HttpRequest
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(body))
+                    .build();
+
+            // Send the request and get the response asynchronously
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Output the response status and body
+            System.out.println("Response Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
+            return response.body();
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+            return "Erro...";
+        }
     }
 }
