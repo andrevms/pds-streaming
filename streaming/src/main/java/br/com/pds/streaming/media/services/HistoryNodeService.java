@@ -40,34 +40,19 @@ public class HistoryNodeService {
 
         var historyNodes = historyNodeRepository.findAll();
 
-        return historyNodes.stream().map(hn -> {
-            if (hn.getEpisode() != null) {
-                return mapper.convertValue(hn, HistoryNodeWithEpisodeDTO.class);
-            }
-
-            if (hn.getMovie() != null) {
-                return mapper.convertValue(hn, HistoryNodeWithMovieDTO.class);
-            }
-
-            throw new RuntimeException("History node without episode or movie found.");
-        }).toList();
+        return historyNodes.stream()
+                .map(node -> mapper.convertValue(node, HistoryNodeDTO.class))
+                .toList();
     }
+
 
     public List<HistoryNodeDTO> findByHistoryId(String historyId) {
 
         var historyNodes = historyNodeRepository.findByHistoryId(historyId);
 
-        return historyNodes.stream().map(hn -> {
-            if (hn.getEpisode() != null) {
-                return mapper.convertValue(hn, HistoryNodeWithEpisodeDTO.class);
-            }
-
-            if (hn.getMovie() != null) {
-                return mapper.convertValue(hn, HistoryNodeWithMovieDTO.class);
-            }
-
-            throw new RuntimeException("History node without episode or movie found.");
-        }).toList();
+        return historyNodes.stream()
+                .map(node -> mapper.convertValue(node, HistoryNodeDTO.class))
+                .toList();
     }
 
     public HistoryNodeDTO findById(String id) throws ObjectNotFoundException {

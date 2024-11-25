@@ -2,6 +2,7 @@ package br.com.pds.streaming.mapper.modelMapper.config;
 
 import br.com.pds.streaming.media.model.dto.*;
 import br.com.pds.streaming.media.model.entities.*;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,6 +53,20 @@ public class ModelMapperConfig {
 
         modelMapper.createTypeMap(SeasonDTO.class, Season.class)
                 .addMapping(SeasonDTO::getId, Season::setId);
+
+
+        Converter<HistoryNode, HistoryNodeDTO> historyNodeConverter = ctx -> {
+            HistoryNode source = ctx.getSource();
+            if (source.getEpisode() != null) {
+                return modelMapper.map(source, HistoryNodeWithEpisodeDTO.class);
+            }
+            if (source.getMovie() != null) {
+                return modelMapper.map(source, HistoryNodeWithMovieDTO.class);
+            }
+            throw new RuntimeException("History node with id '" + source.getId() + "' does not have an episode or movie.");
+        };
+
+        modelMapper.createTypeMap(HistoryNode.class, HistoryNodeDTO.class).setConverter(historyNodeConverter);
 
         return modelMapper;
     }
