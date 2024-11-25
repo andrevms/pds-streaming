@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TvShowDTO implements Serializable {
+public class TvShowDTO implements CollectableDTO, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,7 +22,7 @@ public class TvShowDTO implements Serializable {
     private String animationUrl;
     private String ratingsAverage;
 
+    private List<String> categories = new ArrayList<>();
     private List<SeasonDTO> seasons = new ArrayList<>();
-
     private List<RatingDTO> ratings = new ArrayList<>();
 }

@@ -21,6 +21,7 @@ public class SeasonDTO implements Serializable {
     private String thumbnailUrl;
     private String animationUrl;
 
+    private List<String> categories = new ArrayList<>();
     private List<EpisodeDTO> episodes = new ArrayList<>();
 
     public SeasonDTO(String id, String title, String description, String thumbnailUrl, String animationUrl) {

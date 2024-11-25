@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "movies")
-public class Movie implements Serializable {
+public class Movie implements Collectable, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -29,15 +29,8 @@ public class Movie implements Serializable {
     private String thumbnailUrl;
     private String animationUrl;
 
+    private List<String> categories = new ArrayList<>();
+
     @DBRef
     private List<Rating> ratings = new ArrayList<>();
-
-    public Movie(String id, String title, String description, String videoUrl, String thumbnailUrl, String animationUrl) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.videoUrl = videoUrl;
-        this.thumbnailUrl = thumbnailUrl;
-        this.animationUrl = animationUrl;
-    }
 }

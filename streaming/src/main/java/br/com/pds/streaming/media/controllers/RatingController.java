@@ -1,7 +1,7 @@
 package br.com.pds.streaming.media.controllers;
 
 import br.com.pds.streaming.exceptions.DuplicatedRatingException;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.media.model.dto.RatingDTO;
 import br.com.pds.streaming.media.services.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +29,13 @@ public class RatingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RatingDTO> getRatingById(@PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<RatingDTO> getRatingById(@PathVariable String id) throws EntityNotFoundException {
         return new ResponseEntity<>(ratingService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<RatingDTO> createRating(@RequestBody RatingDTO ratingDTO, @RequestParam(name = "userId") String userId, @RequestParam(name = "movieId", required = false) String movieId, @RequestParam(name = "tvShowId", required = false) String tvShowId) throws ObjectNotFoundException, DuplicatedRatingException {
+    public ResponseEntity<RatingDTO> createRating(@RequestBody RatingDTO ratingDTO, @RequestParam(name = "userId") String userId, @RequestParam(name = "movieId", required = false) String movieId, @RequestParam(name = "tvShowId", required = false) String tvShowId) throws EntityNotFoundException, DuplicatedRatingException {
+
         if (tvShowId != null) {
             return new ResponseEntity<>(ratingService.insert(ratingDTO, tvShowId, userId), HttpStatus.CREATED);
         }
@@ -47,17 +48,17 @@ public class RatingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RatingDTO> updateRating(@RequestBody RatingDTO ratingDTO, @PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<RatingDTO> updateRating(@RequestBody RatingDTO ratingDTO, @PathVariable String id) throws EntityNotFoundException {
         return new ResponseEntity<>(ratingService.update(ratingDTO, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<RatingDTO> patchRating(@RequestBody RatingDTO ratingDTO, @PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<RatingDTO> patchRating(@RequestBody RatingDTO ratingDTO, @PathVariable String id) throws EntityNotFoundException {
         return new ResponseEntity<>(ratingService.patch(ratingDTO, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<RatingDTO> deleteRating(@PathVariable String id) {
+    public ResponseEntity<Void> deleteRating(@PathVariable String id) {
         ratingService.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,9 +1,6 @@
 package br.com.pds.streaming.media.controllers;
 
-import br.com.pds.streaming.exceptions.InvalidAnimationException;
-import br.com.pds.streaming.exceptions.InvalidThumbnailException;
-import br.com.pds.streaming.exceptions.InvalidVideoException;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.exceptions.*;
 import br.com.pds.streaming.media.model.dto.MovieDTO;
 import br.com.pds.streaming.media.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +23,7 @@ public class MovieController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MovieDTO> getMovieById(@PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<MovieDTO> getMovieById(@PathVariable String id) throws EntityNotFoundException {
         return new ResponseEntity<>(movieService.findById(id), HttpStatus.OK);
     }
 
@@ -36,17 +33,17 @@ public class MovieController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MovieDTO> updateMovie(@RequestBody MovieDTO movieDTO, @PathVariable String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public ResponseEntity<MovieDTO> updateMovie(@RequestBody MovieDTO movieDTO, @PathVariable String id) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
         return new ResponseEntity<>(movieService.update(movieDTO, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<MovieDTO> patchMovie(@RequestBody MovieDTO movieDTO, @PathVariable String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public ResponseEntity<MovieDTO> patchMovie(@RequestBody MovieDTO movieDTO, @PathVariable String id) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
         return new ResponseEntity<>(movieService.patch(movieDTO, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMovie(@PathVariable String id) {
+    public ResponseEntity<Void> deleteMovie(@PathVariable String id) throws InvalidSourceException, EntityNotFoundException {
         movieService.delete(id);
         return ResponseEntity.noContent().build();
     }

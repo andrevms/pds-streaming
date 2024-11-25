@@ -1,8 +1,10 @@
 package br.com.pds.streaming.media.services;
 
+import br.com.pds.streaming.cloud.services.CloudStorageService;
 import br.com.pds.streaming.exceptions.InvalidAnimationException;
+import br.com.pds.streaming.exceptions.InvalidSourceException;
 import br.com.pds.streaming.exceptions.InvalidThumbnailException;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.TvShowDTO;
 import br.com.pds.streaming.media.model.entities.Rating;
@@ -25,14 +27,16 @@ public class TvShowService {
     private final EpisodeRepository episodeRepository;
     private final RatingRepository ratingRepository;
     private final MyModelMapper mapper;
+    private final CloudStorageService cloudStorageService;
 
     @Autowired
-    public TvShowService(TvShowRepository tvShowRepository, SeasonRepository seasonRepository, EpisodeRepository episodeRepository, RatingRepository ratingRepository, MyModelMapper mapper) {
+    public TvShowService(TvShowRepository tvShowRepository, SeasonRepository seasonRepository, EpisodeRepository episodeRepository, RatingRepository ratingRepository, MyModelMapper mapper, CloudStorageService cloudStorageService) {
         this.tvShowRepository = tvShowRepository;
         this.seasonRepository = seasonRepository;
         this.episodeRepository = episodeRepository;
         this.ratingRepository = ratingRepository;
         this.mapper = mapper;
+        this.cloudStorageService = cloudStorageService;
     }
 
     public List<TvShowDTO> findAll() {
@@ -49,9 +53,9 @@ public class TvShowService {
         return tvShowsDTO;
     }
 
-    public TvShowDTO findById(String id) throws ObjectNotFoundException {
+    public TvShowDTO findById(String id) throws EntityNotFoundException {
 
-        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
+        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
 
         var tvShowDTO = mapper.convertValue(tvShow, TvShowDTO.class);
 
@@ -73,16 +77,17 @@ public class TvShowService {
         return mappedTvShow;
     }
 
-    public TvShowDTO update(TvShowDTO tvShowDTO, String id) throws ObjectNotFoundException, InvalidThumbnailException, InvalidAnimationException {
+    public TvShowDTO update(TvShowDTO tvShowDTO, String id) throws EntityNotFoundException, InvalidThumbnailException, InvalidAnimationException {
 
         verifyFilesUrl(tvShowDTO);
 
-        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
+        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
 
         tvShow.setTitle(tvShowDTO.getTitle());
         tvShow.setDescription(tvShowDTO.getDescription());
         tvShow.setThumbnailUrl(tvShowDTO.getThumbnailUrl());
         tvShow.setAnimationUrl(tvShowDTO.getAnimationUrl());
+        tvShow.setCategories(tvShow.getCategories());
 
         var updatedTvShow = tvShowRepository.save(tvShow);
 
@@ -93,9 +98,9 @@ public class TvShowService {
         return mappedTvShow;
     }
 
-    public TvShowDTO patch(TvShowDTO tvShowDTO, String id) throws ObjectNotFoundException, InvalidThumbnailException, InvalidAnimationException {
+    public TvShowDTO patch(TvShowDTO tvShowDTO, String id) throws EntityNotFoundException, InvalidThumbnailException, InvalidAnimationException {
 
-        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
+        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
 
         if (tvShowDTO.getTitle() != null) {
             tvShow.setTitle(tvShowDTO.getTitle());
@@ -132,10 +137,17 @@ public class TvShowService {
         return mappedTvShow;
     }
 
-    public void delete(String id) {
+    public void delete(String id) throws EntityNotFoundException, InvalidSourceException {
 
         deleteOrphanSeasons(id);
         deleteOrphanRatings(id);
+
+        var tvShow = findById(id);
+        var movieThumb = tvShow.getThumbnailUrl();
+        var movieAnimation = tvShow.getAnimationUrl();
+
+        cloudStorageService.deleteFile(movieThumb);
+        cloudStorageService.deleteFile(movieAnimation);
 
         tvShowRepository.deleteById(id);
     }
@@ -179,5 +191,14 @@ public class TvShowService {
         if (!FileExtensionValidator.validateAnimationFileExtension(tvShowDTO.getAnimationUrl())) {
             throw new InvalidAnimationException(tvShowDTO.getAnimationUrl());
         }
+    }
+
+    public List<TvShowDTO> findTvShowByTitle(String title) {
+
+        var tvShows = tvShowRepository.findByTvShowTitleContainingIgnoreCase(title);
+
+        var tvShowDTOS = mapper.convertList(tvShows, TvShowDTO.class);
+
+        return tvShowDTOS;
     }
 }

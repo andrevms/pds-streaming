@@ -3,7 +3,7 @@ package br.com.pds.streaming.media.services;
 import br.com.pds.streaming.authentication.model.entities.User;
 import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.exceptions.DuplicatedRatingException;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.RatingDTO;
 import br.com.pds.streaming.media.model.entities.Movie;
@@ -53,22 +53,22 @@ public class RatingService {
         return mapper.convertList(ratings, RatingDTO.class);
     }
 
-    public RatingDTO findById(String id) throws ObjectNotFoundException {
+    public RatingDTO findById(String id) throws EntityNotFoundException {
 
-        var rating = ratingRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Rating.class));
+        var rating = ratingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Rating.class));
 
         return mapper.convertValue(rating, RatingDTO.class);
     }
 
-    public RatingDTO insert(String movieId, RatingDTO ratingDTO, String userId) throws ObjectNotFoundException, DuplicatedRatingException {
+    public RatingDTO insert(String movieId, RatingDTO ratingDTO, String userId) throws EntityNotFoundException, DuplicatedRatingException {
 
         if (!ratingRepository.findByUserId(userId).stream().filter(r -> r.getMovieId() != null).filter(r -> r.getMovieId().equals(movieId)).toList().isEmpty()) {
             throw new DuplicatedRatingException();
         }
 
-        var user = userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(User.class));
+        var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class));
 
-        var movie = movieRepository.findById(movieId).orElseThrow(() -> new ObjectNotFoundException(Movie.class));
+        var movie = movieRepository.findById(movieId).orElseThrow(() -> new EntityNotFoundException(Movie.class));
 
         var rating = mapper.convertValue(ratingDTO, Rating.class);
         rating.setMovieId(movieId);
@@ -83,15 +83,15 @@ public class RatingService {
         return mapper.convertValue(createdRating, RatingDTO.class);
     }
 
-    public RatingDTO insert(RatingDTO ratingDTO, String tvShowId, String userId) throws ObjectNotFoundException, DuplicatedRatingException {
+    public RatingDTO insert(RatingDTO ratingDTO, String tvShowId, String userId) throws EntityNotFoundException, DuplicatedRatingException {
 
         if (!ratingRepository.findByUserId(userId).stream().filter(r -> r.getTvShowId() != null).filter(r -> r.getTvShowId().equals(tvShowId)).toList().isEmpty()) {
             throw new DuplicatedRatingException();
         }
 
-        var user = userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(User.class));
+        var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class));
 
-        var tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new ObjectNotFoundException(TvShow.class));
+        var tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
 
         var rating = mapper.convertValue(ratingDTO, Rating.class);
         rating.setTvShowId(tvShowId);
@@ -106,9 +106,9 @@ public class RatingService {
         return mapper.convertValue(createdRating, RatingDTO.class);
     }
 
-    public RatingDTO update(RatingDTO ratingDTO, String id) throws ObjectNotFoundException {
+    public RatingDTO update(RatingDTO ratingDTO, String id) throws EntityNotFoundException {
 
-        var rating = ratingRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Rating.class));
+        var rating = ratingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Rating.class));
 
         rating.setStars(ratingDTO.getStars());
         rating.setTimestamp(ratingDTO.getTimestamp());
@@ -119,9 +119,9 @@ public class RatingService {
         return mapper.convertValue(updatedRating, RatingDTO.class);
     }
 
-    public RatingDTO patch(RatingDTO ratingDTO, String id) throws ObjectNotFoundException {
+    public RatingDTO patch(RatingDTO ratingDTO, String id) throws EntityNotFoundException {
 
-        var rating = ratingRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Rating.class));
+        var rating = ratingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Rating.class));
 
         if (ratingDTO.getStars() != null) {
             rating.setStars(ratingDTO.getStars());

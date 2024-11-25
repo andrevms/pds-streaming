@@ -60,13 +60,14 @@ public class UserService implements UserDetailsService {
         user.setLastName(userDTO.getLastName());
         user.setSubscription(subscription);
         user.setRatings(user.getRatings());
-        user.setTvShows(user.getTvShows());
-        user.setMovies(user.getMovies());
+        user.setWatchLaterList(user.getWatchLaterList());
+//        user.setMovies(user.getMovies());
 
         return mapper.convertValue(userRepository.save(user), UserDTO.class);
     }
 
     public UserDTO updateUserSubscription(String id, Subscription subscription) throws UserNotFoundException {
+
         var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         user.setSubscription(subscription);
@@ -96,8 +97,7 @@ public class UserService implements UserDetailsService {
         throw new RuntimeException();
     }
 
-    public void deleteById(String id) throws UserNotFoundException {
-        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        userRepository.delete(user);
+    public void deleteById(String id) {
+        userRepository.deleteById(id);
     }
 }

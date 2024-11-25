@@ -3,7 +3,6 @@ package br.com.pds.streaming.media.model.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "tv_shows")
-public class TvShow implements Serializable {
+public class TvShow implements Collectable, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -29,17 +28,11 @@ public class TvShow implements Serializable {
     private String thumbnailUrl;
     private String animationUrl;
 
+    private List<String> categories = new ArrayList<>();
+
     @DBRef
     private List<Season> seasons = new ArrayList<>();
 
     @DBRef
     private List<Rating> ratings = new ArrayList<>();
-
-    public TvShow(String id, String title, String description, String thumbnailUrl, String animationUrl) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.thumbnailUrl = thumbnailUrl;
-        this.animationUrl = animationUrl;
-    }
 }

@@ -1,13 +1,8 @@
 package br.com.pds.streaming.mapper.modelMapper.config;
 
-import br.com.pds.streaming.media.model.dto.EpisodeDTO;
-import br.com.pds.streaming.media.model.dto.MovieDTO;
-import br.com.pds.streaming.media.model.dto.RatingDTO;
-import br.com.pds.streaming.media.model.dto.SeasonDTO;
-import br.com.pds.streaming.media.model.entities.Episode;
-import br.com.pds.streaming.media.model.entities.Movie;
-import br.com.pds.streaming.media.model.entities.Rating;
-import br.com.pds.streaming.media.model.entities.Season;
+import br.com.pds.streaming.media.model.dto.*;
+import br.com.pds.streaming.media.model.entities.*;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +21,21 @@ public class ModelMapperConfig {
         modelMapper.createTypeMap(EpisodeDTO.class, Episode.class)
                 .addMapping(EpisodeDTO::getId, Episode::setId);
 
+        modelMapper.createTypeMap(History.class, HistoryDTO.class)
+                .addMapping(History::getId, HistoryDTO::setId);
+
+        modelMapper.createTypeMap(HistoryDTO.class, History.class)
+                .addMapping(HistoryDTO::getId, History::setId);
+
+        modelMapper.createTypeMap(HistoryNode.class, HistoryNodeWithEpisodeDTO.class)
+                .addMapping(HistoryNode::getId, HistoryNodeWithEpisodeDTO::setId);
+
+        modelMapper.createTypeMap(HistoryNode.class, HistoryNodeWithMovieDTO.class)
+                .addMapping(HistoryNode::getId, HistoryNodeWithMovieDTO::setId);
+
+        modelMapper.createTypeMap(HistoryNodeWithBothDTO.class, HistoryNode.class)
+                .addMapping(HistoryNodeWithBothDTO::getId, HistoryNode::setId);
+
         modelMapper.createTypeMap(Movie.class, MovieDTO.class)
                 .addMapping(Movie::getId, MovieDTO::setId);
 
@@ -43,6 +53,20 @@ public class ModelMapperConfig {
 
         modelMapper.createTypeMap(SeasonDTO.class, Season.class)
                 .addMapping(SeasonDTO::getId, Season::setId);
+
+
+        Converter<HistoryNode, HistoryNodeDTO> historyNodeConverter = ctx -> {
+            HistoryNode source = ctx.getSource();
+            if (source.getEpisode() != null) {
+                return modelMapper.map(source, HistoryNodeWithEpisodeDTO.class);
+            }
+            if (source.getMovie() != null) {
+                return modelMapper.map(source, HistoryNodeWithMovieDTO.class);
+            }
+            throw new RuntimeException("History node with id '" + source.getId() + "' does not have an episode or movie.");
+        };
+
+        modelMapper.createTypeMap(HistoryNode.class, HistoryNodeDTO.class).setConverter(historyNodeConverter);
 
         return modelMapper;
     }

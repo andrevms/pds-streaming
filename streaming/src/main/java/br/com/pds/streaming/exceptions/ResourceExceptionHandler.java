@@ -17,14 +17,34 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseError(LocalDateTime.now(), HttpStatus.CONFLICT.value(), "Duplicated rating", e.getMessage(), request.getRequestURI()));
     }
 
-    @ExceptionHandler(ObjectNotFoundException.class)
-    public ResponseEntity<ResponseError> objectNotFound(ObjectNotFoundException e, HttpServletRequest request) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ResponseError> entityNotFound(EntityNotFoundException e, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseError(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "Not found", e.getMessage(), request.getRequestURI()));
     }
 
-    @ExceptionHandler(InvalidVideoException.class)
-    public ResponseEntity<ResponseError> invalidVideo(InvalidVideoException e, HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Invalid file extension for a video", e.getMessage(), request.getRequestURI()));
+    @ExceptionHandler(InvalidAnimationException.class)
+    public ResponseEntity<ResponseError> invalidAnimation(InvalidAnimationException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Invalid file extension for an animation", e.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler(InvalidCreditCardNumberException.class)
+    public ResponseEntity<ResponseError> invalidCreditCardNumber(InvalidCreditCardNumberException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new ResponseError(LocalDateTime.now(), HttpStatus.UNPROCESSABLE_ENTITY.value(), "Invalid credit card number", e.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler(InvalidRoleException.class)
+    public ResponseEntity<ResponseError> invalidRole(InvalidRoleException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Invalid role", e.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler(InvalidSourceException.class)
+    public ResponseEntity<ResponseError> invalidSource(InvalidSourceException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Invalid source", e.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler(InvalidSubscriptionTypeException.class)
+    public ResponseEntity<ResponseError> invalidSubscriptionType(InvalidSubscriptionTypeException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Invalid subscription type", e.getMessage(), request.getRequestURI()));
     }
 
     @ExceptionHandler(InvalidThumbnailException.class)
@@ -32,8 +52,13 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Invalid file extension for a thumbnail", e.getMessage(), request.getRequestURI()));
     }
 
-    @ExceptionHandler(InvalidAnimationException.class)
-    public ResponseEntity<ResponseError> invalidAnimation(InvalidAnimationException e, HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Invalid file extension for an animation", e.getMessage(), request.getRequestURI()));
+    @ExceptionHandler(InvalidVideoException.class)
+    public ResponseEntity<ResponseError> invalidVideo(InvalidVideoException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Invalid file extension for a video", e.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ResponseError> userNotFound(UserNotFoundException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseError(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "User not found", e.getMessage(), request.getRequestURI()));
     }
 }

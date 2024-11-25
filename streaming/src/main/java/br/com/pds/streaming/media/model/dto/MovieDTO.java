@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MovieDTO implements Serializable {
+public class MovieDTO implements CollectableDTO, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,5 +23,6 @@ public class MovieDTO implements Serializable {
     private String animationUrl;
     private String ratingsAverage;
 
+    private List<String> categories = new ArrayList<>();
     private List<RatingDTO> ratings = new ArrayList<>();
 }

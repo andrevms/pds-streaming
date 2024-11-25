@@ -1,9 +1,7 @@
 package br.com.pds.streaming.media.services;
 
-import br.com.pds.streaming.exceptions.InvalidAnimationException;
-import br.com.pds.streaming.exceptions.InvalidThumbnailException;
-import br.com.pds.streaming.exceptions.InvalidVideoException;
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.cloud.services.CloudStorageService;
+import br.com.pds.streaming.exceptions.*;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.EpisodeDTO;
 import br.com.pds.streaming.media.model.entities.Episode;
@@ -23,12 +21,14 @@ public class EpisodeService {
     private final EpisodeRepository episodeRepository;
     private final SeasonRepository seasonRepository;
     private final MyModelMapper mapper;
+    private final CloudStorageService cloudStorageService;
 
     @Autowired
-    public EpisodeService(EpisodeRepository episodeRepository, SeasonRepository seasonRepository, MyModelMapper mapper) {
+    public EpisodeService(EpisodeRepository episodeRepository, SeasonRepository seasonRepository, MyModelMapper mapper, CloudStorageService cloudStorageService) {
         this.episodeRepository = episodeRepository;
         this.seasonRepository = seasonRepository;
         this.mapper = mapper;
+        this.cloudStorageService = cloudStorageService;
     }
 
     public List<EpisodeDTO> findAll() {
@@ -45,21 +45,22 @@ public class EpisodeService {
         return mapper.convertList(episodes, EpisodeDTO.class);
     }
 
-    public EpisodeDTO findById(String id) throws ObjectNotFoundException {
+    public EpisodeDTO findById(String id) throws EntityNotFoundException {
 
-        var episode = episodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Episode.class));
+        var episode = episodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Episode.class));
 
         return mapper.convertValue(episode, EpisodeDTO.class);
     }
 
-    public EpisodeDTO insert(EpisodeDTO episodeDTO, String seasonId) throws ObjectNotFoundException, InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {
+    public EpisodeDTO insert(EpisodeDTO episodeDTO, String seasonId) throws EntityNotFoundException, InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {
 
         verifyFilesUrl(episodeDTO);
 
-        var season = seasonRepository.findById(seasonId).orElseThrow(() -> new ObjectNotFoundException(Season.class));
+        var season = seasonRepository.findById(seasonId).orElseThrow(() -> new EntityNotFoundException(Season.class));
 
         Episode episode = mapper.convertValue(episodeDTO, Episode.class);
         episode.setSeasonId(seasonId);
+        episode.setCategories(season.getCategories());
 
         var createdEpisode = episodeRepository.save(episode);
 
@@ -70,26 +71,27 @@ public class EpisodeService {
         return mapper.convertValue(createdEpisode, EpisodeDTO.class);
     }
 
-    public EpisodeDTO update(EpisodeDTO episodeDTO, String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public EpisodeDTO update(EpisodeDTO episodeDTO, String id) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
 
         verifyFilesUrl(episodeDTO);
 
-        var episode = episodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Episode.class));
+        var episode = episodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Episode.class));
 
         episode.setTitle(episodeDTO.getTitle());
         episode.setDescription(episodeDTO.getDescription());
         episode.setVideoUrl(episodeDTO.getVideoUrl());
         episode.setThumbnailUrl(episodeDTO.getThumbnailUrl());
         episode.setAnimationUrl(episodeDTO.getAnimationUrl());
+        episode.setCategories(episode.getCategories());
 
         var updatedEpisode = episodeRepository.save(episode);
 
         return mapper.convertValue(updatedEpisode, EpisodeDTO.class);
     }
 
-    public EpisodeDTO patch(EpisodeDTO episodeDTO, String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public EpisodeDTO patch(EpisodeDTO episodeDTO, String id) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
 
-        var episode = episodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Episode.class));
+        var episode = episodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Episode.class));
 
         if (episodeDTO.getTitle() != null) {
             episode.setTitle(episodeDTO.getTitle());
@@ -131,7 +133,17 @@ public class EpisodeService {
         return mapper.convertValue(patchedEpisode, EpisodeDTO.class);
     }
 
-    public void delete(String id) {
+    public void delete(String id) throws EntityNotFoundException, InvalidSourceException {
+
+        var episode = findById(id);
+        var movieSource = episode.getVideoUrl();
+        var movieThumb = episode.getThumbnailUrl();
+        var movieAnimation = episode.getAnimationUrl();
+
+        cloudStorageService.deleteFile(movieSource);
+        cloudStorageService.deleteFile(movieThumb);
+        cloudStorageService.deleteFile(movieAnimation);
+
         episodeRepository.deleteById(id);
     }
 
