@@ -28,27 +28,27 @@ public class EpisodeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EpisodeDTO> getEpisodeById(@PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<EpisodeDTO> getEpisodeById(@PathVariable String id) throws EntityNotFoundException {
         return new ResponseEntity<>(episodeService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<EpisodeDTO> createEpisode(@RequestBody EpisodeDTO episodeDTO, @RequestParam(name = "seasonId") String seasonId) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public ResponseEntity<EpisodeDTO> createEpisode(@RequestBody EpisodeDTO episodeDTO, @RequestParam(name = "seasonId") String seasonId) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
         return new ResponseEntity<>(episodeService.insert(episodeDTO, seasonId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EpisodeDTO> updateEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public ResponseEntity<EpisodeDTO> updateEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
         return new ResponseEntity<>(episodeService.update(episodeDTO, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<EpisodeDTO> patchEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public ResponseEntity<EpisodeDTO> patchEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
         return new ResponseEntity<>(episodeService.patch(episodeDTO, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEpisode(@PathVariable String id) throws InvalidSourceException, ObjectNotFoundException {
+    public ResponseEntity<Void> deleteEpisode(@PathVariable String id) throws InvalidSourceException, EntityNotFoundException {
         episodeService.delete(id);
         return ResponseEntity.noContent().build();
     }

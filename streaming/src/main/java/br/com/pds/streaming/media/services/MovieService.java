@@ -41,9 +41,9 @@ public class MovieService {
         return moviesDTO;
     }
 
-    public MovieDTO findById(String id) throws ObjectNotFoundException {
+    public MovieDTO findById(String id) throws EntityNotFoundException {
 
-        var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Movie.class));
+        var movie = movieRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Movie.class));
 
         var movieDTO = mapper.convertValue(movie, MovieDTO.class);
 
@@ -65,11 +65,11 @@ public class MovieService {
         return mappedMovie;
     }
 
-    public MovieDTO update(MovieDTO movieDTO, String id) throws ObjectNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public MovieDTO update(MovieDTO movieDTO, String id) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
 
         verifyFilesUrl(movieDTO);
 
-        var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Movie.class));
+        var movie = movieRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Movie.class));
 
         movie.setTitle(movieDTO.getTitle());
         movie.setDescription(movieDTO.getDescription());
@@ -86,9 +86,9 @@ public class MovieService {
         return mappedMovie;
     }
 
-    public MovieDTO patch(MovieDTO movieDTO, String id) throws ObjectNotFoundException, InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {
+    public MovieDTO patch(MovieDTO movieDTO, String id) throws EntityNotFoundException, InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {
 
-        var movie = movieRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(Movie.class));
+        var movie = movieRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Movie.class));
 
         if (movieDTO.getTitle() != null) {
             movie.setTitle(movieDTO.getTitle());
@@ -134,7 +134,7 @@ public class MovieService {
         return mappedMovie;
     }
 
-    public void delete(String id) throws ObjectNotFoundException, InvalidSourceException {
+    public void delete(String id) throws EntityNotFoundException, InvalidSourceException {
 
         deleteOrphanRatings(id);
 

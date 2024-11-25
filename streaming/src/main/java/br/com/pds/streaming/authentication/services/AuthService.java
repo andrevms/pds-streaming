@@ -83,10 +83,9 @@ public class AuthService {
             var userDTO = mapper.convertValue(user, UserDTO.class);
             return ResponseEntity.ok(userDTO);
 
-        }catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new InvalidRoleException(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

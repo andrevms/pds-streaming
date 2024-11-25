@@ -67,6 +67,7 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDTO updateUserSubscription(String id, Subscription subscription) throws UserNotFoundException {
+
         var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         user.setSubscription(subscription);
@@ -96,8 +97,7 @@ public class UserService implements UserDetailsService {
         throw new RuntimeException();
     }
 
-    public void deleteById(String id) throws UserNotFoundException {
-        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        userRepository.delete(user);
+    public void deleteById(String id) {
+        userRepository.deleteById(id);
     }
 }

@@ -1,6 +1,6 @@
 package br.com.pds.streaming.media.services;
 
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.HistoryNodeDTO;
 import br.com.pds.streaming.media.model.dto.HistoryNodeWithEpisodeDTO;
@@ -55,9 +55,9 @@ public class HistoryNodeService {
                 .toList();
     }
 
-    public HistoryNodeDTO findById(String id) throws ObjectNotFoundException {
+    public HistoryNodeDTO findById(String id) throws EntityNotFoundException {
 
-        var historyNode = historyNodeRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(HistoryNode.class));
+        var historyNode = historyNodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(HistoryNode.class));
 
         if (historyNode.getEpisode() != null) {
             return mapper.convertValue(historyNode, HistoryNodeWithEpisodeDTO.class);
@@ -70,11 +70,11 @@ public class HistoryNodeService {
         throw new RuntimeException("History node without episode or movie found.");
     }
 
-    public HistoryNodeDTO insert(String episodeId, HistoryNodeDTO historyNodeDTO, String historyId) throws ObjectNotFoundException {
+    public HistoryNodeDTO insert(String episodeId, HistoryNodeDTO historyNodeDTO, String historyId) throws EntityNotFoundException {
 
-        var episode = episodeRepository.findById(episodeId).orElseThrow(() -> new ObjectNotFoundException(Episode.class));
+        var episode = episodeRepository.findById(episodeId).orElseThrow(() -> new EntityNotFoundException(Episode.class));
 
-        var history = historyRepository.findById(historyId).orElseThrow(() -> new ObjectNotFoundException(History.class));
+        var history = historyRepository.findById(historyId).orElseThrow(() -> new EntityNotFoundException(History.class));
 
         var historyNode = mapper.convertValue(historyNodeDTO, HistoryNode.class);
         historyNode.setEpisode(episode);
@@ -89,11 +89,11 @@ public class HistoryNodeService {
         return mapper.convertValue(createdHistoryNode, HistoryNodeDTO.class);
     }
 
-    public HistoryNodeDTO insert(HistoryNodeDTO historyNodeDTO, String movieId, String historyId) throws ObjectNotFoundException {
+    public HistoryNodeDTO insert(HistoryNodeDTO historyNodeDTO, String movieId, String historyId) throws EntityNotFoundException {
 
-        var movie = movieRepository.findById(movieId).orElseThrow(() -> new ObjectNotFoundException(Movie.class));
+        var movie = movieRepository.findById(movieId).orElseThrow(() -> new EntityNotFoundException(Movie.class));
 
-        var history = historyRepository.findById(historyId).orElseThrow(() -> new ObjectNotFoundException(History.class));
+        var history = historyRepository.findById(historyId).orElseThrow(() -> new EntityNotFoundException(History.class));
 
         var historyNode = mapper.convertValue(historyNodeDTO, HistoryNode.class);
         historyNode.setMovie(movie);

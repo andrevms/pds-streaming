@@ -1,6 +1,6 @@
 package br.com.pds.streaming.media.controllers;
 
-import br.com.pds.streaming.exceptions.ObjectNotFoundException;
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.media.model.dto.HistoryNodeDTO;
 import br.com.pds.streaming.media.services.HistoryNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +28,12 @@ public class HistoryNodeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HistoryNodeDTO> getHistoryNodeById(@PathVariable String id) throws ObjectNotFoundException {
+    public ResponseEntity<HistoryNodeDTO> getHistoryNodeById(@PathVariable String id) throws EntityNotFoundException {
         return new ResponseEntity<>(historyNodeService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<HistoryNodeDTO> insert(@RequestBody HistoryNodeDTO historyNodeDTO, @RequestParam(name = "historyId") String historyId, @RequestParam(name = "episodeId", required = false) String episodeId, @RequestParam(name = "movieId", required = false) String movieId) throws ObjectNotFoundException {
+    public ResponseEntity<HistoryNodeDTO> insert(@RequestBody HistoryNodeDTO historyNodeDTO, @RequestParam(name = "historyId") String historyId, @RequestParam(name = "episodeId", required = false) String episodeId, @RequestParam(name = "movieId", required = false) String movieId) throws EntityNotFoundException {
 
         if (episodeId != null) {
             return new ResponseEntity<>(historyNodeService.insert(episodeId, historyNodeDTO, historyId), HttpStatus.OK);
