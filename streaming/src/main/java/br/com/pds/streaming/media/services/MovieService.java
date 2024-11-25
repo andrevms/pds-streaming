@@ -36,9 +36,7 @@ public class MovieService {
 
         var moviesDTO = mapper.convertList(movies, MovieDTO.class);
 
-        moviesDTO.forEach(x -> {
-            refreshRatingsAverage(x);
-        });
+        moviesDTO.forEach(this::refreshRatingsAverage);
 
         return moviesDTO;
     }

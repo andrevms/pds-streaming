@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TvShowDTO implements Serializable {
+public class TvShowDTO implements CollectableDTO, Serializable {
 
     private static final long serialVersionUID = 1L;
 

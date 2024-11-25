@@ -1,9 +1,9 @@
 package br.com.pds.streaming.authentication.model.entities;
 
 import br.com.pds.streaming.domain.subscription.model.entities.Subscription;
-import br.com.pds.streaming.media.model.entities.Movie;
+import br.com.pds.streaming.media.model.entities.Collectable;
+import br.com.pds.streaming.media.model.entities.History;
 import br.com.pds.streaming.media.model.entities.Rating;
-import br.com.pds.streaming.media.model.entities.TvShow;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -46,11 +46,11 @@ public class User implements UserDetails, Serializable {
     @DBRef
     private Subscription subscription;
     @DBRef
-    Set<Rating> ratings = new HashSet<>();
+    private Set<Rating> ratings = new HashSet<>();
     @DBRef
-    Set<TvShow> tvShows = new HashSet<>();
+    private Set<Collectable> watchLaterList = new HashSet<>();
     @DBRef
-    Set<Movie> movies = new HashSet<>();
+    private History history;
 
     private boolean isActive;
     private String dateCreated;
@@ -97,7 +97,6 @@ public class User implements UserDetails, Serializable {
         this.roles = roles;
         this.subscription = subscription;
         this.ratings = new HashSet<>();
-        this.tvShows = new HashSet<>();
-        this.movies = new HashSet<>();
+        this.watchLaterList = new HashSet<>();
     }
 }
