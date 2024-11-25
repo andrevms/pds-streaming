@@ -33,12 +33,4 @@ public class Season implements Serializable {
 
     @DBRef
     private List<Episode> episodes = new ArrayList<>();
-
-    public Season(String id, String title, String description, String thumbnailUrl, String animationUrl) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.thumbnailUrl = thumbnailUrl;
-        this.animationUrl = animationUrl;
-    }
 }

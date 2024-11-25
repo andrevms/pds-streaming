@@ -33,13 +33,4 @@ public class Movie implements Collectable, Serializable {
 
     @DBRef
     private List<Rating> ratings = new ArrayList<>();
-
-    public Movie(String id, String title, String description, String videoUrl, String thumbnailUrl, String animationUrl) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.videoUrl = videoUrl;
-        this.thumbnailUrl = thumbnailUrl;
-        this.animationUrl = animationUrl;
-    }
 }

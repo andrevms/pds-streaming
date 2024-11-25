@@ -35,12 +35,4 @@ public class TvShow implements Collectable, Serializable {
 
     @DBRef
     private List<Rating> ratings = new ArrayList<>();
-
-    public TvShow(String id, String title, String description, String thumbnailUrl, String animationUrl) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.thumbnailUrl = thumbnailUrl;
-        this.animationUrl = animationUrl;
-    }
 }
