@@ -98,7 +98,7 @@ public class AuthService {
         String firstName = registerRequest.getFirstName();
         String lastName = registerRequest.getLastName();
 
-        var roleType = RoleType.ROLE_PENDING_USER;
+        var roleType = RoleType.valueOf(registerRequest.getRole());
 
         Role role = roleRepository.findByName(roleType.toString())
                 .orElseGet(() -> {
