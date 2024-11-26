@@ -43,17 +43,17 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorizationRequests -> {
             authorizationRequests
                     .requestMatchers("/auth/signin", "/auth/signup").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/users", "/api/archives", "/api/files").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.GET, "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows", "/api/ask-llm-quiz", "/api/ask-llm", "/api/ask-llm-quiz").hasAnyRole("ADMIN", "USER_PREMIUM")
-                    .requestMatchers(HttpMethod.POST, "/api/archives", "/api/files", "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-                    .requestMatchers(HttpMethod.PUT, "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/api/users").permitAll()
-                    .requestMatchers(HttpMethod.PATCH, "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PATCH, "/api/users").permitAll()
-                    .requestMatchers(HttpMethod.DELETE, "/api/archives", "/api/files", "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/subscriptions").hasAnyRole("ADMIN", "USER_PREMIUM", "PENDING_USER")
+//                    .requestMatchers(HttpMethod.GET, "/api/users", "/api/archives", "/api/files").hasRole("ADMIN")
+//                    .requestMatchers(HttpMethod.GET, "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows", "/api/ask-llm-quiz", "/api/ask-llm", "/api/ask-llm-quiz").hasAnyRole("ADMIN", "USER_PREMIUM")
+//                    .requestMatchers(HttpMethod.POST, "/api/archives", "/api/files", "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
+//                    .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+//                    .requestMatchers(HttpMethod.PUT, "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
+//                    .requestMatchers(HttpMethod.PUT, "/api/users").permitAll()
+//                    .requestMatchers(HttpMethod.PATCH, "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
+//                    .requestMatchers(HttpMethod.PATCH, "/api/users").permitAll()
+//                    .requestMatchers(HttpMethod.DELETE, "/api/archives", "/api/files", "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
+//                    .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+//                    .requestMatchers(HttpMethod.POST, "/api/subscriptions").hasAnyRole("ADMIN", "USER_PREMIUM", "PENDING_USER")
                     .anyRequest().permitAll();
         });
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
