@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/search")
+@RequestMapping(value = "/api/search")
 public class SearchController {
 
     @Autowired
     private SearchService searchService;
-
 
     @GetMapping
     public ResponseEntity<?> search(@RequestParam(name = "title") String title) {

@@ -1,7 +1,6 @@
 package br.com.pds.streaming.authentication.controllers;
 
 import br.com.pds.streaming.authentication.model.dto.domain.UserDTO;
-import br.com.pds.streaming.authentication.model.entities.User;
 import br.com.pds.streaming.authentication.services.UserService;
 import br.com.pds.streaming.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,20 +18,17 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> findAll() {
-        List<UserDTO> users = userService.findAll();
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(userService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable String id) throws UserNotFoundException {
-        UserDTO user = userService.findById(id);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userService.findById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@RequestBody UserDTO businessUserDTO, @PathVariable String id) throws UserNotFoundException {
-        UserDTO updatedUser = userService.update(businessUserDTO, id);
-        return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok(userService.update(businessUserDTO, id));
     }
 
     @DeleteMapping("/{id}")

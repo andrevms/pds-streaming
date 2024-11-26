@@ -3,8 +3,8 @@ package br.com.pds.streaming.ai.services;
 import br.com.pds.streaming.transcription.model.dto.Transcription;
 import br.com.pds.streaming.transcription.model.dto.requests.TranscriptionRequest;
 import br.com.pds.streaming.transcription.model.dto.responses.TranscriptionResponse;
-import br.com.pds.streaming.transcription.repository.TranscriptionRepository;
-import br.com.pds.streaming.transcription.services.TranscriptionServices;
+import br.com.pds.streaming.transcription.repositories.TranscriptionRepository;
+import br.com.pds.streaming.transcription.services.TranscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class ChatService {
 
     @Qualifier("assemblyAITranscribeService")
     @Autowired
-    TranscriptionServices transcriptionServices;
+    TranscriptionService transcriptionService;
 
     @Autowired
     TranscriptionRepository transcriptionRepository;
@@ -37,7 +37,7 @@ public class ChatService {
             sb.append("Arquivo de transcrição não encontrado \n");
             sb.append("Realizando transcrição \n");
             TranscriptionRequest transcriptionRequest = new TranscriptionRequest(source);
-            TranscriptionResponse transcriptionResponse = transcriptionServices.transcribe(transcriptionRequest);
+            TranscriptionResponse transcriptionResponse = transcriptionService.transcribe(transcriptionRequest);
 
             transcription = new Transcription(source, transcriptionResponse.getContent());
             transcriptionRepository.save(transcription);
@@ -69,7 +69,7 @@ public class ChatService {
             sb.append("Arquivo de transcrição não encontrado \n");
             sb.append("Realizando transcrição \n");
             TranscriptionRequest transcriptionRequest = new TranscriptionRequest(source);
-            TranscriptionResponse transcriptionResponse = transcriptionServices.transcribe(transcriptionRequest);
+            TranscriptionResponse transcriptionResponse = transcriptionService.transcribe(transcriptionRequest);
 
             transcription = new Transcription(source, transcriptionResponse.getContent());
             transcriptionRepository.save(transcription);

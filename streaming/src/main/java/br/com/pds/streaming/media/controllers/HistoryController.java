@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping({"/api/history", "/api/histories"})
+@RequestMapping("/api/histories")
 public class HistoryController {
 
     @Autowired
