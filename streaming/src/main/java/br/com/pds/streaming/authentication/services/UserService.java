@@ -61,7 +61,6 @@ public class UserService implements UserDetailsService {
         user.setSubscription(subscription);
         user.setRatings(user.getRatings());
         user.setWatchLaterList(user.getWatchLaterList());
-//        user.setMovies(user.getMovies());
 
         return mapper.convertValue(userRepository.save(user), UserDTO.class);
     }

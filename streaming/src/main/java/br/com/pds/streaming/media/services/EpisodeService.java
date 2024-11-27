@@ -60,7 +60,6 @@ public class EpisodeService {
 
         Episode episode = mapper.convertValue(episodeDTO, Episode.class);
         episode.setSeasonId(seasonId);
-        episode.setCategories(season.getCategories());
 
         var createdEpisode = episodeRepository.save(episode);
 
@@ -82,7 +81,6 @@ public class EpisodeService {
         episode.setVideoUrl(episodeDTO.getVideoUrl());
         episode.setThumbnailUrl(episodeDTO.getThumbnailUrl());
         episode.setAnimationUrl(episodeDTO.getAnimationUrl());
-        episode.setCategories(episode.getCategories());
 
         var updatedEpisode = episodeRepository.save(episode);
 

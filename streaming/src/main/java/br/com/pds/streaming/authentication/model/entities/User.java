@@ -1,8 +1,8 @@
 package br.com.pds.streaming.authentication.model.entities;
 
 import br.com.pds.streaming.domain.subscription.model.entities.Subscription;
-import br.com.pds.streaming.media.model.entities.Collectable;
 import br.com.pds.streaming.media.model.entities.History;
+import br.com.pds.streaming.media.model.entities.Media;
 import br.com.pds.streaming.media.model.entities.Rating;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,7 +48,7 @@ public class User implements UserDetails, Serializable {
     @DBRef
     private Set<Rating> ratings = new HashSet<>();
     @DBRef
-    private Set<Collectable> watchLaterList = new HashSet<>();
+    private Set<Media> watchLaterList = new HashSet<>();
     @DBRef
     private History history;
 

@@ -14,5 +14,6 @@ public class HistoryNodeDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String id;
+    private MediaDTO media;
     private long currentTime; // in milliseconds
 }

@@ -65,7 +65,6 @@ public class SeasonService {
 
         Season season = mapper.convertValue(seasonDTO, Season.class);
         season.setTvShowId(tvShowId);
-        season.setCategories(tvShow.getCategories());
 
         var createdSeason = seasonRepository.save(season);
 
@@ -86,7 +85,6 @@ public class SeasonService {
         season.setDescription(seasonDTO.getDescription());
         season.setThumbnailUrl(seasonDTO.getThumbnailUrl());
         season.setAnimationUrl(seasonDTO.getAnimationUrl());
-        season.setCategories(seasonDTO.getCategories());
 
         var updatedSeason = seasonRepository.save(season);
 

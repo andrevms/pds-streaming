@@ -1,6 +1,10 @@
 package br.com.pds.streaming.media.services;
 
+import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
+import br.com.pds.streaming.media.model.dto.MediaDTO;
+import br.com.pds.streaming.media.model.dto.MovieDTO;
 import br.com.pds.streaming.media.model.dto.SearchResultDTO;
+import br.com.pds.streaming.media.model.dto.TvShowDTO;
 import io.micrometer.core.instrument.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,24 +19,18 @@ public class SearchService {
     private MovieService movieService;
     @Autowired
     private TvShowService tvShowService;
+    @Autowired
+    private MyModelMapper mapper;
 
-    public List<SearchResultDTO> search(String title) {
+    public List<? extends MediaDTO> search(String title) {
 
-        List<SearchResultDTO> searchResultDTOS = new ArrayList<>();
+        List<MediaDTO> results = new ArrayList<>();
+
         var movies = movieService.findMovieByTitle(title);
 
-        System.out.println("movies = " + movies.size());
         if (movies != null) {
             movies.forEach(movie -> {
-                SearchResultDTO searchResultDTO = new SearchResultDTO();
-
-                searchResultDTO.setId(movie.getId());
-                searchResultDTO.setTitle(movie.getTitle());
-                searchResultDTO.setDescription(movie.getDescription());
-                searchResultDTO.setThumbnailUrl(movie.getThumbnailUrl());
-                searchResultDTO.setAnimationUrl(movie.getAnimationUrl());
-
-                searchResultDTOS.add(searchResultDTO);
+                results.add(mapper.convertValue(movie, MovieDTO.class));
             });
         }
 
@@ -40,19 +38,11 @@ public class SearchService {
 
         if (tvShows != null) {
             tvShows.forEach(tvShow -> {
-                SearchResultDTO searchResultDTO = new SearchResultDTO();
-
-                searchResultDTO.setId(tvShow.getId());
-                searchResultDTO.setTitle(tvShow.getTitle());
-                searchResultDTO.setDescription(tvShow.getDescription());
-                searchResultDTO.setThumbnailUrl(tvShow.getThumbnailUrl());
-                searchResultDTO.setAnimationUrl(tvShow.getAnimationUrl());
-
-                searchResultDTOS.add(searchResultDTO);
+                results.add(mapper.convertValue(tvShow, TvShowDTO.class));
             });
         }
 
-        return searchResultDTOS;
+        return results;
     }
 
 }
