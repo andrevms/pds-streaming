@@ -2,6 +2,7 @@ package br.com.pds.streaming.media.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -11,18 +12,13 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MovieDTO implements CollectableDTO, Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class MovieDTO extends MediaDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String id;
-    private String title;
-    private String description;
     private String videoUrl;
-    private String thumbnailUrl;
-    private String animationUrl;
-    private String ratingsAverage;
-
     private List<String> categories = new ArrayList<>();
     private List<RatingDTO> ratings = new ArrayList<>();
+    private String ratingsAverage;
 }

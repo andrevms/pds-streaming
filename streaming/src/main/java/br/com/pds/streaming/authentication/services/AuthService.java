@@ -74,8 +74,8 @@ public class AuthService {
     }
 
     public ResponseEntity<?> registerUser(RegisterRequest registerRequest) throws InvalidRoleException {
-        try {
 
+        try {
             User user = mountUser(registerRequest);
 
             userRepository.save(user);

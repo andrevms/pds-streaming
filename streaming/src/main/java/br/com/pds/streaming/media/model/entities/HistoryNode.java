@@ -23,10 +23,7 @@ public class HistoryNode implements Serializable {
     private String id;
 
     @DBRef
-    private Episode episode;
-
-    @DBRef
-    private Movie movie;
+    private Media media;
 
     private long currentTime; // in milliseconds
     private String historyId;

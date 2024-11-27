@@ -1,8 +1,8 @@
 package br.com.pds.streaming.authentication.model.entities;
 
 import br.com.pds.streaming.domain.subscription.model.entities.Subscription;
-import br.com.pds.streaming.media.model.entities.Collectable;
 import br.com.pds.streaming.media.model.entities.History;
+import br.com.pds.streaming.media.model.entities.Media;
 import br.com.pds.streaming.media.model.entities.Rating;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,10 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -48,7 +45,7 @@ public class User implements UserDetails, Serializable {
     @DBRef
     private Set<Rating> ratings = new HashSet<>();
     @DBRef
-    private Set<Collectable> watchLaterList = new HashSet<>();
+    private List<Media> watchLaterList = new ArrayList<>();
     @DBRef
     private History history;
 
@@ -63,17 +60,17 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public boolean isAccountNonExpired() {
-        return isActive; // Implement as needed
+        return isActive;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isActive; // Implement as needed
+        return isActive;
     }
 
     @Override
     public boolean isEnabled() {
-        return isActive; // Implement as needed
+        return isActive;
     }
 
     public User(String email, String username, String password) {
@@ -97,6 +94,6 @@ public class User implements UserDetails, Serializable {
         this.roles = roles;
         this.subscription = subscription;
         this.ratings = new HashSet<>();
-        this.watchLaterList = new HashSet<>();
+        this.watchLaterList = new ArrayList<>();
     }
 }
