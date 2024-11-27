@@ -1,1 +1,5 @@
-import "HomepageNotLogged.css";
+import "./HomepageNotLogged.css";
+
+export default function HomepageNotLogged() {
+    
+}

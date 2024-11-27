@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
+import Logotype from "../components/Logotype";
 
 export default function Signup() {
     const [username, setUsername] = useState("");
