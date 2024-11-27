@@ -2,6 +2,7 @@ package br.com.pds.streaming.config.security;
 
 import br.com.pds.streaming.config.jwt.AuthEntryPointJwt;
 import br.com.pds.streaming.config.jwt.AuthTokenFilter;
+import br.com.pds.streaming.config.subscriptionValidation.SubscriptionFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +34,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    public SubscriptionFilter subscriptionFilter() {
+        return new SubscriptionFilter();
+    }
+
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration builder) throws Exception {
         return builder.getAuthenticationManager();
 
@@ -42,7 +48,7 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizationRequests -> {
             authorizationRequests
-                    .requestMatchers("/auth/signin", "/auth/signup").permitAll()
+                    .requestMatchers("/auth/signin", "/auth/signup", "/api/subscriptions").permitAll()
 //                    .requestMatchers(HttpMethod.GET, "/api/users", "/api/archives", "/api/files").hasRole("ADMIN")
 //                    .requestMatchers(HttpMethod.GET, "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows", "/api/ask-llm-quiz", "/api/ask-llm", "/api/ask-llm-quiz").hasAnyRole("ADMIN", "USER_PREMIUM")
 //                    .requestMatchers(HttpMethod.POST, "/api/archives", "/api/files", "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
@@ -62,6 +68,7 @@ public class SecurityConfig {
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(subscriptionFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

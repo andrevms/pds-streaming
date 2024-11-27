@@ -8,13 +8,18 @@ import br.com.pds.streaming.authentication.repositories.RoleRepository;
 import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.domain.subscription.model.entities.Subscription;
 import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionStatus;
+import br.com.pds.streaming.domain.subscription.repositories.SubscriptionRepository;
+import br.com.pds.streaming.domain.subscription.services.SubscriptionService;
 import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,32 +76,42 @@ public class UserService implements UserDetailsService {
 
         user.setSubscription(subscription);
 
-        var role = new Role(RoleType.ROLE_USER_PREMIUM.toString());
-
-        user = updateUserRole(user, role);
+        user = updateUserRole(user);
         return mapper.convertValue(userRepository.save(user), UserDTO.class);
     }
 
-    private User updateUserRole(User user, Role role) {
+    private User updateUserRole(User user) {
 
-        if (user.getSubscription().getStatus().equals(SubscriptionStatus.ACTIVE)) {
+        var subscriptionStatus = user.getSubscription().getStatus();
 
-            var entityRole = roleRepository.findByName(RoleType.valueOf(role.getName()).toString())
-                    .orElseGet(() -> {
-                        Role newRole = new Role(RoleType.valueOf(role.getName()).toString());
-                        return roleRepository.save(newRole);
-                    });
+        if (subscriptionStatus.equals(SubscriptionStatus.ACTIVE)) {
 
-            Set<Role> roles = new HashSet<>(List.of(entityRole));
-
+            var role = new Role(RoleType.ROLE_USER_PREMIUM.toString());
+            Set<Role> roles = getRoles(role);
             user.setRoles(roles);
             return userRepository.save(user);
         }
+        else {
 
-        throw new RuntimeException();
+            var role = new Role(RoleType.ROLE_PENDING_USER.toString());
+            Set<Role> roles = getRoles(role);
+            user.setRoles(roles);
+            return userRepository.save(user);
+        }
     }
 
     public void deleteById(String id) {
         userRepository.deleteById(id);
+    }
+
+    private Set<Role> getRoles(Role role) {
+        var entityRole = roleRepository.findByName(RoleType.valueOf(role.getName()).toString())
+                .orElseGet(() -> {
+                    Role newRole = new Role(RoleType.valueOf(role.getName()).toString());
+                    return roleRepository.save(newRole);
+                });
+
+        Set<Role> roles = new HashSet<>(List.of(entityRole));
+        return roles;
     }
 }
