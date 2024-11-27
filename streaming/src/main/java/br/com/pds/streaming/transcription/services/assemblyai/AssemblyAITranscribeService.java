@@ -1,5 +1,7 @@
 package br.com.pds.streaming.transcription.services.assemblyai;
 
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
+import br.com.pds.streaming.exceptions.TranscriptionFailedException;
 import br.com.pds.streaming.transcription.model.dto.requests.TranscriptionRequest;
 import br.com.pds.streaming.transcription.model.dto.responses.TranscriptionResponse;
 import br.com.pds.streaming.transcription.services.TranscriptionService;
@@ -18,7 +20,7 @@ public class AssemblyAITranscribeService implements TranscriptionService {
     private AssemblyAI assemblyAIClient;
 
     @Override
-    public TranscriptionResponse transcribe(TranscriptionRequest transcriptionRequest) {
+    public TranscriptionResponse transcribe(TranscriptionRequest transcriptionRequest) throws TranscriptionFailedException, EntityNotFoundException {
 
         String source = transcriptionRequest.getSource();
 
@@ -26,10 +28,10 @@ public class AssemblyAITranscribeService implements TranscriptionService {
         Transcript transcript = assemblyAIClient.transcripts().transcribe(source, params);
 
         if (transcript.getStatus() == TranscriptStatus.ERROR) {
-            throw new RuntimeException("Transcript failed with error: " + transcript.getError().get());
+            throw new TranscriptionFailedException(transcript);
         }
 
         assemblyAIClient.transcripts().waitUntilReady(transcript.getId());
-        return new TranscriptionResponse(transcript.getText().get());
+        return new TranscriptionResponse(transcript.getText().orElseThrow(() -> new EntityNotFoundException("Transcription response text")));
     }
 }

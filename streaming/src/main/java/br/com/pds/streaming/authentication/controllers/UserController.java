@@ -2,7 +2,7 @@ package br.com.pds.streaming.authentication.controllers;
 
 import br.com.pds.streaming.authentication.model.dto.domain.UserDTO;
 import br.com.pds.streaming.authentication.services.UserService;
-import br.com.pds.streaming.exceptions.UserNotFoundException;
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +22,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> findById(@PathVariable String id) throws UserNotFoundException {
+    public ResponseEntity<UserDTO> findById(@PathVariable String id) throws EntityNotFoundException {
         return ResponseEntity.ok(userService.findById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@RequestBody UserDTO businessUserDTO, @PathVariable String id) throws UserNotFoundException {
+    public ResponseEntity<UserDTO> update(@RequestBody UserDTO businessUserDTO, @PathVariable String id) throws EntityNotFoundException {
         return ResponseEntity.ok(userService.update(businessUserDTO, id));
     }
 

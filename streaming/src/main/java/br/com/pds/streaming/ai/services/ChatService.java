@@ -1,5 +1,7 @@
 package br.com.pds.streaming.ai.services;
 
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
+import br.com.pds.streaming.exceptions.TranscriptionFailedException;
 import br.com.pds.streaming.transcription.model.dto.Transcription;
 import br.com.pds.streaming.transcription.model.dto.requests.TranscriptionRequest;
 import br.com.pds.streaming.transcription.model.dto.responses.TranscriptionResponse;
@@ -28,7 +30,7 @@ public class ChatService {
     @Autowired
     TranscriptionRepository transcriptionRepository;
 
-    public String askLlm(String subject, String source) {
+    public String askLlm(String subject, String source) throws TranscriptionFailedException, EntityNotFoundException {
 
         Transcription transcription = transcriptionRepository.getTranscriptionBySource(source);
 
@@ -61,7 +63,7 @@ public class ChatService {
         return sb.toString().replace("\n", "<br>");
     }
 
-    public String askLlmquiz(String subject, String source) {
+    public String askLlmquiz(String subject, String source) throws TranscriptionFailedException, EntityNotFoundException {
         Transcription transcription = transcriptionRepository.getTranscriptionBySource(source);
 
         StringBuilder sb = new StringBuilder();

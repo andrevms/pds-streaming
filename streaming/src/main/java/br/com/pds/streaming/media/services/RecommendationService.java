@@ -1,7 +1,7 @@
 package br.com.pds.streaming.media.services;
 
 import br.com.pds.streaming.authentication.services.UserService;
-import br.com.pds.streaming.exceptions.UserNotFoundException;
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.media.model.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class RecommendationService {
     @Autowired
     private TvShowService tvShowService;
 
-    public List<MediaDTO> recommendMoviesAndShows(String userId) throws UserNotFoundException {
+    public List<MediaDTO> recommendMoviesAndShows(String userId) throws EntityNotFoundException {
 
         var user = userService.findById(userId);
 

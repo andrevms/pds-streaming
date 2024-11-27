@@ -57,8 +57,8 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Invalid file extension for a video", e.getMessage(), request.getRequestURI()));
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ResponseError> userNotFound(UserNotFoundException e, HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseError(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "User not found", e.getMessage(), request.getRequestURI()));
+    @ExceptionHandler(TranscriptionFailedException.class)
+    public ResponseEntity<ResponseError> transcriptionFailed(TranscriptionFailedException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Transcription failed", e.getMessage(), request.getRequestURI()));
     }
 }

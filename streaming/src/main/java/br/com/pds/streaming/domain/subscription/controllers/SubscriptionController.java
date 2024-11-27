@@ -1,8 +1,8 @@
 package br.com.pds.streaming.domain.subscription.controllers;
 
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.exceptions.InvalidCreditCardNumberException;
 import br.com.pds.streaming.exceptions.InvalidSubscriptionTypeException;
-import br.com.pds.streaming.exceptions.UserNotFoundException;
 import br.com.pds.streaming.domain.subscription.model.dto.RequestSubscriptionDTO;
 import br.com.pds.streaming.domain.subscription.services.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class SubscriptionController {
     private SubscriptionService subscriptionServices;
 
     @PostMapping
-    public ResponseEntity<?> subscribe(@RequestBody RequestSubscriptionDTO requestSubscriptionDTO) throws UserNotFoundException, InvalidCreditCardNumberException, InvalidSubscriptionTypeException {
+    public ResponseEntity<?> subscribe(@RequestBody RequestSubscriptionDTO requestSubscriptionDTO) throws EntityNotFoundException, InvalidCreditCardNumberException, InvalidSubscriptionTypeException {
         subscriptionServices.subscribeUser(requestSubscriptionDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Subscription created successfully.");
     }
