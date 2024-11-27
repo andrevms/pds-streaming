@@ -2,11 +2,11 @@ package br.com.pds.streaming.mapper.modelMapper.config;
 
 import br.com.pds.streaming.authentication.model.dto.domain.UserDTO;
 import br.com.pds.streaming.authentication.model.entities.User;
+import br.com.pds.streaming.exceptions.MissingOrInvalidMediaException;
 import br.com.pds.streaming.media.model.dto.*;
 import br.com.pds.streaming.media.model.entities.*;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,21 +20,25 @@ public class ModelMapperConfig {
 
         Converter<HistoryNode, HistoryNodeDTO> historyNodeDTOConverter = ctx -> {
             HistoryNode source = ctx.getSource();
-            if (source.getMedia() instanceof Movie) {
-                HistoryNodeDTO<MovieDTO> destination = new HistoryNodeDTO<>();
-                destination.setId(source.getId());
-                destination.setMedia(modelMapper.map(source.getMedia(), MovieDTO.class));
-                destination.setCurrentTime(source.getCurrentTime());
-                return destination;
-            } else if (source.getMedia() instanceof Episode) {
-                HistoryNodeDTO<EpisodeDTO> destination = new HistoryNodeDTO<>();
-                destination.setId(source.getId());
-                destination.setMedia(modelMapper.map(source.getMedia(), EpisodeDTO.class));
-                destination.setCurrentTime(source.getCurrentTime());
-                return destination;
+            if (source.getMedia() == null) {
+                throw new MissingOrInvalidMediaException(source);
+            } else {
+                if (source.getMedia() instanceof Movie) {
+                    HistoryNodeDTO<MovieDTO> destination = new HistoryNodeDTO<>();
+                    destination.setId(source.getId());
+                    destination.setMedia(modelMapper.map(source.getMedia(), MovieDTO.class));
+                    destination.setCurrentTime(source.getCurrentTime());
+                    return destination;
+                } else if (source.getMedia() instanceof Episode) {
+                    HistoryNodeDTO<EpisodeDTO> destination = new HistoryNodeDTO<>();
+                    destination.setId(source.getId());
+                    destination.setMedia(modelMapper.map(source.getMedia(), EpisodeDTO.class));
+                    destination.setCurrentTime(source.getCurrentTime());
+                    return destination;
+                } else {
+                    throw new MissingOrInvalidMediaException(source);
+                }
             }
-
-            throw new RuntimeException("History node with id '" + source.getId() + "' does not have an episode or movie.");
         };
 
         modelMapper.createTypeMap(Episode.class, EpisodeDTO.class).addMapping(Episode::getId, EpisodeDTO::setId);
@@ -60,7 +64,7 @@ public class ModelMapperConfig {
 
         modelMapper.createTypeMap(User.class, UserDTO.class).addMapping(User::getId, UserDTO::setId);
         modelMapper.createTypeMap(UserDTO.class, User.class).addMapping(UserDTO::getId, User::setId);
-        
+
         return modelMapper;
     }
 }
