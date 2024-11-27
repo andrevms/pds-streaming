@@ -4,7 +4,9 @@ import br.com.pds.streaming.authentication.model.dto.domain.UserDTO;
 import br.com.pds.streaming.authentication.model.entities.User;
 import br.com.pds.streaming.media.model.dto.*;
 import br.com.pds.streaming.media.model.entities.*;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,14 +18,36 @@ public class ModelMapperConfig {
 
         ModelMapper modelMapper = new ModelMapper();
 
+        Converter<HistoryNode, HistoryNodeDTO> historyNodeDTOConverter = ctx -> {
+            HistoryNode source = ctx.getSource();
+            if (source.getMedia() instanceof Movie) {
+                HistoryNodeDTO<MovieDTO> destination = new HistoryNodeDTO<>();
+                destination.setId(source.getId());
+                destination.setMedia(modelMapper.map(source.getMedia(), MovieDTO.class));
+                destination.setCurrentTime(source.getCurrentTime());
+                return destination;
+            } else if (source.getMedia() instanceof Episode) {
+                HistoryNodeDTO<EpisodeDTO> destination = new HistoryNodeDTO<>();
+                destination.setId(source.getId());
+                destination.setMedia(modelMapper.map(source.getMedia(), EpisodeDTO.class));
+                destination.setCurrentTime(source.getCurrentTime());
+                return destination;
+            }
+
+            throw new RuntimeException("History node with id '" + source.getId() + "' does not have an episode or movie.");
+        };
+
         modelMapper.createTypeMap(Episode.class, EpisodeDTO.class).addMapping(Episode::getId, EpisodeDTO::setId);
         modelMapper.createTypeMap(EpisodeDTO.class, Episode.class).addMapping(EpisodeDTO::getId, Episode::setId);
 
         modelMapper.createTypeMap(History.class, HistoryDTO.class).addMapping(History::getId, HistoryDTO::setId);
         modelMapper.createTypeMap(HistoryDTO.class, History.class).addMapping(HistoryDTO::getId, History::setId);
 
-        modelMapper.createTypeMap(HistoryNode.class, HistoryNodeDTO.class).addMapping(HistoryNode::getId, HistoryNodeDTO::setId);
+        modelMapper.createTypeMap(HistoryNode.class, HistoryNodeDTO.class).setConverter(historyNodeDTOConverter);
         modelMapper.createTypeMap(HistoryNodeDTO.class, HistoryNode.class).addMapping(HistoryNodeDTO::getId, HistoryNode::setId);
+
+//        modelMapper.createTypeMap(Media.class, MediaDTO.class).addMapping(Media::getId, MediaDTO::setId);
+//        modelMapper.createTypeMap(MediaDTO.class, Media.class).addMapping(MediaDTO::getId, Media::setId);
 
         modelMapper.createTypeMap(Movie.class, MovieDTO.class).addMapping(Movie::getId, MovieDTO::setId);
         modelMapper.createTypeMap(MovieDTO.class, Movie.class).addMapping(MovieDTO::getId, Movie::setId);
@@ -36,20 +60,7 @@ public class ModelMapperConfig {
 
         modelMapper.createTypeMap(User.class, UserDTO.class).addMapping(User::getId, UserDTO::setId);
         modelMapper.createTypeMap(UserDTO.class, User.class).addMapping(UserDTO::getId, User::setId);
-
-//        Converter<HistoryNode, HistoryNodeDTO> historyNodeConverter = ctx -> {
-//            HistoryNode source = ctx.getSource();
-//            if (source.getEpisode() != null) {
-//                return modelMapper.map(source, HistoryNodeWithEpisodeDTO.class);
-//            }
-//            if (source.getMovie() != null) {
-//                return modelMapper.map(source, HistoryNodeWithMovieDTO.class);
-//            }
-//            throw new RuntimeException("History node with id '" + source.getId() + "' does not have an episode or movie.");
-//        };
-
-//        modelMapper.createTypeMap(HistoryNode.class, HistoryNodeDTO.class).setConverter(historyNodeConverter);
-
+        
         return modelMapper;
     }
 }

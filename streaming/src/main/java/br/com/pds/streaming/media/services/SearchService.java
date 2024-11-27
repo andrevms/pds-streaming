@@ -3,9 +3,7 @@ package br.com.pds.streaming.media.services;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import br.com.pds.streaming.media.model.dto.MediaDTO;
 import br.com.pds.streaming.media.model.dto.MovieDTO;
-import br.com.pds.streaming.media.model.dto.SearchResultDTO;
 import br.com.pds.streaming.media.model.dto.TvShowDTO;
-import io.micrometer.core.instrument.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +13,16 @@ import java.util.List;
 @Service
 public class SearchService {
 
-    @Autowired
     private MovieService movieService;
-    @Autowired
     private TvShowService tvShowService;
-    @Autowired
     private MyModelMapper mapper;
+
+    @Autowired
+    public SearchService(MovieService movieService, TvShowService tvShowService, MyModelMapper mapper) {
+        this.movieService = movieService;
+        this.tvShowService = tvShowService;
+        this.mapper = mapper;
+    }
 
     public List<? extends MediaDTO> search(String title) {
 

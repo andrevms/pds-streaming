@@ -14,6 +14,7 @@ import br.com.pds.streaming.media.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -35,22 +36,12 @@ public class HistoryNodeService {
     }
 
     public List<HistoryNodeDTO> findAll() {
-
-        var historyNodes = historyNodeRepository.findAll();
-
-        return historyNodes.stream()
-                .map(node -> mapper.convertValue(node, HistoryNodeDTO.class))
-                .toList();
+        return historyNodeRepository.findAll().stream().map(node -> mapper.convertValue(node, HistoryNodeDTO.class))/*.sorted(Collections.reverseOrder())*/.toList();
     }
 
 
     public List<HistoryNodeDTO> findByHistoryId(String historyId) {
-
-        var historyNodes = historyNodeRepository.findByHistoryId(historyId);
-
-        return historyNodes.stream()
-                .map(node -> mapper.convertValue(node, HistoryNodeDTO.class))
-                .toList();
+        return historyNodeRepository.findByHistoryId(historyId).stream().map(node -> mapper.convertValue(node, HistoryNodeDTO.class))/*.sorted(Collections.reverseOrder())*/.toList();
     }
 
     public HistoryNodeDTO findById(String id) throws EntityNotFoundException {
