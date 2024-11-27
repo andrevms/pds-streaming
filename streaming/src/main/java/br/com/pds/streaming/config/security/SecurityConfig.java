@@ -48,7 +48,7 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizationRequests -> {
             authorizationRequests
-                    .requestMatchers("/auth/signin", "/auth/signup", "/api/subscriptions").permitAll()
+                    .requestMatchers("/auth/signin", "/auth/signup").permitAll()
 //                    .requestMatchers(HttpMethod.GET, "/api/users", "/api/archives", "/api/files").hasRole("ADMIN")
 //                    .requestMatchers(HttpMethod.GET, "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows", "/api/ask-llm-quiz", "/api/ask-llm", "/api/ask-llm-quiz").hasAnyRole("ADMIN", "USER_PREMIUM")
 //                    .requestMatchers(HttpMethod.POST, "/api/archives", "/api/files", "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")

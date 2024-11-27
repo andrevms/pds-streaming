@@ -36,4 +36,14 @@ public class SearchController {
         return ResponseEntity.ok().body(searchService.searchByCategory(category));
     }
 
+    @GetMapping(value = "/random-content/movies")
+    public ResponseEntity<?> getRandomMovies(@RequestParam(name = "count", defaultValue = "1") int count) {
+        return ResponseEntity.ok().body(searchService.getRandomMovies(count));
+    }
+
+    @GetMapping(value = "/random-content/tvShows")
+    public ResponseEntity<?> getRandomTvShows(@RequestParam(name = "count", defaultValue = "1") int count) {
+        return ResponseEntity.ok().body(searchService.getRandomTvShows(count));
+    }
+
 }
