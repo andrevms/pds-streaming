@@ -1,4 +1,4 @@
-package br.com.pds.streaming.transcription.repository;
+package br.com.pds.streaming.transcription.repositories;
 
 import br.com.pds.streaming.transcription.model.dto.Transcription;
 import org.springframework.data.mongodb.repository.MongoRepository;

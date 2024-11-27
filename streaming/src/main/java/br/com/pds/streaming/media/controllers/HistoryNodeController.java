@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping({"/api/historynode", "/api/historynodes", "/api/history-node", "/api/history-nodes", "/api/history_node", "/api/history_nodes"})
+@RequestMapping({"/api/historynodes", "/api/history-nodes", "/api/history_nodes"})
 public class HistoryNodeController {
 
     @Autowired
@@ -36,11 +36,11 @@ public class HistoryNodeController {
     public ResponseEntity<HistoryNodeDTO> insert(@RequestBody HistoryNodeDTO historyNodeDTO, @RequestParam(name = "historyId") String historyId, @RequestParam(name = "episodeId", required = false) String episodeId, @RequestParam(name = "movieId", required = false) String movieId) throws EntityNotFoundException {
 
         if (episodeId != null) {
-            return new ResponseEntity<>(historyNodeService.insert(episodeId, historyNodeDTO, historyId), HttpStatus.OK);
+            return new ResponseEntity<>(historyNodeService.insert(episodeId, historyNodeDTO, historyId), HttpStatus.CREATED);
         }
 
         if (movieId != null) {
-            return new ResponseEntity<>(historyNodeService.insert(historyNodeDTO, movieId, historyId), HttpStatus.OK);
+            return new ResponseEntity<>(historyNodeService.insert(historyNodeDTO, movieId, historyId), HttpStatus.CREATED);
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

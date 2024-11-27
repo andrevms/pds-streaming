@@ -40,21 +40,16 @@ public class AmazonS3Service implements CloudStorageService {
     }
 
     @Override
-    public void deleteFile(String source) throws EntityNotFoundException, InvalidSourceException {
+    public void deleteFile(String source) {
 
-        if (source.indexOf(BASE_URL) == -1) {
-            throw new InvalidSourceException("Invalid source.");
-        }
         String key = source.replaceFirst(BASE_URL, "");
 
-        if (!fileExists(key)) {
-            throw new EntityNotFoundException("File not found.");
+        if (fileExists(key)) {
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName).key(key).build();
+
+            s3Client.deleteObject(deleteObjectRequest);
         }
-
-        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                .bucket(bucketName).key(key).build();
-
-        s3Client.deleteObject(deleteObjectRequest);
     }
 
     public boolean fileExists(String key) {

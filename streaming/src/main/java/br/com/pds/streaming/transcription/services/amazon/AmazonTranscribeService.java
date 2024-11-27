@@ -2,7 +2,7 @@ package br.com.pds.streaming.transcription.services.amazon;
 
 import br.com.pds.streaming.transcription.model.dto.requests.TranscriptionRequest;
 import br.com.pds.streaming.transcription.model.dto.responses.TranscriptionResponse;
-import br.com.pds.streaming.transcription.services.TranscriptionServices;
+import br.com.pds.streaming.transcription.services.TranscriptionService;
 import com.amazonaws.services.transcribe.AmazonTranscribe;
 import com.amazonaws.services.transcribe.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,7 +21,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
-public class AmazonTranscribeService implements TranscriptionServices {
+public class AmazonTranscribeService implements TranscriptionService {
 
     @Autowired
     private S3Client s3Client;

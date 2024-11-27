@@ -2,8 +2,8 @@ package br.com.pds.streaming.media.model.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,21 +15,15 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Document(collection = "movies")
-public class Movie implements Collectable, Serializable {
+public class Movie extends Media implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Id
-    private String id;
-    private String title;
-    private String description;
     private String videoUrl;
-    private String thumbnailUrl;
-    private String animationUrl;
-
-    private List<String> categories = new ArrayList<>();
+    private List<String> categories;
 
     @DBRef
     private List<Rating> ratings = new ArrayList<>();

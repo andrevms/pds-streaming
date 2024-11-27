@@ -16,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Document(collection = "roles")
 @EqualsAndHashCode
-public class Role implements GrantedAuthority,Serializable {
+public class Role implements GrantedAuthority, Serializable {
 
     @Id
     private String id;

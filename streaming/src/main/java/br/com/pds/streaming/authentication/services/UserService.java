@@ -8,7 +8,7 @@ import br.com.pds.streaming.authentication.repositories.RoleRepository;
 import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.domain.subscription.model.entities.Subscription;
 import br.com.pds.streaming.domain.subscription.model.enums.SubscriptionStatus;
-import br.com.pds.streaming.exceptions.UserNotFoundException;
+import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.mapper.modelMapper.MyModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -44,14 +44,14 @@ public class UserService implements UserDetailsService {
         return mapper.convertList(userRepository.findAll(), UserDTO.class);
     }
 
-    public UserDTO findById(String id) throws UserNotFoundException {
-        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    public UserDTO findById(String id) throws EntityNotFoundException {
+        var user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(User.class));
         return mapper.convertValue(user, UserDTO.class);
     }
 
-    public UserDTO update(UserDTO userDTO, String id) throws UserNotFoundException {
+    public UserDTO update(UserDTO userDTO, String id) throws EntityNotFoundException {
 
-        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        var user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(User.class));
         var subscription = mapper.convertValue(userDTO.getSubscription(), Subscription.class);
 
         user.setEmail(userDTO.getEmail());
@@ -61,14 +61,13 @@ public class UserService implements UserDetailsService {
         user.setSubscription(subscription);
         user.setRatings(user.getRatings());
         user.setWatchLaterList(user.getWatchLaterList());
-//        user.setMovies(user.getMovies());
 
         return mapper.convertValue(userRepository.save(user), UserDTO.class);
     }
 
-    public UserDTO updateUserSubscription(String id, Subscription subscription) throws UserNotFoundException {
+    public UserDTO updateUserSubscription(String id, Subscription subscription) throws EntityNotFoundException {
 
-        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        var user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(User.class));
 
         user.setSubscription(subscription);
 

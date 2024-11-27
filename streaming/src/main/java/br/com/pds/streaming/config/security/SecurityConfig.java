@@ -5,6 +5,7 @@ import br.com.pds.streaming.config.jwt.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -42,6 +43,17 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorizationRequests -> {
             authorizationRequests
                     .requestMatchers("/auth/signin", "/auth/signup").permitAll()
+//                    .requestMatchers(HttpMethod.GET, "/api/users", "/api/archives", "/api/files").hasRole("ADMIN")
+//                    .requestMatchers(HttpMethod.GET, "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows", "/api/ask-llm-quiz", "/api/ask-llm", "/api/ask-llm-quiz").hasAnyRole("ADMIN", "USER_PREMIUM")
+//                    .requestMatchers(HttpMethod.POST, "/api/archives", "/api/files", "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
+//                    .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+//                    .requestMatchers(HttpMethod.PUT, "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
+//                    .requestMatchers(HttpMethod.PUT, "/api/users").permitAll()
+//                    .requestMatchers(HttpMethod.PATCH, "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
+//                    .requestMatchers(HttpMethod.PATCH, "/api/users").permitAll()
+//                    .requestMatchers(HttpMethod.DELETE, "/api/archives", "/api/files", "/api/movies", "/api/episodes", "/api/seasons", "/api/tvshows", "/api/tv-shows", "/api/tv_shows").hasRole("ADMIN")
+//                    .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+//                    .requestMatchers(HttpMethod.POST, "/api/subscriptions").hasAnyRole("ADMIN", "USER_PREMIUM", "PENDING_USER")
                     .anyRequest().permitAll();
         });
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -50,7 +62,7 @@ public class SecurityConfig {
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        return (SecurityFilterChain)http.build();
+        return http.build();
     }
 
     @Bean
