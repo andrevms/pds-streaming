@@ -47,6 +47,7 @@ public class SubscriptionFilter extends OncePerRequestFilter {
 
             if (subscriptionService.subscriptionIsExpired(userDetails)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Subscription has expired");
                 return;
             }
 

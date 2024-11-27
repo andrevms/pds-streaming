@@ -31,7 +31,6 @@ public class SubscriptionService {
     @Autowired
     private SubscriptionRepository subscriptionRepository;
     @Autowired
-    @Lazy
     private UserService userService;
     @Qualifier("stonePaymentServiceImpl")
     @Autowired
@@ -67,8 +66,6 @@ public class SubscriptionService {
         subscription.setStatus(status);
         subscriptionRepository.save(subscription);
     }
-
-
 
     private Subscription createSubscription(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException {
 
