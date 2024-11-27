@@ -17,13 +17,23 @@ public class SearchController {
     @Autowired
     private SearchService searchService;
 
-    @GetMapping
-    public ResponseEntity<?> search(@RequestParam(name = "title") String title) {
+    @GetMapping(value = "/title")
+    public ResponseEntity<?> searchByTitle(@RequestParam(name = "title") String title) {
 
         if (title == null || title.isEmpty()) {
             return ResponseEntity.badRequest().body("Title can't be empty");
         }
 
-        return ResponseEntity.ok().body(searchService.search(title));
+        return ResponseEntity.ok().body(searchService.searchByTitle(title));
     }
+
+    @GetMapping(value = "/category")
+    public ResponseEntity<?> searchByCategory(@RequestParam(name = "category") String category) {
+        if (category == null || category.isEmpty()) {
+            return ResponseEntity.badRequest().body("Category can't be empty");
+        }
+
+        return ResponseEntity.ok().body(searchService.searchByCategory(category));
+    }
+
 }

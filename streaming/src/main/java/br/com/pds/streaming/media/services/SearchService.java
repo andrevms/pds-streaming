@@ -24,7 +24,7 @@ public class SearchService {
         this.mapper = mapper;
     }
 
-    public List<? extends MediaDTO> search(String title) {
+    public List<? extends MediaDTO> searchByTitle(String title) {
 
         List<MediaDTO> results = new ArrayList<>();
 
@@ -37,6 +37,29 @@ public class SearchService {
         }
 
         var tvShows = tvShowService.findTvShowByTitle(title);
+
+        if (tvShows != null) {
+            tvShows.forEach(tvShow -> {
+                results.add(mapper.convertValue(tvShow, TvShowDTO.class));
+            });
+        }
+
+        return results;
+    }
+
+    public List<? extends MediaDTO> searchByCategory(String category) {
+
+        List<MediaDTO> results = new ArrayList<>();
+
+        var movies = movieService.findMovieByCategory(category);
+
+        if (movies != null) {
+            movies.forEach(movie -> {
+                results.add(mapper.convertValue(movie, MovieDTO.class));
+            });
+        }
+
+        var tvShows = tvShowService.findTvShowByCategory(category);
 
         if (tvShows != null) {
             tvShows.forEach(tvShow -> {
