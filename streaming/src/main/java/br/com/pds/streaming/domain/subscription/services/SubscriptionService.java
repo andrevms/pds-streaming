@@ -1,5 +1,11 @@
 package br.com.pds.streaming.domain.subscription.services;
 
+import br.com.pds.streaming.authentication.controllers.UserController;
+import br.com.pds.streaming.authentication.model.entities.Role;
+import br.com.pds.streaming.authentication.model.entities.User;
+import br.com.pds.streaming.authentication.model.enums.RoleType;
+import br.com.pds.streaming.authentication.repositories.RoleRepository;
+import br.com.pds.streaming.authentication.repositories.UserRepository;
 import br.com.pds.streaming.authentication.services.UserService;
 import br.com.pds.streaming.domain.subscription.model.dto.RequestSubscriptionDTO;
 import br.com.pds.streaming.domain.subscription.model.entities.Subscription;
@@ -11,10 +17,13 @@ import br.com.pds.streaming.exceptions.InvalidCreditCardNumberException;
 import br.com.pds.streaming.exceptions.InvalidSubscriptionTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class SubscriptionService {
@@ -26,6 +35,10 @@ public class SubscriptionService {
     @Qualifier("stonePaymentServiceImpl")
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Transactional
     public void subscribeUser(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException, InvalidCreditCardNumberException, EntityNotFoundException {
@@ -39,14 +52,19 @@ public class SubscriptionService {
 
         Subscription subscription = createSubscription(requestSubscriptionDTO);
 
-        System.out.println("Subscription started");
         subscription.setUserId(user.getId());
         subscription = subscriptionRepository.save(subscription);
-        System.out.println("Subscription ended");
 
-        System.out.println("User subscribed");
         userService.updateUserSubscription(user.getId(), subscription);
-        System.out.println("User subscribed");
+    }
+
+    @Transactional
+    public void updateSubscriptionStatus(String subscriptionId, SubscriptionStatus status) throws EntityNotFoundException {
+
+        var subscription = subscriptionRepository.findById(subscriptionId).orElseThrow(() -> new EntityNotFoundException(subscriptionId));
+
+        subscription.setStatus(status);
+        subscriptionRepository.save(subscription);
     }
 
     private Subscription createSubscription(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException {
@@ -71,4 +89,24 @@ public class SubscriptionService {
         );
     }
 
+    public boolean subscriptionIsExpired(User user) throws EntityNotFoundException {
+
+        if (!user.getSubscription().getEndDate().isBefore(LocalDate.now())) {
+            return false;
+        }
+
+        var subscriptionId = user.getSubscription().getId();
+        updateSubscriptionStatus(subscriptionId, SubscriptionStatus.EXPIRED);
+
+        user = userRepository.findById(user.getId()).orElseThrow(() -> new EntityNotFoundException(User.class));
+
+        var subs = subscriptionRepository.findById(user.getSubscription().getId()).orElseThrow(() -> new EntityNotFoundException(Subscription.class));
+        user.setSubscription(subs);
+        var role = roleRepository.findByName(RoleType.ROLE_PENDING_USER.toString()).orElseThrow(() -> new EntityNotFoundException(Role.class));
+        user.setRoles(new HashSet<>(List.of(role)));
+
+        userRepository.save(user);
+
+        return true;
+    }
 }

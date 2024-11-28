@@ -11,4 +11,8 @@ public interface TvShowRepository extends MongoRepository<TvShow, String> {
 
     @Query("{ 'title': { $regex: ?0, $options: 'i' } }")
     List<TvShow> findByTvShowTitleContainingIgnoreCase(String title);
+
+    @Query("{ 'categories': { $in: [?0] } }")
+    List<TvShow> findTvShowsByCategory(String category);
+
 }

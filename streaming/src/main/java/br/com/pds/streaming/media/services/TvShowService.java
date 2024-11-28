@@ -194,11 +194,14 @@ public class TvShowService {
     }
 
     public List<TvShowDTO> findTvShowByTitle(String title) {
-
         var tvShows = tvShowRepository.findByTvShowTitleContainingIgnoreCase(title);
-
         var tvShowDTOS = mapper.convertList(tvShows, TvShowDTO.class);
+        return tvShowDTOS;
+    }
 
+    public List<TvShowDTO> findTvShowByCategory(String category) {
+        var tvShows = tvShowRepository.findTvShowsByCategory(category);
+        var tvShowDTOS = mapper.convertList(tvShows, TvShowDTO.class);
         return tvShowDTOS;
     }
 }
