@@ -17,7 +17,7 @@ public class TranscriptionController {
     @Autowired
     private TranscriptionService transcriptionService;
 
-    @PostMapping("/transcribe")
+    @GetMapping("/transcribe")
     public TranscriptionResponse transcribe(@RequestBody TranscriptionRequest transcriptionRequest) throws TranscriptionFailedException, EntityNotFoundException {
         return transcriptionService.transcribe(transcriptionRequest);
     }
