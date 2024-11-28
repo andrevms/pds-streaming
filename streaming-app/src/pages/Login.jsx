@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Importar o hook useNavigate
 import { useOutletContext } from "react-router-dom";
 import "./Login.css";
 
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
     const { updateTitle } = useOutletContext();
+    const navigate = useNavigate(); // Hook para navegação
 
     const loginUser = (data) => {
         localStorage.setItem("username", data.username);
@@ -36,6 +37,10 @@ export default function Login() {
             .then((data) => {
                 console.log("Success:", data);
                 loginUser(data);
+
+                if (data.roles.includes("ROLE_PENDING_USER")) {
+                    navigate("/subscription");
+                }
             })
             .catch((error) => {
                 console.error("Error:", error);
