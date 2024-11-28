@@ -9,6 +9,7 @@ export default function Signup() {
     const [repeatedPassword, setRepeatedPassword] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const role = "ROLE_PENDING_USER";
 
     const { updateTitle } = useOutletContext();
 
@@ -25,7 +26,8 @@ export default function Signup() {
                 email,
                 password,
                 firstName,
-                lastName
+                lastName,
+                role
             }),
         })
             .then((response) => {
