@@ -13,6 +13,11 @@ export default function Signup() {
 
     const { updateTitle } = useOutletContext();
 
+    const registerUser = (data) => {
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("roles", JSON.stringify(data.roles));
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -38,6 +43,7 @@ export default function Signup() {
             })
             .then((data) => {
                 console.log("Success:", data);
+                registerUser(data);
             })
             .catch((error) => {
                 console.error("Error:", error);

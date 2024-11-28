@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import "./Login.css";
 
 export default function Login() {
@@ -7,6 +7,12 @@ export default function Login() {
     const [password, setPassword] = useState("");
 
     const { updateTitle } = useOutletContext();
+
+    const loginUser = (data) => {
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("jwtToken", data.jwtToken);
+        localStorage.setItem("roles", JSON.stringify(data.roles));
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -29,6 +35,7 @@ export default function Login() {
             })
             .then((data) => {
                 console.log("Success:", data);
+                loginUser(data);
             })
             .catch((error) => {
                 console.error("Error:", error);
