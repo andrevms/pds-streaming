@@ -185,4 +185,11 @@ public class MovieService {
 
         return mapper.convertList(movies, MovieDTO.class);
     }
+
+    public List<MovieDTO> findMovieByCategory(String category) {
+        var movies = movieRepository.findMoviesByCategory(category);
+
+        return mapper.convertList(movies, MovieDTO.class);
+    }
+
 }

@@ -2,6 +2,7 @@ package br.com.pds.streaming.config.security;
 
 import br.com.pds.streaming.config.jwt.AuthEntryPointJwt;
 import br.com.pds.streaming.config.jwt.AuthTokenFilter;
+import br.com.pds.streaming.config.subscriptionValidation.SubscriptionFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,11 @@ public class SecurityConfig {
     @Bean
     public AuthTokenFilter authTokenFilter() {
         return new AuthTokenFilter();
+    }
+
+    @Bean
+    public SubscriptionFilter subscriptionFilter() {
+        return new SubscriptionFilter();
     }
 
     @Bean
@@ -62,6 +68,7 @@ public class SecurityConfig {
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(subscriptionFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
