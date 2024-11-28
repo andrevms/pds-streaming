@@ -7,6 +7,7 @@ import Homepage from "./pages/Homepage.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import Subscription from "./pages/Subscription.jsx";
+import Watch from "./pages/Watch.jsx";
 
 const router = createBrowserRouter([
     {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
             {
                 path: "/subscription",
                 element: <Subscription />
+            },
+            {
+                path: "/watch/:mediaType/:mediaId",
+                element: <Watch />
             }
         ]
     },
