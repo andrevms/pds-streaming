@@ -6,12 +6,10 @@ export default function Logotype(props) {
     const color = isHovered ? "#a10505" : "#bb1111";
 
     const handleMouseEnter = () => {
-        console.log("a");
         setIsHovered(true);
     };
 
     const handleMouseLeave = () => {
-        console.log("b");
         setIsHovered(false);
     };
 
