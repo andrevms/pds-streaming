@@ -14,12 +14,12 @@ public class ChatAIController {
     @Autowired
     ChatService chatService;
 
-    @GetMapping("/ask-llm")
+    @PostMapping("/ask-llm")
     public String askLlm( @RequestBody SummarizeRequest content) throws TranscriptionFailedException, EntityNotFoundException {
         return chatService.askLlm(content.getSubject(), content.getDescription());
     }
 
-    @GetMapping("/ask-llm-quiz")
+    @PostMapping("/ask-llm-quiz")
     public String askLlmquiz( @RequestBody SummarizeRequest content) throws TranscriptionFailedException, EntityNotFoundException {
         return chatService.askLlmquiz(content.getSubject(), content.getDescription());
     }

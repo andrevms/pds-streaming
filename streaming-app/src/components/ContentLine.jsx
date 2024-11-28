@@ -5,20 +5,7 @@ import "./ContentLine.css";
 
 export default function ContentLine(props) {
     const [contents, setContents] = useState([]);
-    const [isHovered, setIsHovered] = useState(false);
-
-    const handleMouseEnter = () => {
-        setIsHovered(true);
-    };
-
-    const handleMouseLeave = () => {
-        setIsHovered(false);
-    };
-
-    const loadData = () => {
-
-    };
-
+    
     useEffect(() => {
         if (props.mediaType == `tvshow`) {
             loadTvShows().then((tvShows) => {
@@ -44,7 +31,7 @@ export default function ContentLine(props) {
     return (
         <div className="content-line">
             {contents.map((content) => (
-                <ContentCell onMouseOver={handleMouseEnter} onMouseLeave={handleMouseLeave} image={(isHovered && content.animationUrl) ? content.animationUrl : (content.thumbnailUrl || "https://placehold.jp/20/bb1111/ffffff/120x200.png?text=no+image")} />
+                <ContentCell thumbnail={content.thumbnailUrl} animation={content.animationUrl} />
             ))}
         </div>
     );
