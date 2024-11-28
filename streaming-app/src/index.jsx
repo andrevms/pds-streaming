@@ -31,7 +31,7 @@ const router = createBrowserRouter([
                 element: <Subscription />
             },
             {
-                path: "/watch",
+                path: "/watch/:mediaType/:mediaId",
                 element: <Watch />
             }
         ]

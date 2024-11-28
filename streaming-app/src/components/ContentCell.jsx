@@ -1,4 +1,4 @@
-import "ContentCell.css";
+import "./ContentCell.css";
 
 export default function ContentCell(props) {
     return (

@@ -259,6 +259,7 @@ function loadEpisode(episodeId) {
         return response.json();
     })
     .then((episode) => {
+        console.log(episode);
         return new Episode({
             id: episode.id,
             title: episode.title,

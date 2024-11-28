@@ -53,7 +53,7 @@ export default function Signup() {
     };
 
     useEffect(() => {
-        document.title = `Criar Conta | Streaming`;
+        document.title = `Criar Conta | Blockburst`;
         updateTitle(`Criar Conta`);
     });
 

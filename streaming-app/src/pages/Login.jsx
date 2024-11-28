@@ -40,7 +40,7 @@ export default function Login() {
     };
 
     useEffect(() => {
-        document.title = `Login | Streaming`;
+        document.title = `Login | Blockburst`;
         updateTitle(`Login`);
     });
 
