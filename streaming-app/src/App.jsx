@@ -14,8 +14,10 @@ export default function App() {
     return (
         <div className="App">
             <Header />
-            <h1 className="title">{title}</h1>
-            <Outlet context={{ updateTitle }} />
+            <div className="main-content">
+                <h1 className="title">{title}</h1>
+                <Outlet context={{ updateTitle }} />
+            </div>
             <Footer />
         </div>
     );

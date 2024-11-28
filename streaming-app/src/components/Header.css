@@ -12,11 +12,11 @@
 
 .header-logotype {
     width: 440px;
-    margin: 0 10px;
+    margin: 0 20px;
 }
 
 .header-buttons {
-    width: calc(100vw - 460px);
+    width: calc(100vw - 480px);
     justify-content: space-evenly;
     align-items: center;
 }

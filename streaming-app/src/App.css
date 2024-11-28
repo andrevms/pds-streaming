@@ -5,6 +5,12 @@
     justify-content: space-between;
 }
 
+.main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .title {
     text-align: center;
     color: white;
