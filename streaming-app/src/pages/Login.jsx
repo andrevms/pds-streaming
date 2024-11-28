@@ -40,14 +40,14 @@ export default function Login() {
     };
 
     useEffect(() => {
-        document.title = `Login | Streaming`;
+        document.title = `Login | Blockburst`;
         updateTitle(`Login`);
     });
 
     return (
         <div className="outer-login-form">
             <form className="login-form" onSubmit={handleSubmit}>
-            <div className="input-box">
+                <div className="input-box">
                     <label className="input-label" htmlFor="email">Nome de usuário</label>
                     <input className="login-input" type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
                 </div>

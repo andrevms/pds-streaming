@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 import "./App.css";
 
 export default function App() {
@@ -11,8 +13,12 @@ export default function App() {
 
     return (
         <div className="App">
-            <h1 className="title">{title}</h1>
-            <Outlet context={{ updateTitle }} />
+            <Header />
+            <div className="main-content">
+                <h1 className="title">{title}</h1>
+                <Outlet context={{ updateTitle }} />
+            </div>
+            <Footer />
         </div>
     );
 }

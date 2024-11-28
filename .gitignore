@@ -1,3 +1,4 @@
 .env
 /.idea
 .DS_Store
+/streaming-app/src/assets/videos/*
