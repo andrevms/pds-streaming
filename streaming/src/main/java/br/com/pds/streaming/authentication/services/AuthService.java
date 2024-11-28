@@ -4,6 +4,7 @@ import br.com.pds.streaming.authentication.model.dto.domain.UserDTO;
 import br.com.pds.streaming.authentication.model.dto.login.LoginRequest;
 import br.com.pds.streaming.authentication.model.dto.login.LoginResponse;
 import br.com.pds.streaming.authentication.model.dto.register.RegisterRequest;
+import br.com.pds.streaming.authentication.model.dto.register.RegisterResponse;
 import br.com.pds.streaming.authentication.model.entities.Role;
 import br.com.pds.streaming.authentication.model.entities.User;
 import br.com.pds.streaming.authentication.model.enums.RoleType;
@@ -80,8 +81,12 @@ public class AuthService {
 
             userRepository.save(user);
 
-            var userDTO = mapper.convertValue(user, UserDTO.class);
-            return ResponseEntity.ok(userDTO);
+            List<String> roles = user.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+
+            RegisterResponse registerResponse = new RegisterResponse(user.getUsername(), roles);
+            return ResponseEntity.ok(registerResponse);
 
         } catch (IllegalArgumentException e) {
             throw new InvalidRoleException(e.getMessage());
