@@ -31,7 +31,7 @@ export default function ContentLine(props) {
     return (
         <div className="content-line">
             {contents.map((content) => (
-                <ContentCell thumbnail={content.thumbnailUrl} animation={content.animationUrl} />
+                <ContentCell id={content.id} title={content.title} thumbnail={content.thumbnailUrl} animation={content.animationUrl} mediaType={props.mediaType} />
             ))}
         </div>
     );

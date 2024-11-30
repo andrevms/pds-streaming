@@ -1,6 +1,6 @@
 import "./Watch.css";
 import React, { useState, useEffect } from "react";
-import { loadEpisode, loadMovie, loadEpisodes, loadMovies } from "../util/Data";
+import { loadEpisodes, loadMovies } from "../util/Data";
 import { useOutletContext, useParams } from "react-router-dom";
 
 export default function Watch() {
@@ -40,10 +40,13 @@ export default function Watch() {
 
         /*fetch(`http://localhost:8080/api/ask-llm-quiz`, {
             method: "POST",
-            body: {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                 subject: subject,
-                description: video
-            }
+                source: video
+            })
         })
         .then((response) => {
             if (!response.ok) {
@@ -68,7 +71,7 @@ export default function Watch() {
 
     return (
         <div className="watch-page">
-            {video ? <video className="player-video" style={{ width: width, height: width/1.7 }} src={video} controls autoPlay></video> : <p className="video-not-found-text">Vídeo não encontrado.</p>}
+            {localStorage.getItem("username") ? (video ? <video className="player-video" style={{ width: width, height: width / 1.7 }} src={video} controls autoPlay></video> : <p className="video-warning-text">Vídeo não encontrado.</p>) : <p className="video-warning-text">Você precisa estar logado para ter acesso ao conteúdo.</p>}
         </div>
     );
 }

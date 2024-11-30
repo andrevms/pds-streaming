@@ -1,4 +1,5 @@
 .outer-login-form {
+    width: fit-content;
     margin: 0 auto;
     padding: 30px;
     border-radius: 30px;
@@ -39,24 +40,48 @@
 
 .outer-submit-button {
     margin: 30px auto 0;
+}
+
+.outer-submit-button, .outer-login-question-button {
     display: flex;
     flex-direction: row;
     justify-content: center;
+}
+
+.submit-button, .login-question-button {
+    font-size: 105%;
+    font-weight: 500;
+    outline: none;
+    border: none;
+    background-color: #bb1111;
+    color: #eeeeee;
+    cursor: pointer;
 }
 
 .submit-button {
     width: 130px;
     height: 50px;
     border-radius: 35px;
-    font-size: 105%;
-    font-weight: 400;
-    outline: none;
-    border: none;
-    background-color: #bb1111;
-    color: #ffffff;
-    cursor: pointer;
 }
 
-.submit-button:hover {
+.submit-button:hover, .login-question-button:hover {
     background-color: #a10505;
+}
+
+.login-question-label {
+    margin-top: 20px;
+    font-size: 105%;
+    text-align: center;
+    color: #eeeeee;
+}
+
+.login-question-button {
+    width: 125px;
+    height: 47px;
+    border-radius: 30px;
+}
+
+.link {
+    color: #eeeeee;
+    text-decoration: none;
 }

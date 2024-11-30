@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Importar o hook useNavigate
+import { useNavigate, Link } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import "./Login.css";
 
@@ -7,7 +7,7 @@ export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const { updateTitle } = useOutletContext();
-    const navigate = useNavigate(); // Hook para navegação
+    const navigate = useNavigate();
 
     const loginUser = (data) => {
         localStorage.setItem("username", data.username);
@@ -25,7 +25,7 @@ export default function Login() {
             },
             body: JSON.stringify({
                 username,
-                password
+                password,
             }),
         })
             .then((response) => {
@@ -57,20 +57,26 @@ export default function Login() {
     });
 
     return (
-        <div className="outer-login-form">
-            <form className="login-form" onSubmit={handleSubmit}>
-                <div className="input-box">
-                    <label className="input-label" htmlFor="email">Nome de usuário</label>
-                    <input className="login-input" type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-                </div>
-                <div className="input-box">
-                    <label className="input-label" htmlFor="password">Senha</label>
-                    <input className="login-input" type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                </div>
-                <div className="outer-submit-button">
-                    <button className="submit-button" type="submit">Entrar</button>
-                </div>
-            </form>
+        <div>
+            <div className="outer-login-form">
+                <form className="login-form" onSubmit={handleSubmit}>
+                    <div className="input-box">
+                        <label className="input-label" htmlFor="email">Nome de usuário</label>
+                        <input className="login-input" type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                    </div>
+                    <div className="input-box">
+                        <label className="input-label" htmlFor="password">Senha</label>
+                        <input className="login-input" type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    </div>
+                    <div className="outer-submit-button">
+                        <button className="submit-button" type="submit">Entrar</button>
+                    </div>
+                </form>
+            </div>
+            <p className="login-question-label">Ainda não tem uma conta?</p>
+            <div className="outer-login-question-button">
+                <button className="login-question-button"><Link className="link" to="/signup">Criar Conta</Link></button>
+            </div>   
         </div>
     );
 }

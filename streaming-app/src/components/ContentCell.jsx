@@ -1,4 +1,5 @@
 import "./ContentCell.css";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 
 export default function ContentCell(props) {
@@ -14,7 +15,12 @@ export default function ContentCell(props) {
 
     return (
         <div>
-            <img className="content-cell-image" onMouseOver={handleMouseEnter} onMouseLeave={handleMouseLeave} src={(isHovered && props.animation) ? props.animation : (props.thumbnail || "https://placehold.jp/20/bb1111/ffffff/120x200.png?text=no+image")}></img>
+            {props.mediaType == `tvshow` && <Link to={`/showcase/${props.id}`}>
+                <img className="content-cell-image" onMouseOver={handleMouseEnter} onMouseLeave={handleMouseLeave} src={(isHovered && props.animation) ? props.animation : (props.thumbnail || "https://placehold.jp/20/bb1111/ffffff/120x200.png?text=no+image")}></img>
+            </Link>}
+            {props.mediaType == `movie` && <Link to={`/watch/movie/${props.id}`}>
+                <img className="content-cell-image" onMouseOver={handleMouseEnter} onMouseLeave={handleMouseLeave} src={(isHovered && props.animation) ? props.animation : (props.thumbnail || "https://placehold.jp/20/bb1111/ffffff/120x200.png?text=no+image")}></img>
+            </Link>}
         </div>
     );
 }

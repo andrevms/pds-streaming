@@ -3,8 +3,10 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import App from "./App.jsx";
-import Homepage from "./pages/Homepage.jsx";
+import Catalog from "./pages/Catalog.jsx";
+import LandingPage from "./pages/LandingPage.jsx";
 import Login from "./pages/Login.jsx";
+import Showcase from "./pages/Showcase.jsx";
 import Signup from "./pages/Signup.jsx";
 import Subscription from "./pages/Subscription.jsx";
 import Watch from "./pages/Watch.jsx";
@@ -15,8 +17,12 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
             {
-                path: "/homepage",
-                element: <Homepage />
+                path: "/",
+                element: <LandingPage />
+            },
+            {
+                path: "/catalog/:mediaType",
+                element: <Catalog />
             },
             {
                 path: "/signup",
@@ -33,6 +39,10 @@ const router = createBrowserRouter([
             {
                 path: "/watch/:mediaType/:mediaId",
                 element: <Watch />
+            },
+            {
+                path: "/showcase/:tvShowId",
+                element: <Showcase />
             }
         ]
     },

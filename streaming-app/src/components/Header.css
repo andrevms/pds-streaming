@@ -47,3 +47,8 @@
 .header-button:hover {
     background-color: #454545;
 }
+
+.header-navbar-link {
+    color: #eeeeee;
+    text-decoration: none;
+}
