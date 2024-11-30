@@ -16,11 +16,11 @@ public class ChatAIController {
 
     @PostMapping("/ask-llm")
     public String askLlm( @RequestBody SummarizeRequest content) throws TranscriptionFailedException, EntityNotFoundException {
-        return chatService.askLlm(content.getSubject(), content.getDescription());
+        return chatService.askLlm(content.getSubject(), content.getSource());
     }
 
     @PostMapping("/ask-llm-quiz")
     public String askLlmquiz( @RequestBody SummarizeRequest content) throws TranscriptionFailedException, EntityNotFoundException {
-        return chatService.askLlmquiz(content.getSubject(), content.getDescription());
+        return chatService.askLlmquiz(content.getSubject(), content.getSource());
     }
 }

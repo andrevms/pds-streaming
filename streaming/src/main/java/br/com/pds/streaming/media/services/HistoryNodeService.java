@@ -36,12 +36,12 @@ public class HistoryNodeService {
     }
 
     public List<HistoryNodeDTO> findAll() {
-        return historyNodeRepository.findAll().stream().map(node -> mapper.convertValue(node, HistoryNodeDTO.class))/*.sorted(Collections.reverseOrder())*/.toList();
+        return historyNodeRepository.findAll().stream().map(node -> mapper.convertValue(node, HistoryNodeDTO.class)).toList();
     }
 
 
     public List<HistoryNodeDTO> findByHistoryId(String historyId) {
-        return historyNodeRepository.findByHistoryId(historyId).stream().map(node -> mapper.convertValue(node, HistoryNodeDTO.class))/*.sorted(Collections.reverseOrder())*/.toList();
+        return historyNodeRepository.findByHistoryId(historyId).stream().map(node -> mapper.convertValue(node, HistoryNodeDTO.class)).toList();
     }
 
     public HistoryNodeDTO findById(String id) throws EntityNotFoundException {
