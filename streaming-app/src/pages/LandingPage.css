@@ -1,0 +1,41 @@
+.landing-page, .outer-landing-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.landing-page {
+    margin: 40px 0;
+}
+
+.landing-label, .ou-label {
+    text-align: center;
+    color: #eeeeee;
+}
+
+.landing-label {
+    margin: 10px 0;
+    font-size: 135%;
+}
+
+.ou-label {
+    margin: 30px 0;
+    font-size: 125%;
+}
+
+.landing-button {
+    width: 130px;
+    height: 50px;
+    border-radius: 35px;
+    font-size: 105%;
+    font-weight: 500;
+    outline: none;
+    border: none;
+    background-color: #bb1111;
+    color: #eeeeee;
+    cursor: pointer;
+}
+
+.landing-button:hover {
+    background-color: #a10505;
+}
