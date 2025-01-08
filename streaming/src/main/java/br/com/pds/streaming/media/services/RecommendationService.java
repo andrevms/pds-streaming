@@ -2,121 +2,55 @@ package br.com.pds.streaming.media.services;
 
 import br.com.pds.streaming.authentication.services.UserService;
 import br.com.pds.streaming.exceptions.EntityNotFoundException;
-import br.com.pds.streaming.media.model.dto.*;
+import br.com.pds.streaming.media.model.dto.HistoryNodeDTO;
+import br.com.pds.streaming.media.model.dto.MediaDTO;
+import br.com.pds.streaming.media.model.dto.MovieDTO;
+import br.com.pds.streaming.media.model.dto.TvShowDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class RecommendationService {
+public abstract class RecommendationService {
 
-    private final static Integer LIMIT = 15;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private MovieService movieService;
-    @Autowired
-    private TvShowService tvShowService;
+    protected final static Integer LIMIT = 15;
 
-    public List<MediaDTO> recommendMoviesAndShows(String userId) throws EntityNotFoundException {
+    protected UserService userService;
+    protected List<HistoryNodeDTO> historyNodes;
+    protected Map<String, Integer> popularity;
 
+    @Autowired
+    public RecommendationService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public List<MediaDTO> getRecommendations(String userId) throws EntityNotFoundException {
+        setHistoryNodes(userId);
+        calculatePopularity();
+        hook();
+
+        return generateRecommendations();
+    }
+
+    public void setHistoryNodes(String userId) throws EntityNotFoundException {
         var user = userService.findById(userId);
 
-        List<HistoryNodeDTO> lastItems = getLastHistoryItems(user.getHistory(), LIMIT);
+        var history = user.getHistory();
 
-        Map<String, Integer> categoryPopularity = calculateCategoryPopularity(lastItems);
-
-        Set<String> watchedItemIds = getWatchedItemIds(lastItems);
-
-        List<MediaDTO> recommendations = getMoviesAndShowsByCategories(categoryPopularity, watchedItemIds);
-
-        return recommendations.size() > 10 ? recommendations.subList(0, 10) : recommendations;
-    }
-
-    private List<HistoryNodeDTO> getLastHistoryItems(HistoryDTO history, int limit) {
         List<HistoryNodeDTO> allItems = history.getNodes();
         int size = allItems.size();
-        return allItems.subList(Math.max(size - limit, 0), size);
+        historyNodes = allItems.subList(Math.max(size - LIMIT, 0), size);
     }
 
-    private Map<String, Integer> calculateCategoryPopularity(List<HistoryNodeDTO> lastItems) {
-        Map<String, Integer> categoryCount = new HashMap<>();
+    public abstract void calculatePopularity();
 
-        for (HistoryNodeDTO node : lastItems) {
-            if (node.getMedia() instanceof MovieDTO) {
-                for (String category : ((MovieDTO) node.getMedia()).getCategories()) {
-                    categoryCount.put(category, categoryCount.getOrDefault(category, 0) + 1);
-                }
-            } else if (node.getMedia() instanceof TvShowDTO) {
-                for (String category : ((TvShowDTO) node.getMedia()).getCategories()) {
-                    categoryCount.put(category, categoryCount.getOrDefault(category, 0) + 1);
-                }
-            }
-        }
+    public void hook() {}
 
-        return categoryCount.entrySet().stream()
-                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (e1, e2) -> e1, LinkedHashMap::new));
-    }
+    public abstract List<MediaDTO> generateRecommendations();
 
-    private Set<String> getWatchedItemIds(List<HistoryNodeDTO> lastItems) {
-        Set<String> watchedIds = new HashSet<>();
-
-        for (HistoryNodeDTO node : lastItems) {
-            watchedIds.add(node.getMedia().getId());
-        }
-
-        return watchedIds;
-    }
-
-    private List<MediaDTO> getMoviesAndShowsByCategories(Map<String, Integer> categoryPopularity, Set<String> watchedItemIds) {
-
-        List<MediaDTO> allMoviesAndShows = getAllMoviesAndShows();
-
-        Set<String> recommendedItemIds = new HashSet<>();
-        List<MediaDTO> recommendedItems = new ArrayList<>();
-
-        for (Map.Entry<String, Integer> categoryEntry : categoryPopularity.entrySet()) {
-            String category = categoryEntry.getKey();
-
-            for (MediaDTO item : allMoviesAndShows) {
-                if (item instanceof MovieDTO) {
-                    MovieDTO movie = (MovieDTO) item;
-                    if (!watchedItemIds.contains(movie.getId()) && !recommendedItemIds.contains(movie.getId()) && movie.getCategories().contains(category)) {
-                        recommendedItems.add(movie);
-                        recommendedItemIds.add(movie.getId());
-                    }
-                } else if (item instanceof TvShowDTO) {
-                    TvShowDTO tvShow = (TvShowDTO) item;
-                    if (!watchedItemIds.contains(tvShow.getId()) && !recommendedItemIds.contains(tvShow.getId()) && tvShow.getCategories().contains(category)) {
-                        recommendedItems.add(tvShow);
-                        recommendedItemIds.add(tvShow.getId());
-                    }
-                }
-            }
-        }
-
-        return recommendedItems;
-    }
-
-    private List<MediaDTO> getAllMoviesAndShows() {
-        List<MediaDTO> allItems = new ArrayList<>();
-
-        var movies = movieService.findAll();
-        var tvShows = tvShowService.findAll();
-
-        allItems.addAll(movies);
-        allItems.addAll(tvShows);
-
-        return allItems;
-    }
 }
