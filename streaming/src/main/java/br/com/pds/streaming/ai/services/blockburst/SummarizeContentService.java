@@ -1,5 +1,6 @@
-package br.com.pds.streaming.ai.services;
+package br.com.pds.streaming.ai.services.blockburst;
 
+import br.com.pds.streaming.ai.services.ChatService;
 import br.com.pds.streaming.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.exceptions.TranscriptionFailedException;
 import br.com.pds.streaming.transcription.model.dto.Transcription;
