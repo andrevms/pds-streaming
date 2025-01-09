@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ModelMapperConfig {
+public class BlockburstModelMapperConfig {
 
     @Bean
     public ModelMapper modelMapper() {
@@ -22,7 +22,7 @@ public class ModelMapperConfig {
         final Converter<Movie, MovieResponse> movieConverter = ctx -> {
 
             var source = ctx.getSource();
-            var destination = ctx.getDestination();
+            MovieResponse destination = new MovieResponse();
 
             destination.setId(source.getId());
             destination.setTitle(source.getTitle());
@@ -42,7 +42,7 @@ public class ModelMapperConfig {
         final Converter<TvShow, TvShowResponse> tvShowConverter = ctx -> {
 
             var source = ctx.getSource();
-            var destination = ctx.getDestination();
+            TvShowResponse destination = new TvShowResponse();
 
             destination.setId(source.getId());
             destination.setTitle(source.getTitle());

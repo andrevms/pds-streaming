@@ -1,6 +1,6 @@
 package br.com.pds.streaming.blockburst.mapper.modelMapper;
 
-import br.com.pds.streaming.blockburst.mapper.modelMapper.config.ModelMapperConfig;
+import br.com.pds.streaming.blockburst.mapper.modelMapper.config.BlockburstModelMapperConfig;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class BlockburstMapper {
 
-    private final ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
+    private final ModelMapper modelMapper = new BlockburstModelMapperConfig().modelMapper();
 
     public <O, D> D convertValue(O origin, Class<D> destination) {
         return modelMapper.map(origin, destination);

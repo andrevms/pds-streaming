@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ModelMapperConfig {
 
-    @Bean
+    @Bean(name = "frameworkModelMapperConfig")
     public ModelMapper modelMapper() {
 
         ModelMapper modelMapper = new ModelMapper();

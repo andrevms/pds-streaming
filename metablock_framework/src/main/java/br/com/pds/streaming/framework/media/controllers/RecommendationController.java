@@ -16,6 +16,6 @@ public class RecommendationController {
     @GetMapping("/user")
     public ResponseEntity<?> getRecommendations(@RequestParam("userId") String userId) throws EntityNotFoundException {
 
-        return ResponseEntity.ok().body(recommendationService.recommendMedia(userId));
+        return ResponseEntity.ok().body(recommendationService.getRecommendations(userId));
     }
 }
