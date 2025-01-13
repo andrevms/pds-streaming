@@ -11,16 +11,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api")
 public class ChatAIController {
 
+
+    @Qualifier("blockBurstService")
     @Autowired
-    ChatService chatService;
+    private IChatService chatService;
 
     @PostMapping("/ask-llm")
     public String askLlm( @RequestBody SummarizeRequest content) throws TranscriptionFailedException, EntityNotFoundException {
-        return chatService.askLlm(content.getSubject(), content.getSource());
+        return chatService.askLlm(content.getSource());
     }
 
     @PostMapping("/ask-llm-quiz")
     public String askLlmquiz( @RequestBody SummarizeRequest content) throws TranscriptionFailedException, EntityNotFoundException {
-        return chatService.askLlmquiz(content.getSubject(), content.getSource());
+        return chatService.askLlmQuiz(content.getSource());
     }
 }

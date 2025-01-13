@@ -2,15 +2,14 @@ package br.com.pds.streaming.framework.ai.services;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
-
-public abstract class AbstractSpringbootAiChatAIService extends AbstractChatAIService implements IChatAIService {
+public abstract class AbstractSpringbootAiChatService extends AbstractChatService implements ChatService {
     protected ChatModel chatModel;
     protected ChatClient chatClient;
 
-    protected AbstractSpringbootAiChatAIService() {
+    protected AbstractSpringbootAiChatService() {
     }
 
-    protected AbstractSpringbootAiChatAIService(ChatModel chatModel) {
+    protected AbstractSpringbootAiChatService(ChatModel chatModel) {
         this.chatModel = chatModel;
         this.chatClient = ChatClient.builder(chatModel).build();
     }
@@ -25,19 +24,10 @@ public abstract class AbstractSpringbootAiChatAIService extends AbstractChatAISe
     }
 
     @Override
-    public String askLlm(String subject, String question) {
+    public String askLlm(String chatPrompt, String question) {
         return chatClient.prompt()
                 .messages(
-                        createMessages(subject, question)
-                ).call()
-                .content();
-    }
-
-    @Override
-    public String createQuiz(String subject, String question) {
-        return chatClient.prompt()
-                .messages(
-                        createMessagesQuiz(subject, question)
+                        createMessages(chatPrompt, question)
                 ).call()
                 .content();
     }
