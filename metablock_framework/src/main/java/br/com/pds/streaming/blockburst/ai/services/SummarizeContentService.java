@@ -1,13 +1,13 @@
 package br.com.pds.streaming.blockburst.ai.services;
 
-import br.com.pds.streaming.ai.services.ChatService;
-import br.com.pds.streaming.exceptions.EntityNotFoundException;
-import br.com.pds.streaming.exceptions.TranscriptionFailedException;
-import br.com.pds.streaming.transcription.model.dto.Transcription;
-import br.com.pds.streaming.transcription.model.dto.requests.TranscriptionRequest;
-import br.com.pds.streaming.transcription.model.dto.responses.TranscriptionResponse;
-import br.com.pds.streaming.transcription.repositories.TranscriptionRepository;
-import br.com.pds.streaming.transcription.services.TranscriptionService;
+import br.com.pds.streaming.framework.ai.services.ChatService;
+import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
+import br.com.pds.streaming.framework.exceptions.TranscriptionFailedException;
+import br.com.pds.streaming.framework.transcription.model.dto.Transcription;
+import br.com.pds.streaming.framework.transcription.model.dto.requests.TranscriptionRequest;
+import br.com.pds.streaming.framework.transcription.model.dto.responses.TranscriptionResponse;
+import br.com.pds.streaming.framework.transcription.repositories.TranscriptionRepository;
+import br.com.pds.streaming.framework.transcription.services.TranscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SummarizeContentService {
 
-    @Qualifier("ollamaService")
+    @Qualifier("ollamaAIService")
     @Autowired
     ChatService chatService;
 

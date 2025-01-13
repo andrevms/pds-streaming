@@ -1,6 +1,6 @@
 package br.com.pds.streaming.blockburst.ai.services;
 
-import br.com.pds.streaming.ai.services.IChatService;
+import br.com.pds.streaming.framework.ai.services.IChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -2,18 +2,19 @@ package br.com.pds.streaming.framework.ai.controllers;
 
 import br.com.pds.streaming.framework.ai.model.SummarizeRequest;
 import br.com.pds.streaming.framework.ai.services.ChatService;
+import br.com.pds.streaming.framework.ai.services.IChatService;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.exceptions.TranscriptionFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api")
 public class ChatAIController {
 
-
-    @Qualifier("blockBurstService")
     @Autowired
+    @Qualifier("blockBurstService")
     private IChatService chatService;
 
     @PostMapping("/ask-llm")
