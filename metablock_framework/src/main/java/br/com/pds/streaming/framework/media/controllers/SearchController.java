@@ -22,8 +22,19 @@ public class SearchController {
         return ResponseEntity.ok().body(searchService.searchByTitle(title));
     }
 
+    @GetMapping("/description")
+    public ResponseEntity<?> searchByDescription(@RequestParam(name = "description") String description) {
+
+        if (description == null || description.isEmpty()) {
+            return ResponseEntity.badRequest().body("Description can't be empty");
+        }
+
+        return ResponseEntity.ok().body(searchService.searchByDescription(description));
+    }
+
     @GetMapping(value = "/category")
     public ResponseEntity<?> searchByCategory(@RequestParam(name = "category") String category) {
+
         if (category == null || category.isEmpty()) {
             return ResponseEntity.badRequest().body("Category can't be empty");
         }

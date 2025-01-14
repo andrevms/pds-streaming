@@ -26,6 +26,14 @@ public class MediaService {
         return mapper.convertList(mediaRepository.findAll(), MediaDTO.class);
     }
 
+    public <M extends Media> List<M> findAll(Class<M> mediaChildClass) {
+        return (List<M>) mediaRepository.findAll().stream().filter(m -> m.getClass().equals(mediaChildClass)).toList();
+    }
+
+    public <M extends MediaDTO> List<M> findAll(Class<? extends Media> mediaChildClass, Class<M> mediaResponseChildClass) {
+        return mapper.convertList(mediaRepository.findAll().stream().filter(m -> m.getClass().equals(mediaChildClass)).toList(), mediaResponseChildClass);
+    }
+
     public List<? extends MediaDTO> findByTitle(String title) {
         return mapper.convertList(mediaRepository.findByTitle(title), MediaDTO.class);
     }
@@ -34,7 +42,50 @@ public class MediaService {
         return (M) mapper.convertValue(mediaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Media.class)), MediaDTO.class);
     }
 
+    public <M extends Media> M findById(String id, Class<M> mediaChildClass) throws EntityNotFoundException {
+
+        var media = mediaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(mediaChildClass));
+
+        if (!media.getClass().equals(mediaChildClass)) {
+            throw new RuntimeException("Media found is not a " + mediaChildClass); // Exceção temporária
+        }
+
+        return (M) media;
+    }
+
+    public <M extends MediaDTO> M findById(String id, Class<? extends Media> mediaChildClass, Class<M> mediaResponseChildClass) throws EntityNotFoundException {
+
+        var media = mediaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(mediaChildClass));
+
+        if (!media.getClass().equals(mediaChildClass)) {
+            throw new RuntimeException("Media found is not a " + mediaChildClass); // Exceção temporária
+        }
+
+        return mapper.convertValue(media, mediaResponseChildClass);
+    }
+
+    public <M extends Media> M persist(M media) throws EntityNotFoundException {
+        return mediaRepository.save(media);
+    }
+
+    public <M extends MediaDTO> M persist(MediaDTO mediaRequest, Class<? extends Media> mediaChildClass, Class<M> mediaResponseChildClass) throws EntityNotFoundException {
+
+        var media = mapper.convertValue(mediaRequest, mediaChildClass);
+
+        var createdMedia = mediaRepository.save(media);
+
+        return mapper.convertValue(createdMedia, mediaResponseChildClass);
+    }
+
     public void delete(String id) {
         mediaRepository.deleteById(id);
+    }
+
+    public void delete(Media media) {
+        mediaRepository.delete(media);
+    }
+
+    public void delete(List<? extends Media> mediaList) {
+        mediaRepository.deleteAll(mediaList);
     }
 }

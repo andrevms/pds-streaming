@@ -4,10 +4,9 @@ import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.blockburst.media.model.dto.EpisodeDTO;
 import br.com.pds.streaming.blockburst.media.model.entities.Episode;
 import br.com.pds.streaming.blockburst.media.model.entities.Season;
-import br.com.pds.streaming.blockburst.media.repositories.EpisodeRepository;
-import br.com.pds.streaming.blockburst.media.repositories.SeasonRepository;
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
 import br.com.pds.streaming.framework.exceptions.*;
+import br.com.pds.streaming.framework.media.services.MediaService;
 import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,48 +17,40 @@ import java.util.List;
 @Service
 public class EpisodeService {
 
-    private final EpisodeRepository episodeRepository;
-    private final SeasonRepository seasonRepository;
+    private final MediaService mediaService;
     private final BlockburstMapper mapper;
     private final CloudStorageService cloudStorageService;
 
-    @Autowired
-    public EpisodeService(EpisodeRepository episodeRepository, SeasonRepository seasonRepository, BlockburstMapper mapper, CloudStorageService cloudStorageService) {
-        this.episodeRepository = episodeRepository;
-        this.seasonRepository = seasonRepository;
+    @Autowired // Tentar instanciar o MediaService com o BlockburstMapper dinamicamente
+    public EpisodeService(MediaService mediaService, BlockburstMapper mapper, CloudStorageService cloudStorageService) {
+        this.mediaService = mediaService;
         this.mapper = mapper;
         this.cloudStorageService = cloudStorageService;
     }
 
     public List<EpisodeDTO> findAll() {
-        return mapper.convertList(episodeRepository.findAll(), EpisodeDTO.class);
+        return mediaService.findAll(Episode.class, EpisodeDTO.class);
     }
 
     public List<EpisodeDTO> findBySeasonId(String seasonId) {
-        return mapper.convertList(episodeRepository.findBySeasonId(seasonId), EpisodeDTO.class);
+        return mapper.convertList(mediaService.findAll(Episode.class).stream().filter(e -> e.getSeasonId().equals(seasonId)).toList(), EpisodeDTO.class);
     }
 
     public EpisodeDTO findById(String id) throws EntityNotFoundException {
-
-        var episode = episodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Episode.class));
-
-        return mapper.convertValue(episode, EpisodeDTO.class);
+        return mediaService.findById(id, Episode.class, EpisodeDTO.class);
     }
 
     public EpisodeDTO insert(EpisodeDTO episodeDTO, String seasonId) throws EntityNotFoundException, InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {
 
         verifyFilesUrl(episodeDTO);
 
-        var season = seasonRepository.findById(seasonId).orElseThrow(() -> new EntityNotFoundException(Season.class));
-
-        Episode episode = mapper.convertValue(episodeDTO, Episode.class);
+        var episode = mapper.convertValue(episodeDTO, Episode.class);
         episode.setSeasonId(seasonId);
+        var createdEpisode = mediaService.persist(episode);
 
-        var createdEpisode = episodeRepository.save(episode);
-
-        season.getEpisodes().add(createdEpisode);
-
-        seasonRepository.save(season);
+        var season = mediaService.findById(seasonId, Season.class);
+        season.getEpisodes().add(episode);
+        mediaService.persist(season);
 
         return mapper.convertValue(createdEpisode, EpisodeDTO.class);
     }
@@ -68,7 +59,7 @@ public class EpisodeService {
 
         verifyFilesUrl(episodeDTO);
 
-        var episode = episodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Episode.class));
+        var episode = mediaService.findById(id, Episode.class);
 
         episode.setTitle(episodeDTO.getTitle());
         episode.setDescription(episodeDTO.getDescription());
@@ -76,14 +67,14 @@ public class EpisodeService {
         episode.setThumbnailUrl(episodeDTO.getThumbnailUrl());
         episode.setAnimationUrl(episodeDTO.getAnimationUrl());
 
-        var updatedEpisode = episodeRepository.save(episode);
+        var updatedEpisode = mediaService.persist(episode);
 
         return mapper.convertValue(updatedEpisode, EpisodeDTO.class);
     }
 
     public EpisodeDTO patch(EpisodeDTO episodeDTO, String id) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
 
-        var episode = episodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Episode.class));
+        var episode = mediaService.findById(id, Episode.class);
 
         if (episodeDTO.getTitle() != null) {
             episode.setTitle(episodeDTO.getTitle());
@@ -120,7 +111,7 @@ public class EpisodeService {
             episode.setAnimationUrl(episodeDTO.getAnimationUrl());
         }
 
-        var patchedEpisode = episodeRepository.save(episode);
+        var patchedEpisode = mediaService.persist(episode);
 
         return mapper.convertValue(patchedEpisode, EpisodeDTO.class);
     }
@@ -136,7 +127,7 @@ public class EpisodeService {
         cloudStorageService.deleteFile(movieThumb);
         cloudStorageService.deleteFile(movieAnimation);
 
-        episodeRepository.deleteById(id);
+        mediaService.delete(id);
     }
 
     private void verifyFilesUrl(@NotNull EpisodeDTO episodeDTO) throws InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {

@@ -4,10 +4,10 @@ import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.blockburst.media.model.dto.MovieRequest;
 import br.com.pds.streaming.blockburst.media.model.dto.MovieResponse;
 import br.com.pds.streaming.blockburst.media.model.entities.Movie;
-import br.com.pds.streaming.blockburst.media.repositories.MovieRepository;
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
 import br.com.pds.streaming.framework.exceptions.*;
 import br.com.pds.streaming.framework.media.repositories.LikeRatingRepository;
+import br.com.pds.streaming.framework.media.services.MediaService;
 import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,44 +17,39 @@ import java.util.List;
 @Service
 public class MovieService {
 
-    private final MovieRepository movieRepository;
+    private final MediaService mediaService;
     private final LikeRatingRepository ratingRepository;
     private final BlockburstMapper mapper;
     private final CloudStorageService cloudStorageService;
 
-    @Autowired
-    public MovieService(MovieRepository movieRepository, LikeRatingRepository ratingRepository, BlockburstMapper mapper, CloudStorageService cloudStorageService) {
-        this.movieRepository = movieRepository;
+    @Autowired // Tentar instanciar o MediaService com o BlockburstMapper dinamicamente
+    public MovieService(MediaService mediaService, LikeRatingRepository ratingRepository, BlockburstMapper mapper, CloudStorageService cloudStorageService) {
+        this.mediaService = mediaService;
         this.ratingRepository = ratingRepository;
         this.mapper = mapper;
         this.cloudStorageService = cloudStorageService;
     }
 
     public List<MovieResponse> findAll() {
-        return mapper.convertList(movieRepository.findAll(), MovieResponse.class);
+        return mediaService.findAll(Movie.class, MovieResponse.class);
     }
 
     public MovieResponse findById(String id) throws EntityNotFoundException {
-
-        var movie = movieRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Movie.class));
-
-        return mapper.convertValue(movie, MovieResponse.class);
+        return mediaService.findById(id, Movie.class, MovieResponse.class);
     }
 
-    public MovieResponse insert(MovieRequest movieDTO) throws InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public MovieResponse insert(MovieRequest movieRequest) throws InvalidAnimationException, InvalidVideoException, InvalidThumbnailException, EntityNotFoundException {
 
-        verifyFilesUrl(movieDTO);
+        verifyFilesUrl(movieRequest);
 
-        var createdMovie = movieRepository.save(mapper.convertValue(movieDTO, Movie.class));
-
-        return mapper.convertValue(createdMovie, MovieResponse.class);
+        return mediaService.persist(movieRequest, Movie.class, MovieResponse.class);
     }
 
     public MovieResponse update(MovieRequest movieRequest, String id) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
 
         verifyFilesUrl(movieRequest);
 
-        var movie = movieRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Movie.class));
+        var movie = mediaService.findById(id, Movie.class);
 
         movie.setTitle(movieRequest.getTitle());
         movie.setDescription(movieRequest.getDescription());
@@ -63,14 +58,14 @@ public class MovieService {
         movie.setAnimationUrl(movieRequest.getAnimationUrl());
         movie.setCategories(movieRequest.getCategories());
 
-        var updatedMovie = movieRepository.save(movie);
+        var updatedMovie = mediaService.persist(movie);
 
         return mapper.convertValue(updatedMovie, MovieResponse.class);
     }
 
     public MovieResponse patch(MovieRequest movieRequest, String id) throws EntityNotFoundException, InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {
 
-        var movie = movieRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Movie.class));
+        var movie = mediaService.findById(id, Movie.class);
 
         if (movieRequest.getTitle() != null) {
             movie.setTitle(movieRequest.getTitle());
@@ -107,7 +102,7 @@ public class MovieService {
             movie.setAnimationUrl(movieRequest.getAnimationUrl());
         }
 
-        var patchedMovie = movieRepository.save(movie);
+        var patchedMovie = mediaService.persist(movie);
 
         return mapper.convertValue(patchedMovie, MovieResponse.class);
     }
@@ -125,12 +120,12 @@ public class MovieService {
         cloudStorageService.deleteFile(movieThumbnailUrl);
         cloudStorageService.deleteFile(movieAnimation);
 
-        movieRepository.deleteById(id);
+        mediaService.delete(id);
     }
 
     private void deleteOrphanRatings(String movieId) throws EntityNotFoundException {
 
-        var movie = movieRepository.findById(movieId).orElseThrow(() -> new EntityNotFoundException(Movie.class));
+        var movie = mediaService.findById(movieId, Movie.class);
 
         ratingRepository.deleteAll(ratingRepository.findAll().stream().filter(r -> movie.getRatings().contains(r)).toList());
     }

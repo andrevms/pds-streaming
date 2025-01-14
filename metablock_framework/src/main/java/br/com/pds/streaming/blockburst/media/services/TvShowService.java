@@ -3,16 +3,16 @@ package br.com.pds.streaming.blockburst.media.services;
 import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.blockburst.media.model.dto.TvShowRequest;
 import br.com.pds.streaming.blockburst.media.model.dto.TvShowResponse;
+import br.com.pds.streaming.blockburst.media.model.entities.Season;
 import br.com.pds.streaming.blockburst.media.model.entities.TvShow;
-import br.com.pds.streaming.blockburst.media.repositories.EpisodeRepository;
-import br.com.pds.streaming.blockburst.media.repositories.SeasonRepository;
-import br.com.pds.streaming.blockburst.media.repositories.TvShowRepository;
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.exceptions.InvalidAnimationException;
 import br.com.pds.streaming.framework.exceptions.InvalidSourceException;
 import br.com.pds.streaming.framework.exceptions.InvalidThumbnailException;
+import br.com.pds.streaming.framework.media.model.dto.MediaDTO;
 import br.com.pds.streaming.framework.media.repositories.LikeRatingRepository;
+import br.com.pds.streaming.framework.media.services.MediaService;
 import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,48 +22,41 @@ import java.util.List;
 @Service
 public class TvShowService {
 
-    private final TvShowRepository tvShowRepository;
-    private final SeasonRepository seasonRepository;
-    private final EpisodeRepository episodeRepository;
+    private final MediaService mediaService;
+    private final SeasonService seasonService;
     private final LikeRatingRepository ratingRepository;
     private final BlockburstMapper mapper;
     private final CloudStorageService cloudStorageService;
 
-    @Autowired
-    public TvShowService(TvShowRepository tvShowRepository, SeasonRepository seasonRepository, EpisodeRepository episodeRepository, LikeRatingRepository ratingRepository, BlockburstMapper mapper, CloudStorageService cloudStorageService) {
-        this.tvShowRepository = tvShowRepository;
-        this.seasonRepository = seasonRepository;
-        this.episodeRepository = episodeRepository;
+    @Autowired // Tentar instanciar o MediaService com o BlockburstMapper dinamicamente
+    public TvShowService(MediaService mediaService, SeasonService seasonService, LikeRatingRepository ratingRepository, BlockburstMapper mapper, CloudStorageService cloudStorageService) {
+        this.mediaService = mediaService;
+        this.seasonService = seasonService;
         this.ratingRepository = ratingRepository;
         this.mapper = mapper;
         this.cloudStorageService = cloudStorageService;
     }
 
     public List<TvShowResponse> findAll() {
-        return mapper.convertList(tvShowRepository.findAll(), TvShowResponse.class);
+        return mediaService.findAll(TvShow.class, TvShowResponse.class);
     }
 
     public TvShowResponse findById(String id) throws EntityNotFoundException {
-
-        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
-
-        return mapper.convertValue(tvShow, TvShowResponse.class);
+        return mediaService.findById(id, TvShow.class, TvShowResponse.class);
     }
 
-    public TvShowResponse insert(TvShowRequest tvShowRequest) throws InvalidThumbnailException, InvalidAnimationException {
+    public MediaDTO insert(TvShowRequest tvShowRequest) throws InvalidThumbnailException, InvalidAnimationException, EntityNotFoundException {
 
         verifyFilesUrl(tvShowRequest);
 
-        var createdTvShow = tvShowRepository.save(mapper.convertValue(tvShowRequest, TvShow.class));
-
-        return mapper.convertValue(createdTvShow, TvShowResponse.class);
+        return mediaService.persist(tvShowRequest, TvShow.class, TvShowResponse.class);
     }
 
     public TvShowResponse update(TvShowRequest tvShowRequest, String id) throws EntityNotFoundException, InvalidThumbnailException, InvalidAnimationException {
 
         verifyFilesUrl(tvShowRequest);
 
-        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
+        var tvShow = mediaService.findById(id, TvShow.class);
 
         tvShow.setTitle(tvShowRequest.getTitle());
         tvShow.setDescription(tvShowRequest.getDescription());
@@ -71,14 +64,14 @@ public class TvShowService {
         tvShow.setAnimationUrl(tvShowRequest.getAnimationUrl());
         tvShow.setCategories(tvShow.getCategories());
 
-        var updatedTvShow = tvShowRepository.save(tvShow);
+        var updatedTvShow = mediaService.persist(tvShow);
 
         return mapper.convertValue(updatedTvShow, TvShowResponse.class);
     }
 
     public TvShowResponse patch(TvShowRequest tvShowRequest, String id) throws EntityNotFoundException, InvalidThumbnailException, InvalidAnimationException {
 
-        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
+        var tvShow = mediaService.findById(id, TvShow.class);
 
         if (tvShowRequest.getTitle() != null) {
             tvShow.setTitle(tvShowRequest.getTitle());
@@ -106,7 +99,7 @@ public class TvShowService {
             tvShow.setAnimationUrl(tvShowRequest.getAnimationUrl());
         }
 
-        var patchedTvShow = tvShowRepository.save(tvShow);
+        var patchedTvShow = mediaService.persist(tvShow);
 
         return mapper.convertValue(patchedTvShow, TvShowResponse.class);
     }
@@ -123,28 +116,21 @@ public class TvShowService {
         cloudStorageService.deleteFile(movieThumb);
         cloudStorageService.deleteFile(movieAnimation);
 
-        tvShowRepository.deleteById(id);
+        mediaService.delete(id);
     }
 
-    private void deleteOrphanSeasons(String tvShowId) {
+    protected void deleteOrphanSeasons(String tvShowId) {
 
-        var seasons = seasonRepository.findByTvShowId(tvShowId);
+        var seasons = seasonService.findByTvShowId(tvShowId);
 
-        seasons.forEach(season -> deleteOrphanEpisodes(season.getId()));
+        seasons.forEach(season -> seasonService.deleteOrphanEpisodes(season.getId()));
 
-        seasonRepository.deleteAll(seasons);
+        mediaService.delete(mapper.convertList(seasons, Season.class));
     }
 
-    private void deleteOrphanEpisodes(String seasonId) {
+    protected void deleteOrphanRatings(String tvShowId) throws EntityNotFoundException {
 
-        var episodes = episodeRepository.findBySeasonId(seasonId);
-
-        episodeRepository.deleteAll(episodes);
-    }
-
-    private void deleteOrphanRatings(String tvShowId) throws EntityNotFoundException {
-
-        var tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
+        var tvShow = mediaService.findById(tvShowId, TvShow.class);
 
         ratingRepository.deleteAll(ratingRepository.findAll().stream().filter(r -> tvShow.getRatings().contains(r)).toList());
     }
