@@ -38,11 +38,11 @@ public class MediaService {
         return mapper.convertList(mediaRepository.findByTitle(title), MediaDTO.class);
     }
 
-    public <M extends MediaDTO> M findById(String id) throws EntityNotFoundException {
+    public <M extends MediaDTO> M findById(String id) {
         return (M) mapper.convertValue(mediaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Media.class)), MediaDTO.class);
     }
 
-    public <M extends Media> M findById(String id, Class<M> mediaChildClass) throws EntityNotFoundException {
+    public <M extends Media> M findById(String id, Class<M> mediaChildClass) {
 
         var media = mediaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(mediaChildClass));
 
@@ -53,7 +53,7 @@ public class MediaService {
         return (M) media;
     }
 
-    public <M extends MediaDTO> M findById(String id, Class<? extends Media> mediaChildClass, Class<M> mediaResponseChildClass) throws EntityNotFoundException {
+    public <M extends MediaDTO> M findById(String id, Class<? extends Media> mediaChildClass, Class<M> mediaResponseChildClass) {
 
         var media = mediaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(mediaChildClass));
 
@@ -64,11 +64,11 @@ public class MediaService {
         return mapper.convertValue(media, mediaResponseChildClass);
     }
 
-    public <M extends Media> M persist(M media) throws EntityNotFoundException {
+    public <M extends Media> M persist(M media) {
         return mediaRepository.save(media);
     }
 
-    public <M extends MediaDTO> M persist(MediaDTO mediaRequest, Class<? extends Media> mediaChildClass, Class<M> mediaResponseChildClass) throws EntityNotFoundException {
+    public <M extends MediaDTO> M persist(MediaDTO mediaRequest, Class<? extends Media> mediaChildClass, Class<M> mediaResponseChildClass) {
 
         var media = mapper.convertValue(mediaRequest, mediaChildClass);
 

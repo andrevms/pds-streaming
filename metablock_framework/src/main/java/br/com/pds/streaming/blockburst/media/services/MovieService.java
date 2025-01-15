@@ -1,11 +1,13 @@
 package br.com.pds.streaming.blockburst.media.services;
 
+import br.com.pds.streaming.blockburst.exceptions.InvalidVideoException;
 import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.blockburst.media.model.dto.MovieRequest;
 import br.com.pds.streaming.blockburst.media.model.dto.MovieResponse;
 import br.com.pds.streaming.blockburst.media.model.entities.Movie;
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
-import br.com.pds.streaming.framework.exceptions.*;
+import br.com.pds.streaming.framework.exceptions.InvalidAnimationException;
+import br.com.pds.streaming.framework.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.framework.media.repositories.LikeRatingRepository;
 import br.com.pds.streaming.framework.media.services.MediaService;
 import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
@@ -34,18 +36,18 @@ public class MovieService {
         return mediaService.findAll(Movie.class, MovieResponse.class);
     }
 
-    public MovieResponse findById(String id) throws EntityNotFoundException {
+    public MovieResponse findById(String id) {
         return mediaService.findById(id, Movie.class, MovieResponse.class);
     }
 
-    public MovieResponse insert(MovieRequest movieRequest) throws InvalidAnimationException, InvalidVideoException, InvalidThumbnailException, EntityNotFoundException {
+    public MovieResponse insert(MovieRequest movieRequest) {
 
         verifyFilesUrl(movieRequest);
 
         return mediaService.persist(movieRequest, Movie.class, MovieResponse.class);
     }
 
-    public MovieResponse update(MovieRequest movieRequest, String id) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public MovieResponse update(MovieRequest movieRequest, String id) {
 
         verifyFilesUrl(movieRequest);
 
@@ -63,7 +65,7 @@ public class MovieService {
         return mapper.convertValue(updatedMovie, MovieResponse.class);
     }
 
-    public MovieResponse patch(MovieRequest movieRequest, String id) throws EntityNotFoundException, InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {
+    public MovieResponse patch(MovieRequest movieRequest, String id) {
 
         var movie = mediaService.findById(id, Movie.class);
 
@@ -107,7 +109,7 @@ public class MovieService {
         return mapper.convertValue(patchedMovie, MovieResponse.class);
     }
 
-    public void delete(String id) throws EntityNotFoundException, InvalidSourceException {
+    public void delete(String id) {
 
         deleteOrphanRatings(id);
 
@@ -123,14 +125,14 @@ public class MovieService {
         mediaService.delete(id);
     }
 
-    private void deleteOrphanRatings(String movieId) throws EntityNotFoundException {
+    private void deleteOrphanRatings(String movieId) {
 
         var movie = mediaService.findById(movieId, Movie.class);
 
         ratingRepository.deleteAll(ratingRepository.findAll().stream().filter(r -> movie.getRatings().contains(r)).toList());
     }
 
-    private void verifyFilesUrl(MovieRequest movieRequest) throws InvalidVideoException, InvalidThumbnailException, InvalidAnimationException {
+    private void verifyFilesUrl(MovieRequest movieRequest) {
 
         if (!FileExtensionValidator.validateVideoFileExtension(movieRequest.getVideoUrl())) {
             throw new InvalidVideoException(movieRequest.getVideoUrl());

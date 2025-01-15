@@ -20,7 +20,7 @@ public class AssemblyAITranscribeService implements TranscriptionService {
     private AssemblyAI assemblyAIClient;
 
     @Override
-    public TranscriptionResponse transcribe(TranscriptionRequest transcriptionRequest) throws TranscriptionFailedException, EntityNotFoundException {
+    public TranscriptionResponse transcribe(TranscriptionRequest transcriptionRequest) throws TranscriptionFailedException {
 
         String source = transcriptionRequest.getSource();
 

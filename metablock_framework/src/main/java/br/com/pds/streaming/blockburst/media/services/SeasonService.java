@@ -6,9 +6,7 @@ import br.com.pds.streaming.blockburst.media.model.entities.Episode;
 import br.com.pds.streaming.blockburst.media.model.entities.Season;
 import br.com.pds.streaming.blockburst.media.model.entities.TvShow;
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
-import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.exceptions.InvalidAnimationException;
-import br.com.pds.streaming.framework.exceptions.InvalidSourceException;
 import br.com.pds.streaming.framework.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.framework.media.services.MediaService;
 import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
@@ -41,11 +39,11 @@ public class SeasonService {
         return mapper.convertList(mediaService.findAll(Season.class).stream().filter(s -> s.getTvShowId().equals(tvShowId)).toList(), SeasonDTO.class);
     }
 
-    public SeasonDTO findById(String id) throws EntityNotFoundException {
+    public SeasonDTO findById(String id) {
         return mediaService.findById(id, Season.class, SeasonDTO.class);
     }
 
-    public SeasonDTO insert(SeasonDTO seasonDTO, String tvShowId) throws EntityNotFoundException, InvalidAnimationException, InvalidThumbnailException {
+    public SeasonDTO insert(SeasonDTO seasonDTO, String tvShowId) {
 
         verifyFilesUrl(seasonDTO);
 
@@ -60,7 +58,7 @@ public class SeasonService {
         return mapper.convertValue(createdSeason, SeasonDTO.class);
     }
 
-    public SeasonDTO update(SeasonDTO seasonDTO, String id) throws EntityNotFoundException, InvalidAnimationException, InvalidThumbnailException {
+    public SeasonDTO update(SeasonDTO seasonDTO, String id) {
 
         verifyFilesUrl(seasonDTO);
 
@@ -76,7 +74,7 @@ public class SeasonService {
         return mapper.convertValue(updatedSeason, SeasonDTO.class);
     }
 
-    public SeasonDTO patch(SeasonDTO seasonDTO, String id) throws EntityNotFoundException, InvalidAnimationException, InvalidThumbnailException {
+    public SeasonDTO patch(SeasonDTO seasonDTO, String id) {
 
         var season = mediaService.findById(id, Season.class);
 
@@ -111,7 +109,7 @@ public class SeasonService {
         return mapper.convertValue(patchedSeason, SeasonDTO.class);
     }
 
-    public void delete(String id) throws EntityNotFoundException, InvalidSourceException {
+    public void delete(String id) {
 
         deleteOrphanEpisodes(id);
 
@@ -129,7 +127,7 @@ public class SeasonService {
         mediaService.delete(mapper.convertList(episodeService.findBySeasonId(seasonId), Episode.class));
     }
 
-    private void verifyFilesUrl(SeasonDTO seasonDTO) throws InvalidThumbnailException, InvalidAnimationException {
+    private void verifyFilesUrl(SeasonDTO seasonDTO) {
 
         if (!FileExtensionValidator.validateThumbnailFileExtension(seasonDTO.getThumbnailUrl())) {
             throw new InvalidThumbnailException(seasonDTO.getThumbnailUrl());

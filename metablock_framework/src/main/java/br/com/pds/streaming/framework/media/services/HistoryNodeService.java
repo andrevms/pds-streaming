@@ -38,14 +38,14 @@ public class HistoryNodeService {
         return historyNodeRepository.findByHistoryId(historyId).stream().map(node -> mapper.convertValue(node, HistoryNodeDTO.class)).toList();
     }
 
-    public HistoryNodeDTO findById(String id) throws EntityNotFoundException {
+    public HistoryNodeDTO findById(String id) {
 
         var historyNode = historyNodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(HistoryNode.class));
 
         return mapper.convertValue(historyNode, HistoryNodeDTO.class);
     }
 
-//    public HistoryNodeDTO insert(String episodeId, HistoryNodeDTO historyNodeDTO, String historyId) throws EntityNotFoundException {
+//    public HistoryNodeDTO insert(String episodeId, HistoryNodeDTO historyNodeDTO, String historyId) {
 //
 //        var episode = episodeRepository.findById(episodeId).orElseThrow(() -> new EntityNotFoundException(Episode.class));
 //
@@ -63,7 +63,7 @@ public class HistoryNodeService {
 //        return mapper.convertValue(createdHistoryNode, HistoryNodeDTO.class);
 //    }
 //
-//    public HistoryNodeDTO insert(HistoryNodeDTO historyNodeDTO, String movieId, String historyId) throws EntityNotFoundException {
+//    public HistoryNodeDTO insert(HistoryNodeDTO historyNodeDTO, String movieId, String historyId) {
 //
 //        var movie = movieRepository.findById(movieId).orElseThrow(() -> new EntityNotFoundException(Movie.class));
 //

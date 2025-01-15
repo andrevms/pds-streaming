@@ -18,7 +18,7 @@ public class TranscriptionController {
     private TranscriptionService transcriptionService;
 
     @GetMapping("/transcribe")
-    public TranscriptionResponse transcribe(@RequestBody TranscriptionRequest transcriptionRequest) throws TranscriptionFailedException, EntityNotFoundException {
+    public TranscriptionResponse transcribe(@RequestBody TranscriptionRequest transcriptionRequest) throws TranscriptionFailedException {
         return transcriptionService.transcribe(transcriptionRequest);
     }
 }

@@ -1,6 +1,6 @@
 package br.com.pds.streaming.framework.exceptions;
 
-public class InvalidFileException extends Exception {
+public class InvalidFileException extends RuntimeException {
 
     public InvalidFileException(String fileName) {
         super(fileName + " is not a valid file.");

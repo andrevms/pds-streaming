@@ -11,7 +11,6 @@ import br.com.pds.streaming.framework.authentication.repositories.RoleRepository
 import br.com.pds.streaming.framework.authentication.repositories.UserRepository;
 import br.com.pds.streaming.framework.config.jwt.JwtUtils;
 import br.com.pds.streaming.framework.exceptions.InvalidRoleException;
-import br.com.pds.streaming.framework.mapper.modelMapper.MetablockMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,18 +30,20 @@ import java.util.stream.Collectors;
 @Service
 public class AuthService {
 
-    @Autowired
     private JwtUtils jwtUtils;
-    @Autowired
     private AuthenticationManager authenticationManager;
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private RoleRepository roleRepository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
-    private MetablockMapper mapper;
+    public AuthService(JwtUtils jwtUtils, AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.jwtUtils = jwtUtils;
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication;
@@ -73,7 +74,7 @@ public class AuthService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<?> registerUser(RegisterRequest registerRequest) throws InvalidRoleException {
+    public ResponseEntity<?> registerUser(RegisterRequest registerRequest) {
 
         try {
             User user = mountUser(registerRequest);

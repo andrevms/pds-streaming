@@ -3,10 +3,6 @@ package br.com.pds.streaming.blockburst.media.controllers;
 import br.com.pds.streaming.blockburst.media.model.dto.TvShowRequest;
 import br.com.pds.streaming.blockburst.media.model.dto.TvShowResponse;
 import br.com.pds.streaming.blockburst.media.services.TvShowService;
-import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
-import br.com.pds.streaming.framework.exceptions.InvalidAnimationException;
-import br.com.pds.streaming.framework.exceptions.InvalidSourceException;
-import br.com.pds.streaming.framework.exceptions.InvalidThumbnailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,27 +23,27 @@ public class TvShowController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TvShowResponse> getTvShowById(@PathVariable String id) throws EntityNotFoundException {
+    public ResponseEntity<TvShowResponse> getTvShowById(@PathVariable String id) {
         return new ResponseEntity<>(tvShowService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<TvShowResponse> createTvShow(@RequestBody TvShowRequest tvShowDTO) throws InvalidThumbnailException, InvalidAnimationException {
+    public ResponseEntity<TvShowResponse> createTvShow(@RequestBody TvShowRequest tvShowDTO) {
         return new ResponseEntity<>(tvShowService.insert(tvShowDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TvShowResponse> updateTvShow(@RequestBody TvShowRequest tvShowDTO, @PathVariable String id) throws EntityNotFoundException, InvalidThumbnailException, InvalidAnimationException {
+    public ResponseEntity<TvShowResponse> updateTvShow(@RequestBody TvShowRequest tvShowDTO, @PathVariable String id) {
         return new ResponseEntity<>(tvShowService.update(tvShowDTO, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TvShowResponse> patchTvShow(@RequestBody TvShowRequest tvShowDTO, @PathVariable String id) throws EntityNotFoundException, InvalidThumbnailException, InvalidAnimationException {
+    public ResponseEntity<TvShowResponse> patchTvShow(@RequestBody TvShowRequest tvShowDTO, @PathVariable String id) {
         return new ResponseEntity<>(tvShowService.patch(tvShowDTO, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTvShow(@PathVariable String id) throws InvalidSourceException, EntityNotFoundException {
+    public ResponseEntity<Void> deleteTvShow(@PathVariable String id) {
         tvShowService.delete(id);
         return ResponseEntity.noContent().build();
     }

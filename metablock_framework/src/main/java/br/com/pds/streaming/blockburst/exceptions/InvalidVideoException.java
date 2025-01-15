@@ -1,4 +1,6 @@
-package br.com.pds.streaming.framework.exceptions;
+package br.com.pds.streaming.blockburst.exceptions;
+
+import br.com.pds.streaming.framework.exceptions.InvalidFileException;
 
 public class InvalidVideoException extends InvalidFileException {
 

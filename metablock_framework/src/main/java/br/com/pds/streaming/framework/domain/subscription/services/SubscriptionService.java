@@ -39,7 +39,7 @@ public class SubscriptionService {
     private RoleRepository roleRepository;
 
     @Transactional
-    public void subscribeUser(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException, InvalidCreditCardNumberException, EntityNotFoundException {
+    public void subscribeUser(RequestSubscriptionDTO requestSubscriptionDTO) {
 
         var creditCard = requestSubscriptionDTO.getCreditCardDTO();
         if (!paymentService.processCreditCardPayment(creditCard)) {
@@ -57,7 +57,7 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public void updateSubscriptionStatus(String subscriptionId, SubscriptionStatus status) throws EntityNotFoundException {
+    public void updateSubscriptionStatus(String subscriptionId, SubscriptionStatus status) {
 
         var subscription = subscriptionRepository.findById(subscriptionId).orElseThrow(() -> new EntityNotFoundException(subscriptionId));
 
@@ -65,7 +65,7 @@ public class SubscriptionService {
         subscriptionRepository.save(subscription);
     }
 
-    private Subscription createSubscription(RequestSubscriptionDTO requestSubscriptionDTO) throws InvalidSubscriptionTypeException {
+    private Subscription createSubscription(RequestSubscriptionDTO requestSubscriptionDTO) {
 
         SubscriptionType subscriptionType;
         try {
@@ -87,7 +87,7 @@ public class SubscriptionService {
         );
     }
 
-    public boolean subscriptionIsExpired(User user) throws EntityNotFoundException {
+    public boolean subscriptionIsExpired(User user) {
 
         if (!user.getSubscription().getEndDate().isBefore(LocalDate.now())) {
             return false;

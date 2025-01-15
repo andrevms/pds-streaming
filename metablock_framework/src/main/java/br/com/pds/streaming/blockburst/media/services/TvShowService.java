@@ -6,9 +6,7 @@ import br.com.pds.streaming.blockburst.media.model.dto.TvShowResponse;
 import br.com.pds.streaming.blockburst.media.model.entities.Season;
 import br.com.pds.streaming.blockburst.media.model.entities.TvShow;
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
-import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.exceptions.InvalidAnimationException;
-import br.com.pds.streaming.framework.exceptions.InvalidSourceException;
 import br.com.pds.streaming.framework.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.framework.media.model.dto.MediaDTO;
 import br.com.pds.streaming.framework.media.repositories.LikeRatingRepository;
@@ -41,18 +39,18 @@ public class TvShowService {
         return mediaService.findAll(TvShow.class, TvShowResponse.class);
     }
 
-    public TvShowResponse findById(String id) throws EntityNotFoundException {
+    public TvShowResponse findById(String id) {
         return mediaService.findById(id, TvShow.class, TvShowResponse.class);
     }
 
-    public MediaDTO insert(TvShowRequest tvShowRequest) throws InvalidThumbnailException, InvalidAnimationException, EntityNotFoundException {
+    public TvShowResponse insert(TvShowRequest tvShowRequest) {
 
         verifyFilesUrl(tvShowRequest);
 
         return mediaService.persist(tvShowRequest, TvShow.class, TvShowResponse.class);
     }
 
-    public TvShowResponse update(TvShowRequest tvShowRequest, String id) throws EntityNotFoundException, InvalidThumbnailException, InvalidAnimationException {
+    public TvShowResponse update(TvShowRequest tvShowRequest, String id) {
 
         verifyFilesUrl(tvShowRequest);
 
@@ -69,7 +67,7 @@ public class TvShowService {
         return mapper.convertValue(updatedTvShow, TvShowResponse.class);
     }
 
-    public TvShowResponse patch(TvShowRequest tvShowRequest, String id) throws EntityNotFoundException, InvalidThumbnailException, InvalidAnimationException {
+    public TvShowResponse patch(TvShowRequest tvShowRequest, String id) {
 
         var tvShow = mediaService.findById(id, TvShow.class);
 
@@ -104,7 +102,7 @@ public class TvShowService {
         return mapper.convertValue(patchedTvShow, TvShowResponse.class);
     }
 
-    public void delete(String id) throws EntityNotFoundException, InvalidSourceException {
+    public void delete(String id) {
 
         deleteOrphanSeasons(id);
         deleteOrphanRatings(id);
@@ -128,14 +126,14 @@ public class TvShowService {
         mediaService.delete(mapper.convertList(seasons, Season.class));
     }
 
-    protected void deleteOrphanRatings(String tvShowId) throws EntityNotFoundException {
+    protected void deleteOrphanRatings(String tvShowId) {
 
         var tvShow = mediaService.findById(tvShowId, TvShow.class);
 
         ratingRepository.deleteAll(ratingRepository.findAll().stream().filter(r -> tvShow.getRatings().contains(r)).toList());
     }
 
-    private void verifyFilesUrl(TvShowRequest tvShowRequest) throws InvalidThumbnailException, InvalidAnimationException {
+    private void verifyFilesUrl(TvShowRequest tvShowRequest) {
 
         if (!FileExtensionValidator.validateThumbnailFileExtension(tvShowRequest.getThumbnailUrl())) {
             throw new InvalidThumbnailException(tvShowRequest.getThumbnailUrl());

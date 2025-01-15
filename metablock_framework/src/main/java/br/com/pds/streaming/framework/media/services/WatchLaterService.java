@@ -26,11 +26,11 @@ public class WatchLaterService {
         this.mapper = mapper;
     }
 
-    public List<? extends MediaDTO> findByUserId(String userId) throws EntityNotFoundException {
+    public List<? extends MediaDTO> findByUserId(String userId) {
         return mapper.convertList(userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class)).getWatchLaterList(), MediaDTO.class);
     }
 
-    public UserDTO insert(String mediaId, String userId) throws EntityNotFoundException {
+    public UserDTO insert(String mediaId, String userId) {
 
         var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class));
 
@@ -43,7 +43,7 @@ public class WatchLaterService {
         return mapper.convertValue(user, UserDTO.class);
     }
 
-    public void delete(String mediaId, String userId) throws EntityNotFoundException {
+    public void delete(String mediaId, String userId) {
 
         var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class));
 

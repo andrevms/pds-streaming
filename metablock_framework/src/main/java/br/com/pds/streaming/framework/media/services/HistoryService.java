@@ -40,14 +40,14 @@ public class HistoryService {
         return mapper.convertList(histories, HistoryDTO.class);
     }
 
-    public HistoryDTO findById(String id) throws EntityNotFoundException {
+    public HistoryDTO findById(String id) {
 
         var history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(History.class));
 
         return mapper.convertValue(history, HistoryDTO.class);
     }
 
-    public HistoryDTO insert(String userId) throws EntityNotFoundException {
+    public HistoryDTO insert(String userId) {
 
         var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class));
 

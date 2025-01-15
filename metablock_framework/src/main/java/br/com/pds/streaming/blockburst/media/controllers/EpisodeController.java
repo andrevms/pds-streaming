@@ -2,7 +2,6 @@ package br.com.pds.streaming.blockburst.media.controllers;
 
 import br.com.pds.streaming.blockburst.media.model.dto.EpisodeDTO;
 import br.com.pds.streaming.blockburst.media.services.EpisodeService;
-import br.com.pds.streaming.framework.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,27 +27,27 @@ public class EpisodeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EpisodeDTO> getEpisodeById(@PathVariable String id) throws EntityNotFoundException {
+    public ResponseEntity<EpisodeDTO> getEpisodeById(@PathVariable String id) {
         return new ResponseEntity<>(episodeService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<EpisodeDTO> createEpisode(@RequestBody EpisodeDTO episodeDTO, @RequestParam(name = "seasonId") String seasonId) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public ResponseEntity<EpisodeDTO> createEpisode(@RequestBody EpisodeDTO episodeDTO, @RequestParam(name = "seasonId") String seasonId) {
         return new ResponseEntity<>(episodeService.insert(episodeDTO, seasonId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EpisodeDTO> updateEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public ResponseEntity<EpisodeDTO> updateEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) {
         return new ResponseEntity<>(episodeService.update(episodeDTO, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<EpisodeDTO> patchEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) throws EntityNotFoundException, InvalidAnimationException, InvalidVideoException, InvalidThumbnailException {
+    public ResponseEntity<EpisodeDTO> patchEpisode(@RequestBody EpisodeDTO episodeDTO, @PathVariable String id) {
         return new ResponseEntity<>(episodeService.patch(episodeDTO, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEpisode(@PathVariable String id) throws InvalidSourceException, EntityNotFoundException {
+    public ResponseEntity<Void> deleteEpisode(@PathVariable String id) {
         episodeService.delete(id);
         return ResponseEntity.noContent().build();
     }

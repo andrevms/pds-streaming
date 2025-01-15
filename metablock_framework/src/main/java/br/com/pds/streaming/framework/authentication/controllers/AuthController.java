@@ -26,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) throws InvalidRoleException {
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
         return authService.registerUser(registerRequest);
     }
 

@@ -1,7 +1,5 @@
 package br.com.pds.streaming.framework.media.controllers;
 
-import br.com.pds.streaming.framework.exceptions.DuplicatedRatingException;
-import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.media.model.dto.LikeRatingDTO;
 import br.com.pds.streaming.framework.media.services.LikeRatingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,17 +32,17 @@ public class LikeRatingController {
     }
 
     @PostMapping
-    public ResponseEntity<LikeRatingDTO> createLikeRating(@RequestBody LikeRatingDTO likeRatingDTO, @RequestParam(name = "userId") String userId, @RequestParam(name = "mediaId") String mediaId) throws EntityNotFoundException, DuplicatedRatingException {
+    public ResponseEntity<LikeRatingDTO> createLikeRating(@RequestBody LikeRatingDTO likeRatingDTO, @RequestParam(name = "userId") String userId, @RequestParam(name = "mediaId") String mediaId) {
         return new ResponseEntity<>(likeRatingService.insert(userId, mediaId, likeRatingDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LikeRatingDTO> updateLikeRating(@RequestBody LikeRatingDTO likeRatingDTO, @PathVariable String id) throws EntityNotFoundException {
+    public ResponseEntity<LikeRatingDTO> updateLikeRating(@RequestBody LikeRatingDTO likeRatingDTO, @PathVariable String id) {
         return new ResponseEntity<>(likeRatingService.update(likeRatingDTO, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<LikeRatingDTO> patchLikeRating(@RequestBody LikeRatingDTO likeRatingDTO, @PathVariable String id) throws EntityNotFoundException {
+    public ResponseEntity<LikeRatingDTO> patchLikeRating(@RequestBody LikeRatingDTO likeRatingDTO, @PathVariable String id) {
         return new ResponseEntity<>(likeRatingService.patch(likeRatingDTO, id), HttpStatus.OK);
     }
 

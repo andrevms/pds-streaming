@@ -1,7 +1,6 @@
 package br.com.pds.streaming.framework.media.services;
 
 import br.com.pds.streaming.framework.authentication.services.UserService;
-import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.media.model.dto.HistoryNodeDTO;
 import br.com.pds.streaming.framework.media.model.dto.MediaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public abstract class RecommendationService {
         this.userService = userService;
     }
 
-    public List<MediaDTO> getRecommendations(String userId) throws EntityNotFoundException {
+    public List<MediaDTO> getRecommendations(String userId) {
         setHistoryNodes(userId);
         calculatePopularity();
         hook();
@@ -32,7 +31,7 @@ public abstract class RecommendationService {
         return generateRecommendations();
     }
 
-    public void setHistoryNodes(String userId) throws EntityNotFoundException {
+    public void setHistoryNodes(String userId) {
         var user = userService.findById(userId);
 
         var history = user.getHistory();

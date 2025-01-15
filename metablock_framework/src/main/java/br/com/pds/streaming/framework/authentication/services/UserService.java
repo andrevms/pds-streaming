@@ -44,12 +44,12 @@ public class UserService implements UserDetailsService {
         return mapper.convertList(userRepository.findAll(), UserDTO.class);
     }
 
-    public UserDTO findById(String id) throws EntityNotFoundException {
+    public UserDTO findById(String id) {
         var user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(User.class));
         return mapper.convertValue(user, UserDTO.class);
     }
 
-    public UserDTO update(UserDTO userDTO, String id) throws EntityNotFoundException {
+    public UserDTO update(UserDTO userDTO, String id) {
 
         var user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(User.class));
         var subscription = mapper.convertValue(userDTO.getSubscription(), Subscription.class);
@@ -65,7 +65,7 @@ public class UserService implements UserDetailsService {
         return mapper.convertValue(userRepository.save(user), UserDTO.class);
     }
 
-    public UserDTO updateUserSubscription(String id, Subscription subscription) throws EntityNotFoundException {
+    public UserDTO updateUserSubscription(String id, Subscription subscription) {
 
         var user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(User.class));
 

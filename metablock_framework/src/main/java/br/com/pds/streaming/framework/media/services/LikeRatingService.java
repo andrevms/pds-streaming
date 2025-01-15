@@ -41,7 +41,7 @@ public class LikeRatingService {
         return mapper.convertValue(likeRatingRepository.findById(id), LikeRatingDTO.class);
     }
 
-    public LikeRatingDTO insert(String userId, String mediaId, LikeRatingDTO likeRatingDTO) throws DuplicatedRatingException, EntityNotFoundException {
+    public LikeRatingDTO insert(String userId, String mediaId, LikeRatingDTO likeRatingDTO) {
 
         if (!likeRatingRepository.findByUserId(userId).stream().filter(lr -> lr.getMediaId().equals(mediaId)).toList().isEmpty()) {
             throw new DuplicatedRatingException();
@@ -64,7 +64,7 @@ public class LikeRatingService {
         return mapper.convertValue(createdRating, LikeRatingDTO.class);
     }
 
-    public LikeRatingDTO update(LikeRatingDTO likeRatingDTO, String id) throws EntityNotFoundException {
+    public LikeRatingDTO update(LikeRatingDTO likeRatingDTO, String id) {
 
         var rating = likeRatingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Rating.class));
 
@@ -79,7 +79,7 @@ public class LikeRatingService {
         return mapper.convertValue(updatedRating, LikeRatingDTO.class);
     }
 
-    public LikeRatingDTO patch(LikeRatingDTO likeRatingDTO, String id) throws EntityNotFoundException {
+    public LikeRatingDTO patch(LikeRatingDTO likeRatingDTO, String id) {
 
         var rating = likeRatingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Rating.class));
 

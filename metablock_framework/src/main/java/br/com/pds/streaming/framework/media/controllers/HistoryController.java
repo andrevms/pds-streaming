@@ -1,6 +1,5 @@
 package br.com.pds.streaming.framework.media.controllers;
 
-import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.media.model.dto.HistoryDTO;
 import br.com.pds.streaming.framework.media.services.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +27,12 @@ public class HistoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HistoryDTO> getHistoryById(@PathVariable String id) throws EntityNotFoundException {
+    public ResponseEntity<HistoryDTO> getHistoryById(@PathVariable String id) {
         return new ResponseEntity<>(historyService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<HistoryDTO> createHistory(@RequestParam(name = "userId") String userId) throws EntityNotFoundException {
+    public ResponseEntity<HistoryDTO> createHistory(@RequestParam(name = "userId") String userId) {
         return new ResponseEntity<>(historyService.insert(userId), HttpStatus.CREATED);
     }
 

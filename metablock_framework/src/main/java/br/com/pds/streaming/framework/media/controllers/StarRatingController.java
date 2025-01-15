@@ -34,17 +34,17 @@ public class StarRatingController {
     }
 
     @PostMapping
-    public ResponseEntity<StarRatingDTO> createStarRating(@RequestBody StarRatingDTO starRatingDTO, @RequestParam(name = "userId") String userId, @RequestParam(name = "mediaId") String mediaId) throws EntityNotFoundException, DuplicatedRatingException {
+    public ResponseEntity<StarRatingDTO> createStarRating(@RequestBody StarRatingDTO starRatingDTO, @RequestParam(name = "userId") String userId, @RequestParam(name = "mediaId") String mediaId) {
         return new ResponseEntity<>(starRatingService.insert(userId, mediaId, starRatingDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StarRatingDTO> updateStarRating(@RequestBody StarRatingDTO starRatingDTO, @PathVariable("id") String id) throws EntityNotFoundException {
+    public ResponseEntity<StarRatingDTO> updateStarRating(@RequestBody StarRatingDTO starRatingDTO, @PathVariable("id") String id) {
         return new ResponseEntity<>(starRatingService.update(starRatingDTO, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<StarRatingDTO> patchStarRating(@RequestBody StarRatingDTO starRatingDTO, @PathVariable("id") String id) throws EntityNotFoundException {
+    public ResponseEntity<StarRatingDTO> patchStarRating(@RequestBody StarRatingDTO starRatingDTO, @PathVariable("id") String id) {
         return new ResponseEntity<>(starRatingService.patch(starRatingDTO, id), HttpStatus.OK);
     }
 

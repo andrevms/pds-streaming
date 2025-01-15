@@ -10,7 +10,7 @@ public class MissingOrInvalidMediaException extends RuntimeException {
         super("History node with id " + historyNode.getId() + " does not have episode or movie, which is required to work correctly.");
     }
 
-    public MissingOrInvalidMediaException(HistoryNodeDTO<?> historyNodeDTO) {
+    public MissingOrInvalidMediaException(HistoryNodeDTO historyNodeDTO) {
         super("History node with id " + historyNodeDTO.getId() + " does not have episode or movie, which is required to work correctly.");
     }
 

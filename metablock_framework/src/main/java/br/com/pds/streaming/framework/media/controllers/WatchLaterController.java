@@ -19,17 +19,17 @@ public class WatchLaterController {
     private WatchLaterService watchLaterService;
 
     @GetMapping
-    public ResponseEntity<List<? extends MediaDTO>> getWatchLaterListByUserId(@RequestParam(name = "userId") String userId) throws EntityNotFoundException {
+    public ResponseEntity<List<? extends MediaDTO>> getWatchLaterListByUserId(@RequestParam(name = "userId") String userId) {
         return new ResponseEntity<>(watchLaterService.findByUserId(userId), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> addMediaToWatchLater(@RequestParam(name = "mediaId") String mediaId, @RequestParam(name = "userId") String userId) throws EntityNotFoundException {
+    public ResponseEntity<UserDTO> addMediaToWatchLater(@RequestParam(name = "mediaId") String mediaId, @RequestParam(name = "userId") String userId) {
         return new ResponseEntity<>(watchLaterService.insert(mediaId, userId), HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> removeMediaFromWatchLater(@RequestParam(name = "mediaId") String mediaId, @RequestParam(name = "userId") String userId) throws EntityNotFoundException {
+    public ResponseEntity<Void> removeMediaFromWatchLater(@RequestParam(name = "mediaId") String mediaId, @RequestParam(name = "userId") String userId) {
         watchLaterService.delete(mediaId, userId);
         return ResponseEntity.noContent().build();
     }

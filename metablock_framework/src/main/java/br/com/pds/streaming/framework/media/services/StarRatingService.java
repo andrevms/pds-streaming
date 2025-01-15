@@ -41,7 +41,7 @@ public class StarRatingService {
         return mapper.convertValue(starRatingRepository.findById(id), StarRatingDTO.class);
     }
 
-    public StarRatingDTO insert(String userId, String mediaId, StarRatingDTO starRatingDTO) throws DuplicatedRatingException, EntityNotFoundException {
+    public StarRatingDTO insert(String userId, String mediaId, StarRatingDTO starRatingDTO) {
 
         if (!starRatingRepository.findByUserId(userId).stream().filter(sr -> sr.getMediaId().equals(mediaId)).toList().isEmpty()) {
             throw new DuplicatedRatingException();
@@ -64,7 +64,7 @@ public class StarRatingService {
         return mapper.convertValue(createdRating, StarRatingDTO.class);
     }
 
-    public StarRatingDTO update(StarRatingDTO starRatingDTO, String id) throws EntityNotFoundException {
+    public StarRatingDTO update(StarRatingDTO starRatingDTO, String id) {
 
         var rating = starRatingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Rating.class));
 
@@ -79,7 +79,7 @@ public class StarRatingService {
         return mapper.convertValue(updatedRating, StarRatingDTO.class);
     }
 
-    public StarRatingDTO patch(StarRatingDTO starRatingDTO, String id) throws EntityNotFoundException {
+    public StarRatingDTO patch(StarRatingDTO starRatingDTO, String id) {
 
         var rating = starRatingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Rating.class));
 
