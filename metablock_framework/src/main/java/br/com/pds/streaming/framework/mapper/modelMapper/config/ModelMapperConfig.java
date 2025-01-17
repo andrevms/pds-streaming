@@ -46,7 +46,7 @@ public class ModelMapperConfig {
         modelMapper.createTypeMap(LikeRatingDTO.class, LikeRating.class).addMapping(LikeRatingDTO::getId, LikeRating::setId);
 
 //        modelMapper.createTypeMap(HistoryNode.class, HistoryNodeDTO.class).setConverter(historyNodeDTOConverter);
-        modelMapper.createTypeMap(HistoryNodeDTO.class, HistoryNode.class).addMapping(HistoryNodeDTO::getId, HistoryNode::setId);
+//        modelMapper.createTypeMap(HistoryNodeDTO.class, HistoryNode.class).addMapping(HistoryNodeDTO::getId, HistoryNode::setId);
 
         modelMapper.createTypeMap(Media.class, MediaDTO.class).addMapping(Media::getId, MediaDTO::setId);
         modelMapper.createTypeMap(MediaDTO.class, Media.class).addMapping(MediaDTO::getId, Media::setId);

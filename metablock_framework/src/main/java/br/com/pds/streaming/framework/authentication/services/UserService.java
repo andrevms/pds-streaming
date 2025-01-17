@@ -11,6 +11,7 @@ import br.com.pds.streaming.framework.domain.subscription.model.enums.Subscripti
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.mapper.modelMapper.MetablockMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
+    @Qualifier("metablockMapper")
     private MetablockMapper mapper;
 
     @Override

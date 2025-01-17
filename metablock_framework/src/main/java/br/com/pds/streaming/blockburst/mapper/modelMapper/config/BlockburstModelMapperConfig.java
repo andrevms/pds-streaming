@@ -5,11 +5,16 @@ import br.com.pds.streaming.blockburst.media.model.entities.Episode;
 import br.com.pds.streaming.blockburst.media.model.entities.Movie;
 import br.com.pds.streaming.blockburst.media.model.entities.Season;
 import br.com.pds.streaming.blockburst.media.model.entities.TvShow;
+import br.com.pds.streaming.framework.exceptions.MissingOrInvalidMediaException;
+import br.com.pds.streaming.framework.media.model.dto.HistoryNodeDTO;
 import br.com.pds.streaming.framework.media.model.dto.LikeRatingDTO;
+import br.com.pds.streaming.framework.media.model.entities.HistoryNode;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.logging.Logger;
 
 @Configuration
 public class BlockburstModelMapperConfig {
@@ -18,6 +23,30 @@ public class BlockburstModelMapperConfig {
     public ModelMapper modelMapper() {
 
         ModelMapper modelMapper = new br.com.pds.streaming.framework.mapper.modelMapper.config.ModelMapperConfig().modelMapper();
+
+        Converter<HistoryNode, HistoryNodeDTO> historyNodeDTOConverter = ctx -> {
+            HistoryNode source = ctx.getSource();
+            if (source.getMedia() == null) {
+                throw new MissingOrInvalidMediaException(source);
+            } else {
+                if (source.getMedia() instanceof Movie) {
+
+                    HistoryNodeDTO<MovieResponse> destination = new HistoryNodeDTO<>();
+                    destination.setId(source.getId());
+                    destination.setMedia(modelMapper.map(source.getMedia(), MovieResponse.class));
+                    destination.setCurrentTime(source.getCurrentTime());
+                    return destination;
+                } else if (source.getMedia() instanceof Episode) {
+                    HistoryNodeDTO<EpisodeDTO> destination = new HistoryNodeDTO<>();
+                    destination.setId(source.getId());
+                    destination.setMedia(modelMapper.map(source.getMedia(), EpisodeDTO.class));
+                    destination.setCurrentTime(source.getCurrentTime());
+                    return destination;
+                } else {
+                    throw new MissingOrInvalidMediaException(source);
+                }
+            }
+        };
 
         final Converter<Movie, MovieResponse> movieConverter = ctx -> {
 
@@ -70,6 +99,9 @@ public class BlockburstModelMapperConfig {
 
         modelMapper.createTypeMap(TvShow.class, TvShowResponse.class).setConverter(tvShowConverter);
         modelMapper.createTypeMap(TvShowRequest.class, TvShow.class).addMapping(TvShowRequest::getId, TvShow::setId);
+
+        modelMapper.createTypeMap(HistoryNode.class, HistoryNodeDTO.class).setConverter(historyNodeDTOConverter);
+        modelMapper.createTypeMap(HistoryNodeDTO.class, HistoryNode.class).addMapping(HistoryNodeDTO::getId, HistoryNode::setId);
 
         return modelMapper;
     }

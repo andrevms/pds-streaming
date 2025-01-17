@@ -8,6 +8,7 @@ import br.com.pds.streaming.framework.media.model.dto.HistoryDTO;
 import br.com.pds.streaming.framework.media.model.entities.History;
 import br.com.pds.streaming.framework.media.repositories.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class HistoryService {
     private final MetablockMapper mapper;
 
     @Autowired
-    public HistoryService(HistoryRepository historyRepository, UserRepository userRepository, MetablockMapper mapper) {
+    public HistoryService(HistoryRepository historyRepository, UserRepository userRepository, @Qualifier("metablockMapper") MetablockMapper mapper) {
         this.historyRepository = historyRepository;
         this.userRepository = userRepository;
         this.mapper = mapper;

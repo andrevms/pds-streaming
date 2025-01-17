@@ -1,85 +1,47 @@
 package br.com.pds.streaming.framework.media.services;
 
+import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.mapper.modelMapper.MetablockMapper;
 import br.com.pds.streaming.framework.media.model.dto.HistoryNodeDTO;
 import br.com.pds.streaming.framework.media.model.entities.HistoryNode;
 import br.com.pds.streaming.framework.media.repositories.HistoryNodeRepository;
-import br.com.pds.streaming.framework.media.repositories.HistoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class HistoryNodeService {
+public abstract class HistoryNodeService {
 
-    private final HistoryNodeRepository historyNodeRepository;
-    private final HistoryRepository historyRepository;
-//    private final EpisodeRepository episodeRepository;
-//    private final MovieRepository movieRepository;
-    private final MetablockMapper mapper;
+    protected final HistoryNodeRepository historyNodeRepository;
+    protected final MetablockMapper mapper;
 
-    @Autowired
-    public HistoryNodeService(HistoryNodeRepository historyNodeRepository, HistoryRepository historyRepository/*, EpisodeRepository episodeRepository, MovieRepository movieRepository*/, MetablockMapper mapper) {
+    public HistoryNodeService(HistoryNodeRepository historyNodeRepository, BlockburstMapper mapper) {
         this.historyNodeRepository = historyNodeRepository;
-        this.historyRepository = historyRepository;
-//        this.episodeRepository = episodeRepository;
-//        this.movieRepository = movieRepository;
         this.mapper = mapper;
     }
 
     public List<HistoryNode> findAll() {
-        return historyNodeRepository.findAll()/*.stream().map(node -> mapper.convertValue(node, HistoryNodeDTO.class)).toList()*/;
-    }
 
+        var historyNodes = historyNodeRepository.findAll()/*.stream().map(node -> mapper.convertValue(node, HistoryNodeDTO.class)).toList()*/;
+
+        return historyNodes;
+    }
 
     public List<HistoryNodeDTO> findByHistoryId(String historyId) {
         return historyNodeRepository.findByHistoryId(historyId).stream().map(node -> mapper.convertValue(node, HistoryNodeDTO.class)).toList();
     }
 
-    public HistoryNodeDTO findById(String id) {
+    public HistoryNode findById(String id) {
 
         var historyNode = historyNodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(HistoryNode.class));
 
-        return mapper.convertValue(historyNode, HistoryNodeDTO.class);
+        // return mapper.convertValue(historyNode, HistoryNodeDTO.class);
+
+        System.out.println(historyNode.getMedia() == null);
+
+        return historyNode;
     }
 
-//    public HistoryNodeDTO insert(String episodeId, HistoryNodeDTO historyNodeDTO, String historyId) {
-//
-//        var episode = episodeRepository.findById(episodeId).orElseThrow(() -> new EntityNotFoundException(Episode.class));
-//
-//        var history = historyRepository.findById(historyId).orElseThrow(() -> new EntityNotFoundException(History.class));
-//
-//        var historyNode = mapper.convertValue(historyNodeDTO, HistoryNode.class);
-//        historyNode.setMedia(episode);
-//
-//        var createdHistoryNode = historyNodeRepository.save(historyNode);
-//
-//        history.getNodes().add(createdHistoryNode);
-//
-//        historyRepository.save(history);
-//
-//        return mapper.convertValue(createdHistoryNode, HistoryNodeDTO.class);
-//    }
-//
-//    public HistoryNodeDTO insert(HistoryNodeDTO historyNodeDTO, String movieId, String historyId) {
-//
-//        var movie = movieRepository.findById(movieId).orElseThrow(() -> new EntityNotFoundException(Movie.class));
-//
-//        var history = historyRepository.findById(historyId).orElseThrow(() -> new EntityNotFoundException(History.class));
-//
-//        var historyNode = mapper.convertValue(historyNodeDTO, HistoryNode.class);
-//        historyNode.setMedia(movie);
-//
-//        var createdHistoryNode = historyNodeRepository.save(historyNode);
-//
-//        history.getNodes().add(createdHistoryNode);
-//
-//        historyRepository.save(history);
-//
-//        return mapper.convertValue(createdHistoryNode, HistoryNodeDTO.class);
-//    }
+    public abstract HistoryNodeDTO insert(String mediaId, HistoryNodeDTO historyNodeDTO, String historyId);
 
     public HistoryNodeDTO update(HistoryNodeDTO historyNodeDTO, String id) {
         return deleteAndInsertAgain(historyNodeDTO, id);

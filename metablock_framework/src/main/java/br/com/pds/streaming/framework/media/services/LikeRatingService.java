@@ -10,6 +10,7 @@ import br.com.pds.streaming.framework.media.model.entities.Rating;
 import br.com.pds.streaming.framework.media.model.dto.LikeRatingDTO;
 import br.com.pds.streaming.framework.media.repositories.LikeRatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -23,7 +24,7 @@ public class LikeRatingService {
     private final MetablockMapper mapper;
 
     @Autowired
-    public LikeRatingService(LikeRatingRepository likeRatingRepository, UserRepository userRepository, MetablockMapper mapper) {
+    public LikeRatingService(LikeRatingRepository likeRatingRepository, UserRepository userRepository, @Qualifier("metablockMapper") MetablockMapper mapper) {
         this.likeRatingRepository = likeRatingRepository;
         this.userRepository = userRepository;
         this.mapper = mapper;

@@ -6,6 +6,7 @@ import br.com.pds.streaming.framework.media.model.entities.Media;
 import br.com.pds.streaming.framework.media.model.dto.MediaDTO;
 import br.com.pds.streaming.framework.media.repositories.MediaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class MediaService {
     private MetablockMapper mapper;
 
     @Autowired
-    public MediaService(MediaRepository mediaRepository, MetablockMapper mapper) {
+    public MediaService(MediaRepository mediaRepository, @Qualifier("metablockMapper") MetablockMapper mapper) {
         this.mediaRepository = mediaRepository;
         this.mapper = mapper;
     }

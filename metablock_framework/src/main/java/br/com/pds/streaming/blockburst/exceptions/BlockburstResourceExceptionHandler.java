@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
-public class ResourceExceptionHandler {
+public class BlockburstResourceExceptionHandler {
 
     @ExceptionHandler(InvalidVideoException.class)
     public ResponseEntity<ResponseError> invalidVideo(InvalidVideoException e, HttpServletRequest request) {

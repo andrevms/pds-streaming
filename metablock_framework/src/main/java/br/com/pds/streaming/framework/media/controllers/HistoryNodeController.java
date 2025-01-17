@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping({"/api/historynodes", "/api/history-nodes", "/api/history_nodes"})
 public class HistoryNodeController {
 
-    @Autowired
     private HistoryNodeService historyNodeService;
+
+    public HistoryNodeController(HistoryNodeService historyNodeService) {
+        this.historyNodeService = historyNodeService;
+    }
 
     @GetMapping
     public ResponseEntity<List<HistoryNode>> getAllHistoryNodes() {
@@ -28,23 +29,14 @@ public class HistoryNodeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HistoryNodeDTO> getHistoryNodeById(@PathVariable String id) {
+    public ResponseEntity<HistoryNode> getHistoryNodeById(@PathVariable String id) {
         return new ResponseEntity<>(historyNodeService.findById(id), HttpStatus.OK);
     }
 
-//    @PostMapping
-//    public ResponseEntity<HistoryNodeDTO> insert(@RequestBody HistoryNodeDTO historyNodeDTO, @RequestParam(name = "historyId") String historyId, @RequestParam(name = "episodeId", required = false) String episodeId, @RequestParam(name = "movieId", required = false) String movieId) {
-//
-//        if (episodeId != null) {
-//            return new ResponseEntity<>(historyNodeService.insert(episodeId, historyNodeDTO, historyId), HttpStatus.CREATED);
-//        }
-//
-//        if (movieId != null) {
-//            return new ResponseEntity<>(historyNodeService.insert(historyNodeDTO, movieId, historyId), HttpStatus.CREATED);
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//    }
+    @PostMapping
+    public ResponseEntity<HistoryNodeDTO> insert(@RequestBody HistoryNodeDTO historyNodeDTO, @RequestParam(name = "historyId") String historyId, @RequestParam(name = "mediaId", required = false) String mediaId) {
+        return new ResponseEntity<>(historyNodeService.insert(mediaId, historyNodeDTO, historyId), HttpStatus.CREATED);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<HistoryNodeDTO> updateHistoryNode(@RequestBody HistoryNodeDTO historyNodeDTO, @PathVariable String id) {

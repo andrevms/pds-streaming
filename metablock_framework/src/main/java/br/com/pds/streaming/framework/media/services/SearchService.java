@@ -4,6 +4,7 @@ import br.com.pds.streaming.framework.mapper.modelMapper.MetablockMapper;
 import br.com.pds.streaming.framework.media.model.dto.MediaDTO;
 import br.com.pds.streaming.framework.media.model.entities.Media;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -16,7 +17,7 @@ public class SearchService {
     private MetablockMapper mapper;
 
     @Autowired
-    public SearchService(MediaService mediaService, MetablockMapper mapper) {
+    public SearchService(MediaService mediaService, @Qualifier("metablockMapper") MetablockMapper mapper) {
         this.mediaService = mediaService;
         this.mapper = mapper;
     }

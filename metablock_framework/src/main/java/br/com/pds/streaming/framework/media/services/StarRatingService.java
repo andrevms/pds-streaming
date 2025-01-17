@@ -10,6 +10,7 @@ import br.com.pds.streaming.framework.media.model.entities.StarRating;
 import br.com.pds.streaming.framework.media.model.dto.StarRatingDTO;
 import br.com.pds.streaming.framework.media.repositories.StarRatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -23,7 +24,7 @@ public class StarRatingService {
     private final MetablockMapper mapper;
 
     @Autowired
-    public StarRatingService(StarRatingRepository starRatingRepository, UserRepository userRepository, MetablockMapper mapper) {
+    public StarRatingService(StarRatingRepository starRatingRepository, UserRepository userRepository, @Qualifier("metablockMapper") MetablockMapper mapper) {
         this.starRatingRepository = starRatingRepository;
         this.userRepository = userRepository;
         this.mapper = mapper;
