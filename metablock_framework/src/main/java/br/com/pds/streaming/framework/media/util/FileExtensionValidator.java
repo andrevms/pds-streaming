@@ -15,4 +15,8 @@ public class FileExtensionValidator {
     public static boolean validateVideoFileExtension(String filePath) {
         return Pattern.compile(".*\\.(mp4|avi|mkv|mov|flv|webm|wmv|mpg|mpeg|ts|ogv|3gp|f4v|m4v)$", Pattern.CASE_INSENSITIVE).matcher(filePath).matches();
     }
+
+    public static boolean validateAudioFileExtension(String filePath) {
+        return Pattern.compile(".*\\.(mp3|wav|aiff|flac|alac|ape|aac|ogg|wma|mp4|opus|midi|dsd)$", Pattern.CASE_INSENSITIVE).matcher(filePath).matches();
+    }
 }

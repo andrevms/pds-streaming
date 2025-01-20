@@ -1,6 +1,6 @@
 package br.com.pds.streaming.blockburst.media.services;
 
-import br.com.pds.streaming.blockburst.exceptions.InvalidVideoException;
+import br.com.pds.streaming.framework.exceptions.InvalidVideoException;
 import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.blockburst.media.model.dto.MovieRequest;
 import br.com.pds.streaming.blockburst.media.model.dto.MovieResponse;
@@ -69,13 +69,8 @@ public class MovieService {
 
         var movie = mediaService.findById(id, Movie.class);
 
-        if (movieRequest.getTitle() != null) {
-            movie.setTitle(movieRequest.getTitle());
-        }
-
-        if (movieRequest.getDescription() != null) {
-            movie.setDescription(movieRequest.getDescription());
-        }
+        if (movieRequest.getTitle() != null) movie.setTitle(movieRequest.getTitle());
+        if (movieRequest.getDescription() != null) movie.setDescription(movieRequest.getDescription());
 
         if (movieRequest.getVideoUrl() != null) {
 

@@ -1,10 +1,8 @@
 package br.com.pds.streaming.blockburst.mapper.modelMapper.config;
 
+import br.com.pds.streaming.framework.mapper.modelMapper.config.ModelMapperConfig;
 import br.com.pds.streaming.blockburst.media.model.dto.*;
-import br.com.pds.streaming.blockburst.media.model.entities.Episode;
-import br.com.pds.streaming.blockburst.media.model.entities.Movie;
-import br.com.pds.streaming.blockburst.media.model.entities.Season;
-import br.com.pds.streaming.blockburst.media.model.entities.TvShow;
+import br.com.pds.streaming.blockburst.media.model.entities.*;
 import br.com.pds.streaming.framework.exceptions.MissingOrInvalidMediaException;
 import br.com.pds.streaming.framework.media.model.dto.HistoryNodeDTO;
 import br.com.pds.streaming.framework.media.model.dto.LikeRatingDTO;
@@ -22,7 +20,7 @@ public class BlockburstModelMapperConfig {
     @Bean
     public ModelMapper modelMapper() {
 
-        ModelMapper modelMapper = new br.com.pds.streaming.framework.mapper.modelMapper.config.ModelMapperConfig().modelMapper();
+        ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
 
         Converter<HistoryNode, HistoryNodeDTO> historyNodeDTOConverter = ctx -> {
             HistoryNode source = ctx.getSource();

@@ -71,13 +71,8 @@ public class TvShowService {
 
         var tvShow = mediaService.findById(id, TvShow.class);
 
-        if (tvShowRequest.getTitle() != null) {
-            tvShow.setTitle(tvShowRequest.getTitle());
-        }
-
-        if (tvShowRequest.getDescription() != null) {
-            tvShow.setDescription(tvShowRequest.getDescription());
-        }
+        if (tvShowRequest.getTitle() != null) tvShow.setTitle(tvShowRequest.getTitle());
+        if (tvShowRequest.getDescription() != null) tvShow.setDescription(tvShowRequest.getDescription());
 
         if (tvShowRequest.getThumbnailUrl() != null) {
 

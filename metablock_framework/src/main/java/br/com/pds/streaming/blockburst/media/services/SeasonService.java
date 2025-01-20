@@ -78,13 +78,8 @@ public class SeasonService {
 
         var season = mediaService.findById(id, Season.class);
 
-        if (seasonDTO.getTitle() != null) {
-            season.setTitle(seasonDTO.getTitle());
-        }
-
-        if (seasonDTO.getDescription() != null) {
-            season.setDescription(seasonDTO.getDescription());
-        }
+        if (seasonDTO.getTitle() != null) season.setTitle(seasonDTO.getTitle());
+        if (seasonDTO.getDescription() != null) season.setDescription(seasonDTO.getDescription());
 
         if (seasonDTO.getThumbnailUrl() != null) {
 

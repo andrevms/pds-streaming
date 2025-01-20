@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Document(collection = "musics")
+@Document(collection = "music")
 public class Music extends Audio implements Serializable {
 
     @Serial
