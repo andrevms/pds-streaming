@@ -23,7 +23,7 @@ public class TvShowController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TvShowResponse> getTvShowById(@PathVariable String id) {
+    public ResponseEntity<TvShowResponse> getTvShowById(@PathVariable String id) throws Throwable {
         return new ResponseEntity<>(tvShowService.findById(id), HttpStatus.OK);
     }
 
@@ -33,17 +33,17 @@ public class TvShowController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TvShowResponse> updateTvShow(@RequestBody TvShowRequest tvShowDTO, @PathVariable String id) {
+    public ResponseEntity<TvShowResponse> updateTvShow(@RequestBody TvShowRequest tvShowDTO, @PathVariable String id) throws Throwable {
         return new ResponseEntity<>(tvShowService.update(tvShowDTO, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TvShowResponse> patchTvShow(@RequestBody TvShowRequest tvShowDTO, @PathVariable String id) {
+    public ResponseEntity<TvShowResponse> patchTvShow(@RequestBody TvShowRequest tvShowDTO, @PathVariable String id) throws Throwable {
         return new ResponseEntity<>(tvShowService.patch(tvShowDTO, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTvShow(@PathVariable String id) {
+    public ResponseEntity<Void> deleteTvShow(@PathVariable String id) throws Throwable {
         tvShowService.delete(id);
         return ResponseEntity.noContent().build();
     }
