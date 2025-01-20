@@ -9,10 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public abstract class Media implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public abstract class Media {
 
     @Id
     private String id;
