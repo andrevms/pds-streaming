@@ -1,4 +1,4 @@
-package br.com.pds.streaming.blockburst.ai.services;
+package br.com.pds.streaming.yulearn.ai.services;
 
 import br.com.pds.streaming.framework.ai.services.AskLlm;
 import br.com.pds.streaming.framework.ai.services.ChatService;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SummarizeContentService implements AskLlm {
+public class ClassQuestionMakerService implements AskLlm {
 
     @Qualifier("ollamaAIService")
     @Autowired
@@ -29,8 +29,7 @@ public class SummarizeContentService implements AskLlm {
 
     @Override
     public String askllm(String content) {
-
-        String chatPrompt = "Você deve agir como uma especialista no assunto filmes e serie e ira sumarizar o texto recebido : ";
+        String chatPrompt = "Vou fornecer a transcrição de uma aula. Por favor, crie 5 a 10 questões com base no conteúdo da aula. As questões podem ser de múltipla escolha, verdadeiro/falso, ou abertas, dependendo do conteúdo abordado. Cada questão deve ser relevante para o tema discutido, cobrindo os conceitos principais, teorias, definições e exemplos dados durante a aula. Após cada pergunta, forneça as alternativas (se for de múltipla escolha) ou a resposta correta (se for uma questão aberta ou de verdadeiro/falso). : ";
         Transcription transcription = getTranscription(content);
 
         return chatService.askLlm(chatPrompt, transcription.getContent());
@@ -45,7 +44,6 @@ public class SummarizeContentService implements AskLlm {
             try {
                 transcriptionResponse = transcriptionService.transcribe(transcriptionRequest);
             } catch (TranscriptionFailedException e) {
-
                 throw new RuntimeException(e);
             } catch (EntityNotFoundException e) {
                 throw new RuntimeException(e);
@@ -55,5 +53,4 @@ public class SummarizeContentService implements AskLlm {
         }
         return transcription;
     }
-
 }

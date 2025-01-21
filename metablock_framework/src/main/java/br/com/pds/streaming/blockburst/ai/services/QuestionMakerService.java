@@ -1,5 +1,6 @@
 package br.com.pds.streaming.blockburst.ai.services;
 
+import br.com.pds.streaming.framework.ai.services.AskLlm;
 import br.com.pds.streaming.framework.ai.services.ChatService;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.exceptions.TranscriptionFailedException;
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class QuestionMakerService {
+public class QuestionMakerService implements AskLlm {
 
     @Qualifier("ollamaAIService")
     @Autowired
@@ -26,9 +27,10 @@ public class QuestionMakerService {
     @Autowired
     TranscriptionRepository transcriptionRepository;
 
-    public String createQuestion(String source) {
+    @Override
+    public String askllm(String content) {
         String chatPrompt = "Você deve agir como uma especialista no assunto de filmes e series. E criar 5 perguntas de multipla escolha sobre o texto e mostrar suas respostas :";
-        Transcription transcription = getTranscription(source);
+        Transcription transcription = getTranscription(content);
 
         return chatService.askLlm(chatPrompt, transcription.getContent());
     }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
-public class ResourceExceptionHandler {
+public class CustomResourceExceptionHandler {
 
     @ExceptionHandler(DuplicatedRatingException.class)
     public ResponseEntity<ResponseError> duplicatedRating(DuplicatedRatingException e, HttpServletRequest request) {

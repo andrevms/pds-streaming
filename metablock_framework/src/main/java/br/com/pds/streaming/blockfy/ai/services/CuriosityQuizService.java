@@ -1,4 +1,4 @@
-package br.com.pds.streaming.blockburst.ai.services;
+package br.com.pds.streaming.blockfy.ai.services;
 
 import br.com.pds.streaming.framework.ai.services.AskLlm;
 import br.com.pds.streaming.framework.ai.services.ChatService;
@@ -14,8 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SummarizeContentService implements AskLlm {
-
+public class CuriosityQuizService implements AskLlm {
     @Qualifier("ollamaAIService")
     @Autowired
     ChatService chatService;
@@ -29,8 +28,7 @@ public class SummarizeContentService implements AskLlm {
 
     @Override
     public String askllm(String content) {
-
-        String chatPrompt = "Você deve agir como uma especialista no assunto filmes e serie e ira sumarizar o texto recebido : ";
+        String chatPrompt = "Eu vou fornecer a letra de uma música. Baseado nela, crie um quiz com 5 perguntas sobre a banda, o autor da música e curiosidades relacionadas. As perguntas devem ter alternativas (pelo menos 4 opções de resposta) e uma resposta correta para cada pergunta. As perguntas podem ser sobre a história da banda, o significado das letras, os membros da banda, o autor da música ou fatos curiosos. Se possível, forneça também a resposta correta após cada pergunta.";
         Transcription transcription = getTranscription(content);
 
         return chatService.askLlm(chatPrompt, transcription.getContent());
@@ -45,7 +43,6 @@ public class SummarizeContentService implements AskLlm {
             try {
                 transcriptionResponse = transcriptionService.transcribe(transcriptionRequest);
             } catch (TranscriptionFailedException e) {
-
                 throw new RuntimeException(e);
             } catch (EntityNotFoundException e) {
                 throw new RuntimeException(e);
@@ -55,5 +52,4 @@ public class SummarizeContentService implements AskLlm {
         }
         return transcription;
     }
-
 }

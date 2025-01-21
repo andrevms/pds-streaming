@@ -12,13 +12,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.logging.Logger;
-
 @Configuration
 public class BlockburstModelMapperConfig {
 
     @Bean
-    public ModelMapper modelMapper() {
+    public ModelMapper getmodelMapper() {
 
         ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
 

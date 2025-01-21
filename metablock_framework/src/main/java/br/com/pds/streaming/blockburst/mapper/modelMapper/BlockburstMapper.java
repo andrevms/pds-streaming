@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class BlockburstMapper extends MetablockMapper {
 
-    private final ModelMapper modelMapper = new BlockburstModelMapperConfig().modelMapper();
+    private final ModelMapper modelMapper = new BlockburstModelMapperConfig().getmodelMapper();
 
     @Override // Deprecated
     public <O, D> D convertValue(O origin, Class<D> destination) {
