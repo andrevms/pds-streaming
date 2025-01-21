@@ -6,6 +6,7 @@ import br.com.pds.streaming.framework.mapper.modelMapper.MetablockMapper;
 import br.com.pds.streaming.framework.media.model.dto.HistoryNodeDTO;
 import br.com.pds.streaming.framework.media.model.entities.HistoryNode;
 import br.com.pds.streaming.framework.media.repositories.HistoryNodeRepository;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public abstract class HistoryNodeService {
     protected final HistoryNodeRepository historyNodeRepository;
     protected final MetablockMapper mapper;
 
-    public HistoryNodeService(HistoryNodeRepository historyNodeRepository, BlockburstMapper mapper) {
+    public HistoryNodeService(HistoryNodeRepository historyNodeRepository, MetablockMapper mapper) {
         this.historyNodeRepository = historyNodeRepository;
         this.mapper = mapper;
     }

@@ -1,5 +1,6 @@
 package br.com.pds.streaming.blockburst.media.services;
 
+import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.blockburst.media.model.dto.MovieResponse;
 import br.com.pds.streaming.blockburst.media.model.dto.TvShowResponse;
 import br.com.pds.streaming.framework.authentication.services.UserService;
@@ -25,12 +26,26 @@ public class BlockburstRecommendationService extends RecommendationService {
     private MovieService movieService;
     private TvShowService tvShowService;
     private Set<String> watchedMediaIds;
+    protected Map<String, Integer> popularity;
+    private BlockburstMapper mapper;
 
     @Autowired
-    public BlockburstRecommendationService(UserService userService, MovieService movieService, TvShowService tvShowService) {
+    public BlockburstRecommendationService(UserService userService, MovieService movieService, TvShowService tvShowService, BlockburstMapper mapper) {
         super(userService);
         this.movieService = movieService;
         this.tvShowService = tvShowService;
+        this.mapper = mapper;
+    }
+
+    @Override
+    public void setHistoryNodes(String userId) {
+        var dto = userService.findById(userId);
+        var user = userService.loadUserByUsername(dto.getUsername());
+        var history = user.getHistory();
+
+        List<HistoryNodeDTO> allItems =  mapper.convertList(history.getNodes(), HistoryNodeDTO.class);
+        int size = allItems.size();
+        historyNodes = allItems.subList(Math.max(size - LIMIT, 0), size);
     }
 
     @Override

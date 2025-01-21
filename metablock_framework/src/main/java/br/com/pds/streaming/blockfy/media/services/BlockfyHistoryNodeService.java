@@ -1,40 +1,47 @@
-package br.com.pds.streaming.blockburst.media.services;
+package br.com.pds.streaming.blockfy.media.services;
 
 import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.blockburst.media.model.entities.Episode;
 import br.com.pds.streaming.blockburst.media.model.entities.Movie;
 import br.com.pds.streaming.blockburst.media.repositories.EpisodeRepository;
 import br.com.pds.streaming.blockburst.media.repositories.MovieRepository;
+import br.com.pds.streaming.blockfy.mapper.modelMapper.BlockfyMapper;
+import br.com.pds.streaming.blockfy.media.model.entities.Music;
+import br.com.pds.streaming.blockfy.media.model.entities.Podcast;
+import br.com.pds.streaming.blockfy.media.repositories.MusicRepository;
+import br.com.pds.streaming.blockfy.media.repositories.PodcastRepository;
+import br.com.pds.streaming.framework.authentication.model.entities.User;
+import br.com.pds.streaming.framework.authentication.repositories.UserRepository;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.media.model.dto.HistoryNodeDTO;
 import br.com.pds.streaming.framework.media.model.entities.History;
 import br.com.pds.streaming.framework.media.model.entities.HistoryNode;
-import br.com.pds.streaming.framework.media.model.entities.Media;
 import br.com.pds.streaming.framework.media.repositories.HistoryNodeRepository;
 import br.com.pds.streaming.framework.media.repositories.HistoryRepository;
-import br.com.pds.streaming.framework.media.repositories.MediaRepository;
 import br.com.pds.streaming.framework.media.services.HistoryNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BlockburstHistoryNodeService extends HistoryNodeService {
+public class BlockfyHistoryNodeService extends HistoryNodeService {
 
     private final HistoryRepository historyRepository;
-    private final MovieRepository movieRepository;
-    private final EpisodeRepository episodeRepository;
+    private final MusicRepository musicRepository;
+    private final PodcastRepository podcastRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public BlockburstHistoryNodeService(HistoryNodeRepository historyNodeRepository, BlockburstMapper mapper, HistoryRepository historyRepository, MovieRepository movieRepository, EpisodeRepository episodeRepository) {
+    public BlockfyHistoryNodeService(HistoryNodeRepository historyNodeRepository, BlockfyMapper mapper, HistoryRepository historyRepository, MusicRepository musicRepository, PodcastRepository podcastRepository, UserRepository userRepository) {
         super(historyNodeRepository, mapper);
         this.historyRepository = historyRepository;
-        this.movieRepository = movieRepository;
-        this.episodeRepository = episodeRepository;
+        this.musicRepository = musicRepository;
+        this.podcastRepository = podcastRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public HistoryNodeDTO insert(String mediaId, HistoryNodeDTO historyNodeDTO, String historyId) {
-        
+
         var history = historyRepository.findById(historyId).orElseThrow(() -> new EntityNotFoundException(History.class));
 
         var historyNode = dtoToHistoryNode(historyNodeDTO, historyId, mediaId);
@@ -55,12 +62,19 @@ public class BlockburstHistoryNodeService extends HistoryNodeService {
         historyNode.setCurrentTime(dto.getCurrentTime());
         historyNode.setHistoryId(historyId);
 
-        if (dto.getType().toUpperCase().equals("MOVIE")) {
-            var media = movieRepository.findById(mediaId).orElseThrow(() -> new EntityNotFoundException(Movie.class));
+        if (dto.getType().toUpperCase().equals("MUSIC")) {
+            var media = musicRepository.findById(mediaId).orElseThrow(() -> new EntityNotFoundException(Music.class));
+
+            var userId = historyRepository.findById(historyId).orElseThrow(() -> new EntityNotFoundException(History.class)).getUserId();
+            var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class));
+
+            media.getUsers().add(user);
+
+            musicRepository.save(media);
             historyNode.setMedia(media);
         }
         else {
-            var media = episodeRepository.findById(mediaId).orElseThrow(() -> new EntityNotFoundException(Episode.class));
+            var media = podcastRepository.findById(mediaId).orElseThrow(() -> new EntityNotFoundException(Podcast.class));
             historyNode.setMedia(media);
         }
 

@@ -25,4 +25,5 @@ public class HistoryNode implements Serializable {
 
     private long currentTime; // in milliseconds
     private String historyId;
+    private String type;
 }

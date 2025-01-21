@@ -1,4 +1,4 @@
-package br.com.pds.streaming.blockburst.media.services;
+package br.com.pds.streaming.yulearn.media.services;
 
 import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.blockburst.media.model.entities.Episode;
@@ -9,27 +9,25 @@ import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.media.model.dto.HistoryNodeDTO;
 import br.com.pds.streaming.framework.media.model.entities.History;
 import br.com.pds.streaming.framework.media.model.entities.HistoryNode;
-import br.com.pds.streaming.framework.media.model.entities.Media;
 import br.com.pds.streaming.framework.media.repositories.HistoryNodeRepository;
 import br.com.pds.streaming.framework.media.repositories.HistoryRepository;
-import br.com.pds.streaming.framework.media.repositories.MediaRepository;
 import br.com.pds.streaming.framework.media.services.HistoryNodeService;
+import br.com.pds.streaming.yulearn.mapper.modelMapper.YulearnMapper;
+import br.com.pds.streaming.yulearn.media.repositories.VideoLessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BlockburstHistoryNodeService extends HistoryNodeService {
+public class YulearnHistoryNodeService extends HistoryNodeService {
 
     private final HistoryRepository historyRepository;
-    private final MovieRepository movieRepository;
-    private final EpisodeRepository episodeRepository;
+    private final VideoLessonRepository videoLessonRepository;
 
     @Autowired
-    public BlockburstHistoryNodeService(HistoryNodeRepository historyNodeRepository, BlockburstMapper mapper, HistoryRepository historyRepository, MovieRepository movieRepository, EpisodeRepository episodeRepository) {
+    public YulearnHistoryNodeService(HistoryNodeRepository historyNodeRepository, YulearnMapper mapper, HistoryRepository historyRepository, VideoLessonRepository videoLessonRepository) {
         super(historyNodeRepository, mapper);
         this.historyRepository = historyRepository;
-        this.movieRepository = movieRepository;
-        this.episodeRepository = episodeRepository;
+        this.videoLessonRepository = videoLessonRepository;
     }
 
     @Override
@@ -55,12 +53,8 @@ public class BlockburstHistoryNodeService extends HistoryNodeService {
         historyNode.setCurrentTime(dto.getCurrentTime());
         historyNode.setHistoryId(historyId);
 
-        if (dto.getType().toUpperCase().equals("MOVIE")) {
-            var media = movieRepository.findById(mediaId).orElseThrow(() -> new EntityNotFoundException(Movie.class));
-            historyNode.setMedia(media);
-        }
-        else {
-            var media = episodeRepository.findById(mediaId).orElseThrow(() -> new EntityNotFoundException(Episode.class));
+        if (dto.getType().toUpperCase().equals("VIDEO-LESSON")) {
+            var media = videoLessonRepository.findById(mediaId).orElseThrow(() -> new EntityNotFoundException(VideoLessonService.class));
             historyNode.setMedia(media);
         }
 
