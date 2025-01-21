@@ -22,5 +22,4 @@ public class Music extends Audio implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String musicGenre;
-    private List<String> artists = new ArrayList<>();
 }

@@ -3,8 +3,8 @@ package br.com.pds.streaming.yulearn.media.services;
 import br.com.pds.streaming.framework.media.model.entities.Media;
 import br.com.pds.streaming.yulearn.mapper.modelMapper.YulearnMapper;
 import br.com.pds.streaming.yulearn.media.model.dto.LessonDTO;
-import br.com.pds.streaming.yulearn.media.model.dto.TextLessonDTO;
-import br.com.pds.streaming.yulearn.media.model.dto.VideoLessonDTO;
+import br.com.pds.streaming.yulearn.media.model.dto.TextLessonResponse;
+import br.com.pds.streaming.yulearn.media.model.dto.VideoLessonResponse;
 import br.com.pds.streaming.yulearn.media.model.entities.Lesson;
 import br.com.pds.streaming.yulearn.media.model.entities.TextLesson;
 import br.com.pds.streaming.yulearn.media.model.entities.VideoLesson;
@@ -42,8 +42,8 @@ public class LessonService {
         lessons.addAll(videoLessons);
 
         return lessons.stream().sorted(Comparator.comparing(Media::getTitle)).map(l -> {
-            if (l instanceof TextLesson) return mapper.convertValue(l, TextLessonDTO.class);
-            if (l instanceof VideoLesson) return mapper.convertValue(l, VideoLessonDTO.class);
+            if (l instanceof TextLesson) return mapper.convertValue(l, TextLessonResponse.class);
+            if (l instanceof VideoLesson) return mapper.convertValue(l, VideoLessonResponse.class);
             return null;
         }).toList();
     }

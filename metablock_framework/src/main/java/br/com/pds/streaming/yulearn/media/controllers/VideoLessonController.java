@@ -1,6 +1,7 @@
 package br.com.pds.streaming.yulearn.media.controllers;
 
-import br.com.pds.streaming.yulearn.media.model.dto.VideoLessonDTO;
+import br.com.pds.streaming.yulearn.media.model.dto.VideoLessonRequest;
+import br.com.pds.streaming.yulearn.media.model.dto.VideoLessonResponse;
 import br.com.pds.streaming.yulearn.media.services.VideoLessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,28 +18,28 @@ public class VideoLessonController {
     private VideoLessonService videoLessonService;
 
     @GetMapping
-    public ResponseEntity<List<VideoLessonDTO>> getAllvideoLessons() {
+    public ResponseEntity<List<VideoLessonResponse>> getAllvideoLessons() {
         return new ResponseEntity<>(videoLessonService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VideoLessonDTO> getvideoLessonById(@PathVariable String id) {
+    public ResponseEntity<VideoLessonResponse> getvideoLessonById(@PathVariable String id) {
         return new ResponseEntity<>(videoLessonService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<VideoLessonDTO> createvideoLesson(@RequestBody VideoLessonDTO videoLessonDTO, @RequestParam(name = "moduleId") String moduleId) {
-        return new ResponseEntity<>(videoLessonService.insert(videoLessonDTO, moduleId), HttpStatus.CREATED);
+    public ResponseEntity<VideoLessonResponse> createvideoLesson(@RequestBody VideoLessonRequest videoLessonRequest, @RequestParam(name = "moduleId") String moduleId) {
+        return new ResponseEntity<>(videoLessonService.insert(videoLessonRequest, moduleId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VideoLessonDTO> updatevideoLesson(@RequestBody VideoLessonDTO videoLessonDTO, @PathVariable String id) {
-        return new ResponseEntity<>(videoLessonService.update(videoLessonDTO, id), HttpStatus.OK);
+    public ResponseEntity<VideoLessonResponse> updatevideoLesson(@RequestBody VideoLessonRequest videoLessonRequest, @PathVariable String id) {
+        return new ResponseEntity<>(videoLessonService.update(videoLessonRequest, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<VideoLessonDTO> patchvideoLesson(@RequestBody VideoLessonDTO videoLessonDTO, @PathVariable String id) {
-        return new ResponseEntity<>(videoLessonService.patch(videoLessonDTO, id), HttpStatus.OK);
+    public ResponseEntity<VideoLessonResponse> patchvideoLesson(@RequestBody VideoLessonRequest videoLessonRequest, @PathVariable String id) {
+        return new ResponseEntity<>(videoLessonService.patch(videoLessonRequest, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

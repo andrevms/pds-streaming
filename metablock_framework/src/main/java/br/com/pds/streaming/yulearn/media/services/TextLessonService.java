@@ -5,7 +5,8 @@ import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.exceptions.InvalidVideoException;
 import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
 import br.com.pds.streaming.yulearn.mapper.modelMapper.YulearnMapper;
-import br.com.pds.streaming.yulearn.media.model.dto.TextLessonDTO;
+import br.com.pds.streaming.yulearn.media.model.dto.TextLessonRequest;
+import br.com.pds.streaming.yulearn.media.model.dto.TextLessonResponse;
 import br.com.pds.streaming.yulearn.media.model.entities.Module;
 import br.com.pds.streaming.yulearn.media.model.entities.TextLesson;
 import br.com.pds.streaming.yulearn.media.repositories.ModuleRepository;
@@ -35,19 +36,19 @@ public class TextLessonService {
         this.moduleRepository = moduleRepository;
     }
 
-    public List<TextLessonDTO> findAll() {
-        return mapper.convertList(textLessonRepository.findAll(), TextLessonDTO.class);
+    public List<TextLessonResponse> findAll() {
+        return mapper.convertList(textLessonRepository.findAll(), TextLessonResponse.class);
     }
 
-    public TextLessonDTO findById(String id) {
-        return mapper.convertValue(textLessonRepository.findById(id), TextLessonDTO.class);
+    public TextLessonResponse findById(String id) {
+        return mapper.convertValue(textLessonRepository.findById(id), TextLessonResponse.class);
     }
 
-    public TextLessonDTO insert(TextLessonDTO textLessonDTO, String moduleId) {
+    public TextLessonResponse insert(TextLessonRequest textLessonRequest, String moduleId) {
 
-        verifyFileUrl(textLessonDTO);
+        verifyFileUrl(textLessonRequest);
 
-        var textLesson = mapper.convertValue(textLessonDTO, TextLesson.class);
+        var textLesson = mapper.convertValue(textLessonRequest, TextLesson.class);
         textLesson.setModuleId(moduleId);
         var createdTextLesson = textLessonRepository.save(textLesson);
 
@@ -55,51 +56,51 @@ public class TextLessonService {
         module.getLessons().add(textLesson);
         moduleRepository.save(module);
 
-        return mapper.convertValue(createdTextLesson, TextLessonDTO.class);
+        return mapper.convertValue(createdTextLesson, TextLessonResponse.class);
     }
 
-    public TextLessonDTO update(TextLessonDTO textLessonDTO, String id) {
+    public TextLessonResponse update(TextLessonRequest textLessonRequest, String id) {
 
-        verifyFileUrl(textLessonDTO);
+        verifyFileUrl(textLessonRequest);
 
         var textLesson = textLessonRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TextLesson.class));
 
-        textLesson.setTitle(textLessonDTO.getTitle());
-        textLesson.setDescription(textLessonDTO.getDescription());
-        textLesson.setPdfUrl(textLessonDTO.getPdfUrl());
-        textLesson.setThumbnailUrl(textLessonDTO.getThumbnailUrl());
-        textLesson.setAnimationUrl(textLessonDTO.getAnimationUrl());
+        textLesson.setTitle(textLessonRequest.getTitle());
+        textLesson.setDescription(textLessonRequest.getDescription());
+        textLesson.setPdfUrl(textLessonRequest.getPdfUrl());
+        textLesson.setThumbnailUrl(textLessonRequest.getThumbnailUrl());
+        textLesson.setAnimationUrl(textLessonRequest.getAnimationUrl());
 
         var updatedTextLesson = textLessonRepository.save(textLesson);
 
-        return mapper.convertValue(updatedTextLesson, TextLessonDTO.class);
+        return mapper.convertValue(updatedTextLesson, TextLessonResponse.class);
     }
 
-    public TextLessonDTO patch(TextLessonDTO textLessonDTO, String id) {
+    public TextLessonResponse patch(TextLessonRequest textLessonRequest, String id) {
 
         var textLesson = textLessonRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TextLesson.class));
 
-        if (textLessonDTO.getTitle() != null) textLesson.setTitle(textLessonDTO.getTitle());
-        if (textLessonDTO.getDescription() != null) textLesson.setDescription(textLessonDTO.getDescription());
+        if (textLessonRequest.getTitle() != null) textLesson.setTitle(textLessonRequest.getTitle());
+        if (textLessonRequest.getDescription() != null) textLesson.setDescription(textLessonRequest.getDescription());
 
-        if (textLessonDTO.getPdfUrl() != null) {
-            verifyPdfUrl(textLessonDTO);
-            textLesson.setPdfUrl(textLessonDTO.getPdfUrl());
+        if (textLessonRequest.getPdfUrl() != null) {
+            verifyPdfUrl(textLessonRequest);
+            textLesson.setPdfUrl(textLessonRequest.getPdfUrl());
         }
 
-        if (textLessonDTO.getThumbnailUrl() != null) {
-            verifyThumbnailUrl(textLessonDTO);
-            textLesson.setThumbnailUrl(textLessonDTO.getThumbnailUrl());
+        if (textLessonRequest.getThumbnailUrl() != null) {
+            verifyThumbnailUrl(textLessonRequest);
+            textLesson.setThumbnailUrl(textLessonRequest.getThumbnailUrl());
         }
 
-        if (textLessonDTO.getAnimationUrl() != null) {
-            verifyAnimationUrl(textLessonDTO);
-            textLesson.setAnimationUrl(textLessonDTO.getAnimationUrl());
+        if (textLessonRequest.getAnimationUrl() != null) {
+            verifyAnimationUrl(textLessonRequest);
+            textLesson.setAnimationUrl(textLessonRequest.getAnimationUrl());
         }
 
         var patchedTextLesson = textLessonRepository.save(textLesson);
 
-        return mapper.convertValue(patchedTextLesson, TextLessonDTO.class);
+        return mapper.convertValue(patchedTextLesson, TextLessonResponse.class);
     }
 
     public void delete(String id) {
@@ -116,13 +117,13 @@ public class TextLessonService {
         textLessonRepository.deleteById(id);
     }
 
-    private void verifyPdfUrl(TextLessonDTO textLessonDTO) {
-        if (!FileExtensionValidator.validatePdfFileExtension(textLessonDTO.getPdfUrl())) throw new InvalidVideoException(textLessonDTO.getPdfUrl());
+    private void verifyPdfUrl(TextLessonRequest textLessonRequest) {
+        if (!FileExtensionValidator.validatePdfFileExtension(textLessonRequest.getPdfUrl())) throw new InvalidVideoException(textLessonRequest.getPdfUrl());
     }
 
-    private void verifyFileUrl(@NotNull TextLessonDTO textLessonDTO) {
-        verifyPdfUrl(textLessonDTO);
-        verifyThumbnailUrl(textLessonDTO);
-        verifyAnimationUrl(textLessonDTO);
+    private void verifyFileUrl(@NotNull TextLessonRequest textLessonRequest) {
+        verifyPdfUrl(textLessonRequest);
+        verifyThumbnailUrl(textLessonRequest);
+        verifyAnimationUrl(textLessonRequest);
     }
 }

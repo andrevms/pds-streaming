@@ -5,7 +5,8 @@ import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.exceptions.InvalidVideoException;
 import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
 import br.com.pds.streaming.yulearn.mapper.modelMapper.YulearnMapper;
-import br.com.pds.streaming.yulearn.media.model.dto.VideoLessonDTO;
+import br.com.pds.streaming.yulearn.media.model.dto.VideoLessonRequest;
+import br.com.pds.streaming.yulearn.media.model.dto.VideoLessonResponse;
 import br.com.pds.streaming.yulearn.media.model.entities.Module;
 import br.com.pds.streaming.yulearn.media.model.entities.VideoLesson;
 import br.com.pds.streaming.yulearn.media.repositories.ModuleRepository;
@@ -35,19 +36,19 @@ public class VideoLessonService {
         this.moduleRepository = moduleRepository;
     }
 
-    public List<VideoLessonDTO> findAll() {
-        return mapper.convertList(videoLessonRepository.findAll(), VideoLessonDTO.class);
+    public List<VideoLessonResponse> findAll() {
+        return mapper.convertList(videoLessonRepository.findAll(), VideoLessonResponse.class);
     }
 
-    public VideoLessonDTO findById(String id) {
-        return mapper.convertValue(videoLessonRepository.findById(id), VideoLessonDTO.class);
+    public VideoLessonResponse findById(String id) {
+        return mapper.convertValue(videoLessonRepository.findById(id), VideoLessonResponse.class);
     }
 
-    public VideoLessonDTO insert(VideoLessonDTO videoLessonDTO, String moduleId) {
+    public VideoLessonResponse insert(VideoLessonRequest videoLessonRequest, String moduleId) {
 
-        verifyFileUrl(videoLessonDTO);
+        verifyFileUrl(videoLessonRequest);
 
-        var videoLesson = mapper.convertValue(videoLessonDTO, VideoLesson.class);
+        var videoLesson = mapper.convertValue(videoLessonRequest, VideoLesson.class);
         videoLesson.setModuleId(moduleId);
         var createdVideoLesson = videoLessonRepository.save(videoLesson);
 
@@ -55,26 +56,26 @@ public class VideoLessonService {
         module.getLessons().add(videoLesson);
         moduleRepository.save(module);
 
-        return mapper.convertValue(createdVideoLesson, VideoLessonDTO.class);
+        return mapper.convertValue(createdVideoLesson, VideoLessonResponse.class);
     }
 
-    public VideoLessonDTO update(VideoLessonDTO videoLessonDTO, String id) {
+    public VideoLessonResponse update(VideoLessonRequest videoLessonRequest, String id) {
 
-        verifyFileUrl(videoLessonDTO);
+        verifyFileUrl(videoLessonRequest);
 
         var videoLesson = videoLessonRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(VideoLesson.class));
 
-        videoLesson.setTitle(videoLessonDTO.getTitle());
-        videoLesson.setDescription(videoLessonDTO.getDescription());
-        videoLesson.setVideoUrl(videoLessonDTO.getVideoUrl());
-        videoLesson.setThumbnailUrl(videoLessonDTO.getThumbnailUrl());
+        videoLesson.setTitle(videoLessonRequest.getTitle());
+        videoLesson.setDescription(videoLessonRequest.getDescription());
+        videoLesson.setVideoUrl(videoLessonRequest.getVideoUrl());
+        videoLesson.setThumbnailUrl(videoLessonRequest.getThumbnailUrl());
 
         var updatedVideoLesson = videoLessonRepository.save(videoLesson);
 
-        return mapper.convertValue(updatedVideoLesson, VideoLessonDTO.class);
+        return mapper.convertValue(updatedVideoLesson, VideoLessonResponse.class);
     }
 
-    public VideoLessonDTO patch(VideoLessonDTO videoLessonDTO, String id) {
+    public VideoLessonResponse patch(VideoLessonRequest videoLessonRequest, String id) {
 
         var videoLesson = videoLessonRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(VideoLesson.class));
 
@@ -82,23 +83,23 @@ public class VideoLessonService {
         if (videoLesson.getDescription() != null) videoLesson.setDescription(videoLesson.getDescription());
 
         if (videoLesson.getVideoUrl() != null) {
-            verifyVideoUrl(videoLessonDTO);
-            videoLesson.setVideoUrl(videoLessonDTO.getVideoUrl());
+            verifyVideoUrl(videoLessonRequest);
+            videoLesson.setVideoUrl(videoLessonRequest.getVideoUrl());
         }
 
         if (videoLesson.getThumbnailUrl() != null) {
-            verifyThumbnailUrl(videoLessonDTO);
-            videoLesson.setThumbnailUrl(videoLessonDTO.getThumbnailUrl());
+            verifyThumbnailUrl(videoLessonRequest);
+            videoLesson.setThumbnailUrl(videoLessonRequest.getThumbnailUrl());
         }
 
         if (videoLesson.getAnimationUrl() != null) {
-            verifyAnimationUrl(videoLessonDTO);
-            videoLesson.setAnimationUrl(videoLessonDTO.getAnimationUrl());
+            verifyAnimationUrl(videoLessonRequest);
+            videoLesson.setAnimationUrl(videoLessonRequest.getAnimationUrl());
         }
 
         var patchedVideoLesson = videoLessonRepository.save(videoLesson);
 
-        return mapper.convertValue(patchedVideoLesson, VideoLessonDTO.class);
+        return mapper.convertValue(patchedVideoLesson, VideoLessonResponse.class);
     }
 
     public void delete(String id) {
@@ -115,13 +116,13 @@ public class VideoLessonService {
         videoLessonRepository.deleteById(id);
     }
 
-    private void verifyVideoUrl(VideoLessonDTO videoLessonDTO) {
-        if (!FileExtensionValidator.validateVideoFileExtension(videoLessonDTO.getVideoUrl())) throw new InvalidVideoException(videoLessonDTO.getVideoUrl());
+    private void verifyVideoUrl(VideoLessonRequest videoLessonRequest) {
+        if (!FileExtensionValidator.validateVideoFileExtension(videoLessonRequest.getVideoUrl())) throw new InvalidVideoException(videoLessonRequest.getVideoUrl());
     }
 
-    private void verifyFileUrl(@NotNull VideoLessonDTO videoLessonDTO) {
-        verifyVideoUrl(videoLessonDTO);
-        verifyThumbnailUrl(videoLessonDTO);
-        verifyAnimationUrl(videoLessonDTO);
+    private void verifyFileUrl(@NotNull VideoLessonRequest videoLessonRequest) {
+        verifyVideoUrl(videoLessonRequest);
+        verifyThumbnailUrl(videoLessonRequest);
+        verifyAnimationUrl(videoLessonRequest);
     }
 }

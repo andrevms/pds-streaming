@@ -1,6 +1,7 @@
 package br.com.pds.streaming.yulearn.media.controllers;
 
-import br.com.pds.streaming.yulearn.media.model.dto.TextLessonDTO;
+import br.com.pds.streaming.yulearn.media.model.dto.TextLessonRequest;
+import br.com.pds.streaming.yulearn.media.model.dto.TextLessonResponse;
 import br.com.pds.streaming.yulearn.media.services.TextLessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,28 +18,28 @@ public class TextLessonController {
     private TextLessonService textLessonService;
 
     @GetMapping
-    public ResponseEntity<List<TextLessonDTO>> getAllTextLessons() {
+    public ResponseEntity<List<TextLessonResponse>> getAllTextLessons() {
         return new ResponseEntity<>(textLessonService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TextLessonDTO> getTextLessonById(@PathVariable String id) {
+    public ResponseEntity<TextLessonResponse> getTextLessonById(@PathVariable String id) {
         return new ResponseEntity<>(textLessonService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<TextLessonDTO> createTextLesson(@RequestBody TextLessonDTO textLessonDTO, @RequestParam(name = "moduleId") String moduleId) {
-        return new ResponseEntity<>(textLessonService.insert(textLessonDTO, moduleId), HttpStatus.CREATED);
+    public ResponseEntity<TextLessonResponse> createTextLesson(@RequestBody TextLessonRequest textLessonRequest, @RequestParam(name = "moduleId") String moduleId) {
+        return new ResponseEntity<>(textLessonService.insert(textLessonRequest, moduleId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TextLessonDTO> updateTextLesson(@RequestBody TextLessonDTO textLessonDTO, @PathVariable String id) {
-        return new ResponseEntity<>(textLessonService.update(textLessonDTO, id), HttpStatus.OK);
+    public ResponseEntity<TextLessonResponse> updateTextLesson(@RequestBody TextLessonRequest textLessonRequest, @PathVariable String id) {
+        return new ResponseEntity<>(textLessonService.update(textLessonRequest, id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TextLessonDTO> patchTextLesson(@RequestBody TextLessonDTO textLessonDTO, @PathVariable String id) {
-        return new ResponseEntity<>(textLessonService.patch(textLessonDTO, id), HttpStatus.OK);
+    public ResponseEntity<TextLessonResponse> patchTextLesson(@RequestBody TextLessonRequest textLessonRequest, @PathVariable String id) {
+        return new ResponseEntity<>(textLessonService.patch(textLessonRequest, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

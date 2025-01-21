@@ -40,11 +40,11 @@ public class YulearnModelMapperConfig {
         modelMapper.createTypeMap(Module.class, ModuleDTO.class).addMapping(Module::getId, ModuleDTO::setId);
         modelMapper.createTypeMap(ModuleDTO.class, Module.class).addMapping(ModuleDTO::getId, Module::setId);
 
-        modelMapper.createTypeMap(TextLesson.class, TextLessonDTO.class).addMapping(TextLesson::getId, TextLessonDTO::setId);
-        modelMapper.createTypeMap(TextLessonDTO.class, TextLesson.class).addMapping(TextLessonDTO::getId, TextLesson::setId);
+        modelMapper.createTypeMap(TextLesson.class, TextLessonResponse.class).addMapping(TextLesson::getId, TextLessonResponse::setId);
+        modelMapper.createTypeMap(TextLessonRequest.class, TextLesson.class).addMapping(TextLessonRequest::getId, TextLesson::setId);
 
-        modelMapper.createTypeMap(VideoLesson.class, VideoLessonDTO.class).addMapping(VideoLesson::getId, VideoLessonDTO::setId);
-        modelMapper.createTypeMap(VideoLessonDTO.class, VideoLesson.class).addMapping(VideoLessonDTO::getId, VideoLesson::setId);
+        modelMapper.createTypeMap(VideoLesson.class, VideoLessonResponse.class).addMapping(VideoLesson::getId, VideoLessonResponse::setId);
+        modelMapper.createTypeMap(VideoLessonRequest.class, VideoLesson.class).addMapping(VideoLessonRequest::getId, VideoLesson::setId);
 
         return modelMapper;
     }
