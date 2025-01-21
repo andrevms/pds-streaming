@@ -5,25 +5,25 @@ import br.com.pds.streaming.blockburst.media.model.dto.TvShowRequest;
 import br.com.pds.streaming.blockburst.media.model.dto.TvShowResponse;
 import br.com.pds.streaming.blockburst.media.model.entities.Season;
 import br.com.pds.streaming.blockburst.media.model.entities.TvShow;
-import br.com.pds.streaming.blockburst.repositories.SeasonRepository;
-import br.com.pds.streaming.blockburst.repositories.TvShowRepository;
+import br.com.pds.streaming.blockburst.media.repositories.SeasonRepository;
+import br.com.pds.streaming.blockburst.media.repositories.TvShowRepository;
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.exceptions.InvalidAnimationException;
 import br.com.pds.streaming.framework.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.framework.media.repositories.LikeRatingRepository;
-import br.com.pds.streaming.framework.media.repositories.MediaRepository;
 import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static br.com.pds.streaming.framework.media.util.VerifyHelper.*;
+
 @Service
 public class TvShowService {
 
-    private final TvShowRepository tvShowMediaRepository;
+    private final TvShowRepository tvShowRepository;
     private final SeasonService seasonService;
     private final LikeRatingRepository ratingRepository;
     private final BlockburstMapper mapper;
@@ -31,8 +31,8 @@ public class TvShowService {
     private final SeasonRepository seasonRepository;
 
     @Autowired // Tentar instanciar o MediaService com o BlockburstMapper dinamicamente
-    public TvShowService(TvShowRepository tvShowMediaRepository, SeasonService seasonService, LikeRatingRepository ratingRepository, BlockburstMapper mapper, CloudStorageService cloudStorageService, SeasonRepository seasonRepository) {
-        this.tvShowMediaRepository = tvShowMediaRepository;
+    public TvShowService(TvShowRepository tvShowRepository, SeasonService seasonService, LikeRatingRepository ratingRepository, BlockburstMapper mapper, CloudStorageService cloudStorageService, SeasonRepository seasonRepository) {
+        this.tvShowRepository = tvShowRepository;
         this.seasonService = seasonService;
         this.ratingRepository = ratingRepository;
         this.mapper = mapper;
@@ -41,29 +41,29 @@ public class TvShowService {
     }
 
     public List<TvShowResponse> findAll() {
-        return mapper.convertList(tvShowMediaRepository.findAll(), TvShowResponse.class);
+        return mapper.convertList(tvShowRepository.findAll(), TvShowResponse.class);
     }
 
-    public TvShowResponse findById(String id) throws Throwable {
-        return mapper.convertValue((TvShow) tvShowMediaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TvShow.class)), TvShowResponse.class);
+    public TvShowResponse findById(String id) {
+        return mapper.convertValue(tvShowRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TvShow.class)), TvShowResponse.class);
     }
 
     public TvShowResponse insert(TvShowRequest tvShowRequest) {
 
-        verifyFilesUrl(tvShowRequest);
+        verifyFileUrl(tvShowRequest);
 
         var tvShow = mapper.convertValue(tvShowRequest, TvShow.class);
 
-        var entity = tvShowMediaRepository.save(tvShow);
+        var createdTvShow = tvShowRepository.save(tvShow);
 
-        return mapper.convertValue(entity, TvShowResponse.class);
+        return mapper.convertValue(createdTvShow, TvShowResponse.class);
     }
 
     public TvShowResponse update(TvShowRequest tvShowRequest, String id) throws Throwable {
 
-        verifyFilesUrl(tvShowRequest);
+        verifyFileUrl(tvShowRequest);
 
-        TvShow tvShow = (TvShow) tvShowMediaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
+        TvShow tvShow = tvShowRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
 
         tvShow.setTitle(tvShowRequest.getTitle());
         tvShow.setDescription(tvShowRequest.getDescription());
@@ -71,37 +71,33 @@ public class TvShowService {
         tvShow.setAnimationUrl(tvShowRequest.getAnimationUrl());
         tvShow.setCategories(tvShow.getCategories());
 
-        var updatedTvShow = tvShowMediaRepository.save(tvShow);
+        var updatedTvShow = tvShowRepository.save(tvShow);
 
         return mapper.convertValue(updatedTvShow, TvShowResponse.class);
     }
 
-    public TvShowResponse patch(TvShowRequest tvShowRequest, String id) throws Throwable {
+    public TvShowResponse patch(TvShowRequest tvShowRequest, String id) {
 
-        var tvShow = (TvShow) tvShowMediaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
+        var tvShow = tvShowRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
 
         if (tvShowRequest.getTitle() != null) tvShow.setTitle(tvShowRequest.getTitle());
         if (tvShowRequest.getDescription() != null) tvShow.setDescription(tvShowRequest.getDescription());
 
         if (tvShowRequest.getThumbnailUrl() != null) {
-
-            if (!FileExtensionValidator.validateThumbnailFileExtension(tvShowRequest.getThumbnailUrl())) {
-                throw new InvalidThumbnailException(tvShowRequest.getThumbnailUrl());
-            }
-
+            verifyThumbnailUrl(tvShowRequest);
             tvShow.setThumbnailUrl(tvShowRequest.getThumbnailUrl());
         }
 
         if (tvShowRequest.getAnimationUrl() != null) {
-
-            if (!FileExtensionValidator.validateAnimationFileExtension(tvShowRequest.getAnimationUrl())) {
-                throw new InvalidAnimationException(tvShowRequest.getAnimationUrl());
-            }
-
+            verifyAnimationUrl(tvShowRequest);
             tvShow.setAnimationUrl(tvShowRequest.getAnimationUrl());
         }
 
-        var patchedTvShow = tvShowMediaRepository.save(tvShow);
+        if (tvShowRequest.getCategories() != null) {
+            if (!tvShowRequest.getCategories().isEmpty()) tvShow.setCategories(tvShowRequest.getCategories());
+        }
+
+        var patchedTvShow = tvShowRepository.save(tvShow);
 
         return mapper.convertValue(patchedTvShow, TvShowResponse.class);
     }
@@ -112,16 +108,16 @@ public class TvShowService {
         deleteOrphanRatings(id);
 
         var tvShow = findById(id);
-        var movieThumb = tvShow.getThumbnailUrl();
+        var movieThumbnail = tvShow.getThumbnailUrl();
         var movieAnimation = tvShow.getAnimationUrl();
 
-        cloudStorageService.deleteFile(movieThumb);
+        cloudStorageService.deleteFile(movieThumbnail);
         cloudStorageService.deleteFile(movieAnimation);
 
-        tvShowMediaRepository.deleteById(id);
+        tvShowRepository.deleteById(id);
     }
 
-    protected void deleteOrphanSeasons(String tvShowId) {
+    private void deleteOrphanSeasons(String tvShowId) {
 
         var seasons = seasonService.findByTvShowId(tvShowId);
 
@@ -130,21 +126,15 @@ public class TvShowService {
         seasonRepository.deleteAll(mapper.convertList(seasons, Season.class));
     }
 
-    protected void deleteOrphanRatings(String tvShowId) throws Throwable {
+    private void deleteOrphanRatings(String tvShowId) {
 
-        var tvShow = (TvShow) tvShowMediaRepository.findById(tvShowId).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
+        var tvShow = tvShowRepository.findById(tvShowId).orElseThrow(() -> new EntityNotFoundException(TvShow.class));
 
         ratingRepository.deleteAll(ratingRepository.findAll().stream().filter(r -> tvShow.getRatings().contains(r)).toList());
     }
 
-    private void verifyFilesUrl(TvShowRequest tvShowRequest) {
-
-        if (!FileExtensionValidator.validateThumbnailFileExtension(tvShowRequest.getThumbnailUrl())) {
-            throw new InvalidThumbnailException(tvShowRequest.getThumbnailUrl());
-        }
-
-        if (!FileExtensionValidator.validateAnimationFileExtension(tvShowRequest.getAnimationUrl())) {
-            throw new InvalidAnimationException(tvShowRequest.getAnimationUrl());
-        }
+    private void verifyFileUrl(TvShowRequest tvShowRequest) {
+        verifyThumbnailUrl(tvShowRequest);
+        verifyAnimationUrl(tvShowRequest);
     }
 }

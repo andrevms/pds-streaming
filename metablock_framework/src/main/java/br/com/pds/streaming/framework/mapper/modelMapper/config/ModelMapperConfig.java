@@ -16,37 +16,12 @@ public class ModelMapperConfig {
 
         ModelMapper modelMapper = new ModelMapper();
 
-//        Converter<HistoryNode, HistoryNodeDTO> historyNodeDTOConverter = ctx -> {
-//            HistoryNode source = ctx.getSource();
-//            if (source.getMedia() == null) {
-//                throw new MissingOrInvalidMediaException(source);
-//            } else {
-//                if (source.getMedia() instanceof Movie) {
-//                    HistoryNodeDTO<MovieDTO> destination = new HistoryNodeDTO<>();
-//                    destination.setId(source.getId());
-//                    destination.setMedia(modelMapper.map(source.getMedia(), MovieDTO.class));
-//                    destination.setCurrentTime(source.getCurrentTime());
-//                    return destination;
-//                } else if (source.getMedia() instanceof Episode) {
-//                    HistoryNodeDTO<EpisodeDTO> destination = new HistoryNodeDTO<>();
-//                    destination.setId(source.getId());
-//                    destination.setMedia(modelMapper.map(source.getMedia(), EpisodeDTO.class));
-//                    destination.setCurrentTime(source.getCurrentTime());
-//                    return destination;
-//                } else {
-//                    throw new MissingOrInvalidMediaException(source);
-//                }
-//            }
-//        };
-
         modelMapper.createTypeMap(History.class, HistoryDTO.class).addMapping(History::getId, HistoryDTO::setId);
         modelMapper.createTypeMap(HistoryDTO.class, History.class).addMapping(HistoryDTO::getId, History::setId);
 
         modelMapper.createTypeMap(LikeRating.class, LikeRatingDTO.class).addMapping(LikeRating::getId, LikeRatingDTO::setId);
         modelMapper.createTypeMap(LikeRatingDTO.class, LikeRating.class).addMapping(LikeRatingDTO::getId, LikeRating::setId);
 
-//        modelMapper.createTypeMap(HistoryNode.class, HistoryNodeDTO.class).setConverter(historyNodeDTOConverter);
-//        modelMapper.createTypeMap(HistoryNodeDTO.class, HistoryNode.class).addMapping(HistoryNodeDTO::getId, HistoryNode::setId);
 
         modelMapper.createTypeMap(Media.class, MediaDTO.class).addMapping(Media::getId, MediaDTO::setId);
         modelMapper.createTypeMap(MediaDTO.class, Media.class).addMapping(MediaDTO::getId, Media::setId);

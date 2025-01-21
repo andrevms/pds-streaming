@@ -5,17 +5,15 @@ import br.com.pds.streaming.blockburst.media.model.dto.SeasonDTO;
 import br.com.pds.streaming.blockburst.media.model.entities.Episode;
 import br.com.pds.streaming.blockburst.media.model.entities.Season;
 import br.com.pds.streaming.blockburst.media.model.entities.TvShow;
-import br.com.pds.streaming.blockburst.repositories.EpisodeRepository;
-import br.com.pds.streaming.blockburst.repositories.SeasonRepository;
-import br.com.pds.streaming.blockburst.repositories.TvShowRepository;
+import br.com.pds.streaming.blockburst.media.repositories.EpisodeRepository;
+import br.com.pds.streaming.blockburst.media.repositories.SeasonRepository;
+import br.com.pds.streaming.blockburst.media.repositories.TvShowRepository;
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.exceptions.InvalidAnimationException;
 import br.com.pds.streaming.framework.exceptions.InvalidThumbnailException;
-import br.com.pds.streaming.framework.media.repositories.MediaRepository;
 import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,7 +48,6 @@ public class SeasonService {
 
     public SeasonDTO findById(String id) {
         var season = seasonRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Season.class));
-
         return mapper.convertValue(season, SeasonDTO.class);
     }
 
@@ -120,10 +117,10 @@ public class SeasonService {
         deleteOrphanEpisodes(id);
 
         var season = findById(id);
-        var movieThumb = season.getThumbnailUrl();
+        var movieThumbnail = season.getThumbnailUrl();
         var movieAnimation = season.getAnimationUrl();
 
-        cloudStorageService.deleteFile(movieThumb);
+        cloudStorageService.deleteFile(movieThumbnail);
         cloudStorageService.deleteFile(movieAnimation);
 
         seasonRepository.deleteById(id);

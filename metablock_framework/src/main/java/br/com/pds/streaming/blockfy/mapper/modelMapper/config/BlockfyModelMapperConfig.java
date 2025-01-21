@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class BlockfyModelMapperConfig {
 
     @Bean
-    public ModelMapper modelMapper() {
+    public ModelMapper getBlockfyModelMapper() {
 
         ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
 

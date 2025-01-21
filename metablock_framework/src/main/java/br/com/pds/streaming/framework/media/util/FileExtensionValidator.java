@@ -19,4 +19,8 @@ public class FileExtensionValidator {
     public static boolean validateAudioFileExtension(String filePath) {
         return Pattern.compile(".*\\.(mp3|wav|aiff|flac|alac|ape|aac|ogg|wma|mp4|opus|midi|dsd)$", Pattern.CASE_INSENSITIVE).matcher(filePath).matches();
     }
+
+    public static boolean validatePdfFileExtension(String filePath) {
+        return Pattern.compile(".*\\.(pdf)$", Pattern.CASE_INSENSITIVE).matcher(filePath).matches();
+    }
 }

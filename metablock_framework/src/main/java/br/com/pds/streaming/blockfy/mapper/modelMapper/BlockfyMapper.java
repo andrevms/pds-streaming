@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 public class BlockfyMapper extends MetablockMapper {
 
-    private final ModelMapper modelMapper = new BlockfyModelMapperConfig().modelMapper();
+    private final ModelMapper modelMapper = new BlockfyModelMapperConfig().getBlockfyModelMapper();
 }

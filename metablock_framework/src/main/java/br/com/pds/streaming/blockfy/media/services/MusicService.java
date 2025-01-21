@@ -3,11 +3,10 @@ package br.com.pds.streaming.blockfy.media.services;
 import br.com.pds.streaming.blockfy.mapper.modelMapper.BlockfyMapper;
 import br.com.pds.streaming.blockfy.media.model.dto.MusicDTO;
 import br.com.pds.streaming.blockfy.media.model.entities.Music;
-import br.com.pds.streaming.blockfy.repositories.MusicRepository;
+import br.com.pds.streaming.blockfy.media.repositories.MusicRepository;
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.media.repositories.LikeRatingRepository;
-import br.com.pds.streaming.framework.media.services.MediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

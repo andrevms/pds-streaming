@@ -1,4 +1,4 @@
-package br.com.pds.streaming.blockburst.repositories;
+package br.com.pds.streaming.blockburst.media.repositories;
 
 import br.com.pds.streaming.blockburst.media.model.entities.Season;
 import br.com.pds.streaming.blockburst.media.model.entities.TvShow;

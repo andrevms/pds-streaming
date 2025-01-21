@@ -1,7 +1,7 @@
 package br.com.pds.streaming.yulearn.ai.controller;
 
 import br.com.pds.streaming.framework.ai.model.SummarizeRequest;
-import br.com.pds.streaming.yulearn.ai.services.YuLearnAIService;
+import br.com.pds.streaming.yulearn.ai.services.YulearnAIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile("yulearn")
 @RestController
 @RequestMapping(value = "/api")
-public class YuLearnChatController {
+public class YulearnChatController {
 
     @Autowired
-    private YuLearnAIService chatService;
+    private YulearnAIService chatService;
 
     @PostMapping("/ask-llm")
     public String askLlm(@RequestBody SummarizeRequest content) {

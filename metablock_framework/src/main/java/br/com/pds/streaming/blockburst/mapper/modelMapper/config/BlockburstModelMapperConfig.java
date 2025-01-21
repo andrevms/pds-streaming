@@ -16,11 +16,11 @@ import org.springframework.context.annotation.Configuration;
 public class BlockburstModelMapperConfig {
 
     @Bean
-    public ModelMapper getmodelMapper() {
+    public ModelMapper getBlockburstModelMapper() {
 
         ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
 
-        Converter<HistoryNode, HistoryNodeDTO> historyNodeDTOConverter = ctx -> {
+        final Converter<HistoryNode, HistoryNodeDTO> historyNodeDTOConverter = ctx -> {
             HistoryNode source = ctx.getSource();
             if (source.getMedia() == null) {
                 throw new MissingOrInvalidMediaException(source);

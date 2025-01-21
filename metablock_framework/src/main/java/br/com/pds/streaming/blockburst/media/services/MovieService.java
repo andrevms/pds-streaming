@@ -1,6 +1,6 @@
 package br.com.pds.streaming.blockburst.media.services;
 
-import br.com.pds.streaming.blockburst.repositories.MovieRepository;
+import br.com.pds.streaming.blockburst.media.repositories.MovieRepository;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.exceptions.InvalidVideoException;
 import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;

@@ -1,7 +1,7 @@
 package br.com.pds.streaming.blockburst.media.services;
 
-import br.com.pds.streaming.blockburst.repositories.EpisodeRepository;
-import br.com.pds.streaming.blockburst.repositories.SeasonRepository;
+import br.com.pds.streaming.blockburst.media.repositories.EpisodeRepository;
+import br.com.pds.streaming.blockburst.media.repositories.SeasonRepository;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.exceptions.InvalidVideoException;
 import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
@@ -48,7 +48,7 @@ public class EpisodeService {
 
     public EpisodeDTO insert(EpisodeDTO episodeDTO, String seasonId) {
 
-        verifyFilesUrl(episodeDTO);
+        verifyFileUrl(episodeDTO);
 
         var episode = mapper.convertValue(episodeDTO, Episode.class);
         episode.setSeasonId(seasonId);
@@ -63,7 +63,7 @@ public class EpisodeService {
 
     public EpisodeDTO update(EpisodeDTO episodeDTO, String id) {
 
-        verifyFilesUrl(episodeDTO);
+        verifyFileUrl(episodeDTO);
 
         var episode = episodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Episode.class));
 
@@ -120,29 +120,20 @@ public class EpisodeService {
     public void delete(String id) {
 
         var episode = findById(id);
-        var movieSource = episode.getVideoUrl();
-        var movieThumb = episode.getThumbnailUrl();
+        var movieVideo = episode.getVideoUrl();
+        var movieThumbnail = episode.getThumbnailUrl();
         var movieAnimation = episode.getAnimationUrl();
 
-        cloudStorageService.deleteFile(movieSource);
-        cloudStorageService.deleteFile(movieThumb);
+        cloudStorageService.deleteFile(movieVideo);
+        cloudStorageService.deleteFile(movieThumbnail);
         cloudStorageService.deleteFile(movieAnimation);
 
         episodeRepository.deleteById(id);
     }
 
-    private void verifyFilesUrl(@NotNull EpisodeDTO episodeDTO) {
-
-        if (!FileExtensionValidator.validateVideoFileExtension(episodeDTO.getVideoUrl())) {
-            throw new InvalidVideoException(episodeDTO.getVideoUrl());
-        }
-
-        if (!FileExtensionValidator.validateThumbnailFileExtension(episodeDTO.getThumbnailUrl())) {
-            throw new InvalidThumbnailException(episodeDTO.getThumbnailUrl());
-        }
-
-        if (!FileExtensionValidator.validateAnimationFileExtension(episodeDTO.getAnimationUrl())) {
-            throw new InvalidAnimationException(episodeDTO.getAnimationUrl());
-        }
+    private void verifyFileUrl(@NotNull EpisodeDTO episodeDTO) {
+        if (!FileExtensionValidator.validateVideoFileExtension(episodeDTO.getVideoUrl())) throw new InvalidVideoException(episodeDTO.getVideoUrl());
+        if (!FileExtensionValidator.validateThumbnailFileExtension(episodeDTO.getThumbnailUrl())) throw new InvalidThumbnailException(episodeDTO.getThumbnailUrl());
+        if (!FileExtensionValidator.validateAnimationFileExtension(episodeDTO.getAnimationUrl())) throw new InvalidAnimationException(episodeDTO.getAnimationUrl());
     }
 }
