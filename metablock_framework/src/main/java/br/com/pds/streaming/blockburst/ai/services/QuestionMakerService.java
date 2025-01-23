@@ -30,9 +30,8 @@ public class QuestionMakerService implements AskLlm {
     @Override
     public String askllm(String content) {
         String chatPrompt = "Você deve agir como uma especialista no assunto de filmes e series. E criar 5 perguntas de multipla escolha sobre o texto e mostrar suas respostas :";
-        Transcription transcription = getTranscription(content);
 
-        return chatService.askLlm(chatPrompt, transcription.getContent());
+        return chatService.askLlm(chatPrompt, content);
     }
 
     private Transcription getTranscription(String source) {

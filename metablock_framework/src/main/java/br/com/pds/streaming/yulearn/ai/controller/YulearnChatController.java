@@ -29,6 +29,6 @@ public class YulearnChatController {
 
     @PostMapping("/ask-llm-quiz-recommended")
     public String askLlmquizRecommended( @RequestBody SummarizeRequest content) {
-        return chatService.askLlmQuiz(content.getSource());
+        return chatService.askLlmQuizRecommended(content.getSource());
     }
 }
