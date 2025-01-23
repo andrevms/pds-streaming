@@ -1,7 +1,7 @@
 package br.com.pds.streaming.blockfy.media.repositories;
 
 import br.com.pds.streaming.blockfy.media.model.entities.Music;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import br.com.pds.streaming.framework.media.repositories.MediaRepository;
 
-public interface MusicRepository extends MongoRepository<Music, String> {
+public interface MusicRepository extends MediaRepository<Music, String> {
 }

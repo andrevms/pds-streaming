@@ -7,6 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface EpisodeRepository extends MongoRepository<Episode, String> {
+public interface EpisodeRepository extends MediaRepository<Episode, String> {
     List<Episode> findBySeasonId(String seasonId);
 }

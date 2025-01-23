@@ -1,8 +1,7 @@
 package br.com.pds.streaming.blockburst.media.repositories;
 
-import br.com.pds.streaming.blockburst.media.model.entities.Season;
 import br.com.pds.streaming.blockburst.media.model.entities.TvShow;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import br.com.pds.streaming.framework.media.repositories.MediaRepository;
 
-public interface TvShowRepository extends MongoRepository<TvShow, String> {
+public interface TvShowRepository extends MediaRepository<TvShow, String> {
 }
