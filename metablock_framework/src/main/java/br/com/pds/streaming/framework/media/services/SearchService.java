@@ -40,7 +40,9 @@ public abstract class SearchService {
 
         List<Media> result = new ArrayList<>();
 
-        repositories.forEach(r -> result.addAll(r.findAll().stream().filter(m -> m.getCategories().stream().map(String::toLowerCase).toList().contains(keyWord.toLowerCase())).toList()));
+        repositories.forEach(r -> r.findAll().stream().forEach(m -> m.getCategories().stream().map(String::toLowerCase).filter(c -> c.contains(keyWord)).forEach(c -> result.add(m))));
+
+//        repositories.forEach(r -> result.addAll(r.findAll().stream().filter(m -> m.getCategories().stream().map(String::toLowerCase).toList().contains(keyWord.toLowerCase())).toList()));
 
         return result;
     }

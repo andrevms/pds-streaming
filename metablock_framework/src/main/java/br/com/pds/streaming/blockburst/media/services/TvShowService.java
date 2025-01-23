@@ -30,7 +30,7 @@ public class TvShowService {
     private final CloudStorageService cloudStorageService;
     private final SeasonRepository seasonRepository;
 
-    @Autowired // Tentar instanciar o MediaService com o BlockburstMapper dinamicamente
+    @Autowired
     public TvShowService(TvShowRepository tvShowRepository, SeasonService seasonService, LikeRatingRepository ratingRepository, BlockburstMapper mapper, CloudStorageService cloudStorageService, SeasonRepository seasonRepository) {
         this.tvShowRepository = tvShowRepository;
         this.seasonService = seasonService;

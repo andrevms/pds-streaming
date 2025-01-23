@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class SearchService extends br.com.pds.streaming.framework.media.services.SearchService {
+public class BlockburstSearchService extends br.com.pds.streaming.framework.media.services.SearchService {
 
     private final BlockburstMapper mapper;
 
     @Autowired
-    public SearchService(MovieRepository movieRepository, TvShowRepository tvShowRepository, BlockburstMapper mapper) {
+    public BlockburstSearchService(MovieRepository movieRepository, TvShowRepository tvShowRepository, BlockburstMapper mapper) {
         super(Set.of(movieRepository, tvShowRepository));
         this.mapper = mapper;
     }
@@ -45,10 +45,8 @@ public class SearchService extends br.com.pds.streaming.framework.media.services
             } else if (m instanceof TvShow) {
                 return mapper.convertValue(m, TvShowResponse.class);
             } else {
-                return mapper.convertValue(m, MovieResponse.class);
+                throw new RuntimeException("This media type shouldn't be here.");
             }
         }).toList();
     }
-
-
 }

@@ -104,6 +104,10 @@ public class MovieService {
             movie.setAnimationUrl(movieRequest.getAnimationUrl());
         }
 
+        if (movieRequest.getCategories() != null) {
+            movie.setCategories(movieRequest.getCategories());
+        }
+
         var patchedMovie = movieRepository.save(movie);
 
         return mapper.convertValue(patchedMovie, MovieResponse.class);

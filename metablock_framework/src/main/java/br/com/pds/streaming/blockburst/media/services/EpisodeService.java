@@ -26,7 +26,7 @@ public class EpisodeService {
     private final CloudStorageService cloudStorageService;
     private final SeasonRepository seasonRepository;
 
-    @Autowired // Tentar instanciar o MediaService com o BlockburstMapper dinamicamente
+    @Autowired
     public EpisodeService(EpisodeRepository episodeRepository, BlockburstMapper mapper, CloudStorageService cloudStorageService, SeasonRepository seasonRepository) {
         this.episodeRepository = episodeRepository;
         this.mapper = mapper;
@@ -110,6 +110,10 @@ public class EpisodeService {
             }
 
             episode.setAnimationUrl(episodeDTO.getAnimationUrl());
+        }
+
+        if (episodeDTO.getCategories() != null) {
+            episode.setCategories(episodeDTO.getCategories());
         }
 
         var patchedEpisode = episodeRepository.save(episode);
