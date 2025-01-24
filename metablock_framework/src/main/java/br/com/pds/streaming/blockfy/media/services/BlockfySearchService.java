@@ -9,6 +9,7 @@ import br.com.pds.streaming.blockfy.media.repositories.MusicRepository;
 import br.com.pds.streaming.blockfy.media.repositories.PodcastRepository;
 import br.com.pds.streaming.framework.media.model.dto.MediaDTO;
 import br.com.pds.streaming.framework.media.model.entities.Media;
+import br.com.pds.streaming.framework.media.services.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class BlockfySearchService extends br.com.pds.streaming.framework.media.services.SearchService {
+public class BlockfySearchService extends SearchService {
 
     private final MusicRepository musicRepository;
     private final PodcastRepository podcastRepository;
@@ -41,6 +42,7 @@ public class BlockfySearchService extends br.com.pds.streaming.framework.media.s
         result.addAll(searchByDescription(keyWord));
         result.addAll(searchByCategory(keyWord));
         result.addAll(searchByArtist(keyWord));
+        result.addAll(searchByMusicGenre(keyWord));
         result.addAll(searchByHost(keyWord));
         result.addAll(searchByGuest(keyWord));
 

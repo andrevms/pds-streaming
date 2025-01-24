@@ -9,6 +9,7 @@ import br.com.pds.streaming.blockburst.media.repositories.MovieRepository;
 import br.com.pds.streaming.blockburst.media.repositories.TvShowRepository;
 import br.com.pds.streaming.framework.media.model.dto.MediaDTO;
 import br.com.pds.streaming.framework.media.model.entities.Media;
+import br.com.pds.streaming.framework.media.services.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class BlockburstSearchService extends br.com.pds.streaming.framework.media.services.SearchService {
+public class BlockburstSearchService extends SearchService {
 
     private final BlockburstMapper mapper;
 
