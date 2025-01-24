@@ -16,14 +16,13 @@ public abstract class RecommendationService {
 
     protected UserService userService;
     protected List<HistoryNodeDTO> historyNodes;
-    protected Map<String, Integer> popularity;
 
     @Autowired
     public RecommendationService(UserService userService) {
         this.userService = userService;
     }
 
-    public List<MediaDTO> getRecommendations(String userId) {
+    public List<? extends MediaDTO> getRecommendations(String userId) {
         setHistoryNodes(userId);
         calculatePopularity();
         hook();
@@ -31,20 +30,12 @@ public abstract class RecommendationService {
         return generateRecommendations();
     }
 
-    public void setHistoryNodes(String userId) {
-        var user = userService.findById(userId);
-
-        var history = user.getHistory();
-
-        List<HistoryNodeDTO> allItems = history.getNodes();
-        int size = allItems.size();
-        historyNodes = allItems.subList(Math.max(size - LIMIT, 0), size);
-    }
+    public abstract void setHistoryNodes(String userId);
 
     public abstract void calculatePopularity();
 
     public void hook() {}
 
-    public abstract List<MediaDTO> generateRecommendations();
+    public abstract List<? extends MediaDTO> generateRecommendations();
 
 }

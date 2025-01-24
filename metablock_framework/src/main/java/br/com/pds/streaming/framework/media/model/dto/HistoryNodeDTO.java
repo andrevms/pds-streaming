@@ -16,4 +16,5 @@ public class HistoryNodeDTO<T extends MediaDTO> implements Serializable {
     private String id;
     private T media;
     private long currentTime; // in milliseconds
+    private String type;
 }

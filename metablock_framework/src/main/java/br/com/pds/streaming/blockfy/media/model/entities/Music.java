@@ -23,4 +23,5 @@ public class Music extends Audio implements Serializable {
 
     private String musicGenre;
     private List<String> artists = new ArrayList<>();
+    private List<String> usersId = new ArrayList<>();
 }
