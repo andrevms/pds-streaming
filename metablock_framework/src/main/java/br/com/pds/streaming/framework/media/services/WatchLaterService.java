@@ -9,6 +9,7 @@ import br.com.pds.streaming.framework.media.model.dto.MediaDTO;
 import br.com.pds.streaming.framework.media.model.entities.Media;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,13 +18,13 @@ import java.util.List;
 public class WatchLaterService {
 
     private final UserRepository userRepository;
-    private final MediaService mediaService;
+    private final MongoRepository mongoRepository;
     private final MetablockMapper mapper;
 
     @Autowired
-    public WatchLaterService(UserRepository userRepository, MediaService mediaService, @Qualifier("metablockMapper") MetablockMapper mapper) {
+    public WatchLaterService(UserRepository userRepository, @Qualifier("mediaRepository") MongoRepository mongoRepository, @Qualifier("metablockMapper") MetablockMapper mapper) {
         this.userRepository = userRepository;
-        this.mediaService = mediaService;
+        this.mongoRepository = mongoRepository;
         this.mapper = mapper;
     }
 
@@ -35,7 +36,7 @@ public class WatchLaterService {
 
         var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class));
 
-        var media = mapper.convertValue(mediaService.findById(mediaId), Media.class);
+        var media = mapper.convertValue(mongoRepository.findById(mediaId), Media.class);
 
         user.getWatchLaterList().add(media);
 
@@ -48,7 +49,7 @@ public class WatchLaterService {
 
         var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class));
 
-        var media = mapper.convertValue(mediaService.findById(mediaId), Media.class);
+        var media = mapper.convertValue(mongoRepository.findById(mediaId), Media.class);
 
         user.getWatchLaterList().remove(media);
 

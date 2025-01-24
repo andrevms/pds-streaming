@@ -69,9 +69,7 @@ public class LikeRatingService {
 
         var rating = likeRatingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Rating.class));
 
-        if (likeRatingDTO.getComment() != null) {
-            rating.setComment(likeRatingDTO.getComment());
-        }
+        if (likeRatingDTO.getComment() != null) rating.setComment(likeRatingDTO.getComment());
         rating.setTimestamp(likeRatingDTO.getTimestamp() != null ? likeRatingDTO.getTimestamp() : Instant.now());
         rating.setLiked(likeRatingDTO.isLiked());
 
@@ -84,13 +82,9 @@ public class LikeRatingService {
 
         var rating = likeRatingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Rating.class));
 
-        if (likeRatingDTO.getComment() != null) {
-            rating.setComment(likeRatingDTO.getComment());
-        }
+        if (likeRatingDTO.getComment() != null) rating.setComment(likeRatingDTO.getComment());
 
-        if (likeRatingDTO.getTimestamp() != null) {
-            rating.setTimestamp(likeRatingDTO.getTimestamp());
-        }
+        if (likeRatingDTO.getTimestamp() != null) rating.setTimestamp(likeRatingDTO.getTimestamp());
 
         rating.setLiked(likeRatingDTO.isLiked());
 

@@ -1,6 +1,9 @@
 package br.com.pds.streaming.blockburst.media.services;
 
 import br.com.pds.streaming.blockburst.exceptions.InvalidVideoException;
+import br.com.pds.streaming.blockburst.media.repositories.EpisodeRepository;
+import br.com.pds.streaming.blockburst.media.repositories.SeasonRepository;
+import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.blockburst.media.model.dto.EpisodeDTO;
 import br.com.pds.streaming.blockburst.media.model.entities.Episode;
@@ -8,7 +11,6 @@ import br.com.pds.streaming.blockburst.media.model.entities.Season;
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
 import br.com.pds.streaming.framework.exceptions.InvalidAnimationException;
 import br.com.pds.streaming.framework.exceptions.InvalidThumbnailException;
-import br.com.pds.streaming.framework.media.services.MediaService;
 import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,52 +18,57 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static br.com.pds.streaming.blockburst.media.util.FileExtensionVerifier.verifyVideoUrl;
+import static br.com.pds.streaming.framework.media.util.FileExtensionVerifier.*;
+
 @Service
 public class EpisodeService {
 
-    private final MediaService mediaService;
+    private final EpisodeRepository episodeRepository;
     private final BlockburstMapper mapper;
     private final CloudStorageService cloudStorageService;
+    private final SeasonRepository seasonRepository;
 
-    @Autowired // Tentar instanciar o MediaService com o BlockburstMapper dinamicamente
-    public EpisodeService(MediaService mediaService, BlockburstMapper mapper, CloudStorageService cloudStorageService) {
-        this.mediaService = mediaService;
+    @Autowired
+    public EpisodeService(EpisodeRepository episodeRepository, BlockburstMapper mapper, CloudStorageService cloudStorageService, SeasonRepository seasonRepository) {
+        this.episodeRepository = episodeRepository;
         this.mapper = mapper;
         this.cloudStorageService = cloudStorageService;
+        this.seasonRepository = seasonRepository;
     }
 
     public List<EpisodeDTO> findAll() {
-        return mediaService.findAll(Episode.class, EpisodeDTO.class);
+        return mapper.convertList(episodeRepository.findAll(), EpisodeDTO.class);
     }
 
     public List<EpisodeDTO> findBySeasonId(String seasonId) {
-        return mapper.convertList(mediaService.findAll(Episode.class).stream().filter(e -> e.getSeasonId().equals(seasonId)).toList(), EpisodeDTO.class);
+        return mapper.convertList(episodeRepository.findBySeasonId(seasonId), EpisodeDTO.class);
     }
 
     public EpisodeDTO findById(String id) {
-        return mediaService.findById(id, Episode.class, EpisodeDTO.class);
+        return mapper.convertValue(episodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Episode.class)), EpisodeDTO.class);
     }
 
     public EpisodeDTO insert(EpisodeDTO episodeDTO, String seasonId) {
 
-        verifyFilesUrl(episodeDTO);
+        verifyFileUrl(episodeDTO);
 
         var episode = mapper.convertValue(episodeDTO, Episode.class);
         episode.setSeasonId(seasonId);
-        var createdEpisode = mediaService.persist(episode);
+        var createdEpisode = episodeRepository.save(episode);
 
-        var season = mediaService.findById(seasonId, Season.class);
+        var season = seasonRepository.findById(seasonId).orElseThrow(() -> new EntityNotFoundException(Season.class));
         season.getEpisodes().add(episode);
-        mediaService.persist(season);
+        seasonRepository.save(season);
 
         return mapper.convertValue(createdEpisode, EpisodeDTO.class);
     }
 
     public EpisodeDTO update(EpisodeDTO episodeDTO, String id) {
 
-        verifyFilesUrl(episodeDTO);
+        verifyFileUrl(episodeDTO);
 
-        var episode = mediaService.findById(id, Episode.class);
+        var episode = episodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Episode.class));
 
         episode.setTitle(episodeDTO.getTitle());
         episode.setDescription(episodeDTO.getDescription());
@@ -69,51 +76,38 @@ public class EpisodeService {
         episode.setThumbnailUrl(episodeDTO.getThumbnailUrl());
         episode.setAnimationUrl(episodeDTO.getAnimationUrl());
 
-        var updatedEpisode = mediaService.persist(episode);
+        var updatedEpisode = episodeRepository.save(episode);
 
         return mapper.convertValue(updatedEpisode, EpisodeDTO.class);
     }
 
     public EpisodeDTO patch(EpisodeDTO episodeDTO, String id) {
 
-        var episode = mediaService.findById(id, Episode.class);
+        var episode = episodeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Episode.class));
 
-        if (episodeDTO.getTitle() != null) {
-            episode.setTitle(episodeDTO.getTitle());
-        }
-
-        if (episodeDTO.getDescription() != null) {
-            episode.setDescription(episodeDTO.getDescription());
-        }
+        if (episodeDTO.getTitle() != null) episode.setTitle(episodeDTO.getTitle());
+        if (episodeDTO.getDescription() != null) episode.setDescription(episodeDTO.getDescription());
 
         if (episodeDTO.getVideoUrl() != null) {
-
-            if (!FileExtensionValidator.validateVideoFileExtension(episodeDTO.getVideoUrl())) {
-                throw new InvalidVideoException(episodeDTO.getVideoUrl());
-            }
-
+            verifyVideoUrl(episodeDTO);
             episode.setVideoUrl(episodeDTO.getVideoUrl());
         }
 
         if (episodeDTO.getThumbnailUrl() != null) {
-
-            if (!FileExtensionValidator.validateThumbnailFileExtension(episodeDTO.getThumbnailUrl())) {
-                throw new InvalidThumbnailException(episodeDTO.getThumbnailUrl());
-            }
-
+            verifyThumbnailUrl(episodeDTO);
             episode.setThumbnailUrl(episodeDTO.getThumbnailUrl());
         }
 
         if (episodeDTO.getAnimationUrl() != null) {
-
-            if (!FileExtensionValidator.validateAnimationFileExtension(episodeDTO.getAnimationUrl())) {
-                throw new InvalidAnimationException(episodeDTO.getAnimationUrl());
-            }
-
+            verifyAnimationUrl(episodeDTO);
             episode.setAnimationUrl(episodeDTO.getAnimationUrl());
         }
 
-        var patchedEpisode = mediaService.persist(episode);
+        if (episodeDTO.getCategories() != null) {
+            episode.setCategories(episodeDTO.getCategories());
+        }
+
+        var patchedEpisode = episodeRepository.save(episode);
 
         return mapper.convertValue(patchedEpisode, EpisodeDTO.class);
     }
@@ -121,29 +115,20 @@ public class EpisodeService {
     public void delete(String id) {
 
         var episode = findById(id);
-        var movieSource = episode.getVideoUrl();
-        var movieThumb = episode.getThumbnailUrl();
+        var movieVideo = episode.getVideoUrl();
+        var movieThumbnail = episode.getThumbnailUrl();
         var movieAnimation = episode.getAnimationUrl();
 
-        cloudStorageService.deleteFile(movieSource);
-        cloudStorageService.deleteFile(movieThumb);
+        cloudStorageService.deleteFile(movieVideo);
+        cloudStorageService.deleteFile(movieThumbnail);
         cloudStorageService.deleteFile(movieAnimation);
 
-        mediaService.delete(id);
+        episodeRepository.deleteById(id);
     }
 
-    private void verifyFilesUrl(@NotNull EpisodeDTO episodeDTO) {
-
-        if (!FileExtensionValidator.validateVideoFileExtension(episodeDTO.getVideoUrl())) {
-            throw new InvalidVideoException(episodeDTO.getVideoUrl());
-        }
-
-        if (!FileExtensionValidator.validateThumbnailFileExtension(episodeDTO.getThumbnailUrl())) {
-            throw new InvalidThumbnailException(episodeDTO.getThumbnailUrl());
-        }
-
-        if (!FileExtensionValidator.validateAnimationFileExtension(episodeDTO.getAnimationUrl())) {
-            throw new InvalidAnimationException(episodeDTO.getAnimationUrl());
-        }
+    private void verifyFileUrl(@NotNull EpisodeDTO episodeDTO) {
+        if (!FileExtensionValidator.validateVideoFileExtension(episodeDTO.getVideoUrl())) throw new InvalidVideoException(episodeDTO.getVideoUrl());
+        if (!FileExtensionValidator.validateThumbnailFileExtension(episodeDTO.getThumbnailUrl())) throw new InvalidThumbnailException(episodeDTO.getThumbnailUrl());
+        if (!FileExtensionValidator.validateAnimationFileExtension(episodeDTO.getAnimationUrl())) throw new InvalidAnimationException(episodeDTO.getAnimationUrl());
     }
 }

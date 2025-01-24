@@ -1,5 +1,6 @@
 package br.com.pds.streaming.blockburst.ai.services;
 
+import br.com.pds.streaming.framework.ai.services.AskLlm;
 import br.com.pds.streaming.framework.ai.services.ChatService;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.exceptions.TranscriptionFailedException;
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SummarizeContentService {
+public class SummarizeContentService implements AskLlm {
 
     @Qualifier("ollamaAIService")
     @Autowired
@@ -26,10 +27,11 @@ public class SummarizeContentService {
     @Autowired
     TranscriptionRepository transcriptionRepository;
 
-    public String summarizeContent(String source) {
+    @Override
+    public String askllm(String content) {
 
         String chatPrompt = "Você deve agir como uma especialista no assunto filmes e serie e ira sumarizar o texto recebido : ";
-        Transcription transcription = getTranscription(source);
+        Transcription transcription = getTranscription(content);
 
         return chatService.askLlm(chatPrompt, transcription.getContent());
     }
@@ -53,4 +55,5 @@ public class SummarizeContentService {
         }
         return transcription;
     }
+
 }

@@ -69,9 +69,7 @@ public class StarRatingService {
 
         var rating = starRatingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Rating.class));
 
-        if (starRatingDTO.getComment() != null) {
-            rating.setComment(starRatingDTO.getComment());
-        }
+        if (starRatingDTO.getComment() != null) rating.setComment(starRatingDTO.getComment());
         rating.setTimestamp(starRatingDTO.getTimestamp() != null ? starRatingDTO.getTimestamp() : Instant.now());
         rating.setStarRating(starRatingDTO.getStarRating());
 
@@ -84,17 +82,9 @@ public class StarRatingService {
 
         var rating = starRatingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Rating.class));
 
-        if (starRatingDTO.getComment() != null) {
-            rating.setComment(starRatingDTO.getComment());
-        }
-
-        if (starRatingDTO.getTimestamp() != null) {
-            rating.setTimestamp(starRatingDTO.getTimestamp());
-        }
-
-        if (starRatingDTO.getStarRating() != null) {
-            rating.setStarRating(starRatingDTO.getStarRating());
-        }
+        if (starRatingDTO.getComment() != null) rating.setComment(starRatingDTO.getComment());
+        if (starRatingDTO.getTimestamp() != null) rating.setTimestamp(starRatingDTO.getTimestamp());
+        if (starRatingDTO.getStarRating() != null) rating.setStarRating(starRatingDTO.getStarRating());
 
         var patchedRating = starRatingRepository.save(rating);
 
