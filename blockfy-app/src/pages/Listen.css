@@ -1,0 +1,10 @@
+.listen-page {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.audio-warning-text {
+    font-size: 125%;
+    color: #eeeeee;
+}

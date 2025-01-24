@@ -1,6 +1,7 @@
 package br.com.pds.streaming.blockfy.media.controllers;
 
 import br.com.pds.streaming.blockburst.media.services.BlockburstHistoryNodeService;
+import br.com.pds.streaming.blockfy.media.services.BlockfyHistoryNodeService;
 import br.com.pds.streaming.framework.media.controllers.HistoryNodeController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BlockfyHistoryNodeController extends HistoryNodeController {
 
     @Autowired
-    public BlockfyHistoryNodeController(BlockburstHistoryNodeService blockburstHistoryNodeService) {
-        super(blockburstHistoryNodeService);
+    public BlockfyHistoryNodeController(BlockfyHistoryNodeService blockfyHistoryNodeService) {
+        super(blockfyHistoryNodeService);
     }
 }

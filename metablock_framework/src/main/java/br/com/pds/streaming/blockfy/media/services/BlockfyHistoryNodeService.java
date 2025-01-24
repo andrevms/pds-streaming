@@ -7,6 +7,7 @@ import br.com.pds.streaming.blockfy.media.repositories.MusicRepository;
 import br.com.pds.streaming.blockfy.media.repositories.PodcastRepository;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.media.model.dto.HistoryNodeDTO;
+import br.com.pds.streaming.framework.media.model.dto.request.HistoryNodeRequest;
 import br.com.pds.streaming.framework.media.model.entities.History;
 import br.com.pds.streaming.framework.media.model.entities.HistoryNode;
 import br.com.pds.streaming.framework.media.repositories.HistoryNodeRepository;
@@ -31,11 +32,11 @@ public class BlockfyHistoryNodeService extends HistoryNodeService {
     }
 
     @Override
-    public HistoryNodeDTO insert(String mediaId, HistoryNodeDTO historyNodeDTO, String historyId) {
+    public HistoryNodeDTO insert(String mediaId, HistoryNodeRequest historyNodeRequest, String historyId) {
 
         var history = historyRepository.findById(historyId).orElseThrow(() -> new EntityNotFoundException(History.class));
 
-        var historyNode = dtoToHistoryNode(historyNodeDTO, historyId, mediaId);
+        var historyNode = dtoToHistoryNode(historyNodeRequest, historyId, mediaId);
 
         var createdHistoryNode = historyNodeRepository.save(historyNode);
 
@@ -46,7 +47,7 @@ public class BlockfyHistoryNodeService extends HistoryNodeService {
         return mapper.convertValue(createdHistoryNode, HistoryNodeDTO.class);
     }
 
-    private HistoryNode dtoToHistoryNode(HistoryNodeDTO dto, String historyId, String mediaId) {
+    private HistoryNode dtoToHistoryNode(HistoryNodeRequest dto, String historyId, String mediaId) {
 
         HistoryNode historyNode = new HistoryNode();
 

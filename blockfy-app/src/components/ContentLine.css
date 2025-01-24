@@ -1,0 +1,4 @@
+.content-line {
+    display: flex;
+    flex-direction: row;
+}
