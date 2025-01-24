@@ -4,6 +4,7 @@ import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
 import br.com.pds.streaming.framework.mapper.modelMapper.MetablockMapper;
 import br.com.pds.streaming.framework.media.model.dto.HistoryNodeDTO;
+import br.com.pds.streaming.framework.media.model.dto.request.HistoryNodeRequest;
 import br.com.pds.streaming.framework.media.model.entities.HistoryNode;
 import br.com.pds.streaming.framework.media.repositories.HistoryNodeRepository;
 import org.modelmapper.ModelMapper;
@@ -38,7 +39,7 @@ public abstract class HistoryNodeService {
         return historyNode;
     }
 
-    public abstract HistoryNodeDTO insert(String mediaId, HistoryNodeDTO historyNodeDTO, String historyId);
+    public abstract HistoryNodeDTO insert(String mediaId, HistoryNodeRequest historyNodeRequest, String historyId);
 
     public HistoryNodeDTO update(HistoryNodeDTO historyNodeDTO, String id) {
         return deleteAndInsertAgain(historyNodeDTO, id);

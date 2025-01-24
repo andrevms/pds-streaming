@@ -41,6 +41,12 @@ public class YulearnRecommendationService extends RecommendationService {
     public void calculatePopularity() {
         Map<String, Integer> categoryCount = new HashMap<>();
 
+        if (historyNodes.size() == 0) {
+            while (true) {
+                System.out.println("History nodes is empty");
+            }
+        }
+
         for (HistoryNodeDTO node : historyNodes) {
             for (String category : node.getMedia().getCategories()) {
                 categoryCount.put(category, categoryCount.getOrDefault(category, 0) + 1);
@@ -52,7 +58,6 @@ public class YulearnRecommendationService extends RecommendationService {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (e1, e2) -> e1, LinkedHashMap::new));
     }
-
     @Override
     public void hook() {
         allVideoLessons = videoLessonService.findAll();
@@ -61,6 +66,13 @@ public class YulearnRecommendationService extends RecommendationService {
     @Override
     public List<VideoLessonResponse> generateRecommendations() {
         List<VideoLessonResponse> recommendedItems = new ArrayList<>();
+
+        if (popularity.size() == 0) {
+            while (true) {
+                System.out.println("Popularity nodes is empty");
+            }
+        }
+
 
         for (Map.Entry<String, Integer> categoryEntry : popularity.entrySet()) {
             String category = categoryEntry.getKey();
