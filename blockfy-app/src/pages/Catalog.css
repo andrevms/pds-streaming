@@ -1,0 +1,15 @@
+.homepage {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.section {
+    margin: 20px 10px;
+}
+
+.section-title {
+    margin-left: 5px;
+    font-size: 125%;
+    color: #eeeeee;
+}
