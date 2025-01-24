@@ -2,20 +2,19 @@ package br.com.pds.streaming.blockburst.media.services;
 
 import br.com.pds.streaming.blockburst.media.repositories.MovieRepository;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
-import br.com.pds.streaming.framework.exceptions.InvalidVideoException;
 import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.blockburst.media.model.dto.MovieRequest;
 import br.com.pds.streaming.blockburst.media.model.dto.MovieResponse;
 import br.com.pds.streaming.blockburst.media.model.entities.Movie;
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
-import br.com.pds.streaming.framework.exceptions.InvalidAnimationException;
-import br.com.pds.streaming.framework.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.framework.media.repositories.LikeRatingRepository;
-import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static br.com.pds.streaming.blockburst.media.util.FileExtensionVerifier.verifyVideoUrl;
+import static br.com.pds.streaming.framework.media.util.FileExtensionVerifier.*;
 
 @Service
 public class MovieService {
@@ -25,7 +24,7 @@ public class MovieService {
     private final BlockburstMapper mapper;
     private final CloudStorageService cloudStorageService;
 
-    @Autowired // Tentar instanciar o MediaService com o BlockburstMapper dinamicamente
+    @Autowired
     public MovieService(MovieRepository movieRepository, LikeRatingRepository ratingRepository, BlockburstMapper mapper, CloudStorageService cloudStorageService) {
         this.movieRepository = movieRepository;
         this.ratingRepository = ratingRepository;
@@ -78,29 +77,17 @@ public class MovieService {
         if (movieRequest.getDescription() != null) movie.setDescription(movieRequest.getDescription());
 
         if (movieRequest.getVideoUrl() != null) {
-
-            if (!FileExtensionValidator.validateVideoFileExtension(movieRequest.getVideoUrl())) {
-                throw new InvalidVideoException(movieRequest.getVideoUrl());
-            }
-
+            verifyVideoUrl(movieRequest);
             movie.setVideoUrl(movieRequest.getVideoUrl());
         }
 
         if (movieRequest.getThumbnailUrl() != null) {
-
-            if (!FileExtensionValidator.validateThumbnailFileExtension(movieRequest.getThumbnailUrl())) {
-                throw new InvalidThumbnailException(movieRequest.getThumbnailUrl());
-            }
-
+            verifyThumbnailUrl(movieRequest);
             movie.setThumbnailUrl(movieRequest.getThumbnailUrl());
         }
 
         if (movieRequest.getAnimationUrl() != null) {
-
-            if (!FileExtensionValidator.validateAnimationFileExtension(movieRequest.getAnimationUrl())) {
-                throw new InvalidAnimationException(movieRequest.getAnimationUrl());
-            }
-
+            verifyAnimationUrl(movieRequest);
             movie.setAnimationUrl(movieRequest.getAnimationUrl());
         }
 
@@ -137,17 +124,8 @@ public class MovieService {
     }
 
     private void verifyFilesUrl(MovieRequest movieRequest) {
-
-        if (!FileExtensionValidator.validateVideoFileExtension(movieRequest.getVideoUrl())) {
-            throw new InvalidVideoException(movieRequest.getVideoUrl());
-        }
-
-        if (!FileExtensionValidator.validateThumbnailFileExtension(movieRequest.getThumbnailUrl())) {
-            throw new InvalidThumbnailException(movieRequest.getThumbnailUrl());
-        }
-
-        if (!FileExtensionValidator.validateAnimationFileExtension(movieRequest.getAnimationUrl())) {
-            throw new InvalidAnimationException(movieRequest.getAnimationUrl());
-        }
+        verifyVideoUrl(movieRequest);
+        verifyThumbnailUrl(movieRequest);
+        verifyAnimationUrl(movieRequest);
     }
 }

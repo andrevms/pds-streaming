@@ -1,9 +1,9 @@
 package br.com.pds.streaming.blockburst.media.services;
 
+import br.com.pds.streaming.blockburst.exceptions.InvalidVideoException;
 import br.com.pds.streaming.blockburst.media.repositories.EpisodeRepository;
 import br.com.pds.streaming.blockburst.media.repositories.SeasonRepository;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
-import br.com.pds.streaming.framework.exceptions.InvalidVideoException;
 import br.com.pds.streaming.blockburst.mapper.modelMapper.BlockburstMapper;
 import br.com.pds.streaming.blockburst.media.model.dto.EpisodeDTO;
 import br.com.pds.streaming.blockburst.media.model.entities.Episode;
@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static br.com.pds.streaming.blockburst.media.util.FileExtensionVerifier.verifyVideoUrl;
+import static br.com.pds.streaming.framework.media.util.FileExtensionVerifier.*;
 
 @Service
 public class EpisodeService {
@@ -86,29 +89,17 @@ public class EpisodeService {
         if (episodeDTO.getDescription() != null) episode.setDescription(episodeDTO.getDescription());
 
         if (episodeDTO.getVideoUrl() != null) {
-
-            if (!FileExtensionValidator.validateVideoFileExtension(episodeDTO.getVideoUrl())) {
-                throw new InvalidVideoException(episodeDTO.getVideoUrl());
-            }
-
+            verifyVideoUrl(episodeDTO);
             episode.setVideoUrl(episodeDTO.getVideoUrl());
         }
 
         if (episodeDTO.getThumbnailUrl() != null) {
-
-            if (!FileExtensionValidator.validateThumbnailFileExtension(episodeDTO.getThumbnailUrl())) {
-                throw new InvalidThumbnailException(episodeDTO.getThumbnailUrl());
-            }
-
+            verifyThumbnailUrl(episodeDTO);
             episode.setThumbnailUrl(episodeDTO.getThumbnailUrl());
         }
 
         if (episodeDTO.getAnimationUrl() != null) {
-
-            if (!FileExtensionValidator.validateAnimationFileExtension(episodeDTO.getAnimationUrl())) {
-                throw new InvalidAnimationException(episodeDTO.getAnimationUrl());
-            }
-
+            verifyAnimationUrl(episodeDTO);
             episode.setAnimationUrl(episodeDTO.getAnimationUrl());
         }
 

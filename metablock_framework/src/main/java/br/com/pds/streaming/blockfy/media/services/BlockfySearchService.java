@@ -7,6 +7,7 @@ import br.com.pds.streaming.blockfy.media.model.entities.Music;
 import br.com.pds.streaming.blockfy.media.model.entities.Podcast;
 import br.com.pds.streaming.blockfy.media.repositories.MusicRepository;
 import br.com.pds.streaming.blockfy.media.repositories.PodcastRepository;
+import br.com.pds.streaming.framework.exceptions.MediaTypeException;
 import br.com.pds.streaming.framework.media.model.dto.MediaDTO;
 import br.com.pds.streaming.framework.media.model.entities.Media;
 import br.com.pds.streaming.framework.media.services.SearchService;
@@ -54,7 +55,7 @@ public class BlockfySearchService extends SearchService {
             } else if (m instanceof Podcast) {
                 return mapper.convertValue(m, PodcastDTO.class);
             } else {
-                throw new RuntimeException("This media type shouldn't be here.");
+                throw new MediaTypeException();
             }
         }).toList();
     }

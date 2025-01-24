@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static br.com.pds.streaming.blockfy.media.services.AudioService.*;
-import static br.com.pds.streaming.blockfy.media.services.AudioService.verifyFileAudioUrl;
+import static br.com.pds.streaming.blockfy.media.util.FileExtensionVerifier.*;
+import static br.com.pds.streaming.framework.media.util.FileExtensionVerifier.*;
 
 @Service
 public class PodcastService {
@@ -77,22 +77,22 @@ public class PodcastService {
         if (podcastDTO.getDescription() != null) podcast.setDescription(podcastDTO.getDescription());
 
         if (podcastDTO.getThumbnailUrl() != null) {
-            verifyFileThumbnailUrl(podcastDTO);
+            verifyThumbnailUrl(podcastDTO);
             podcast.setThumbnailUrl(podcastDTO.getThumbnailUrl());
         }
 
         if (podcastDTO.getAnimationUrl() != null) {
-            verifyFileAnimationUrl(podcastDTO);
+            verifyAnimationUrl(podcastDTO);
             podcast.setAnimationUrl(podcastDTO.getAnimationUrl());
         }
 
         if (podcastDTO.getAudioUrl() != null) {
-            verifyFileAudioUrl(podcastDTO);
+            verifyAudioUrl(podcastDTO);
             podcast.setAudioUrl(podcastDTO.getAudioUrl());
         }
 
         if (podcastDTO.getVideoUrl() != null) {
-            verifyFileVideoUrl(podcastDTO);
+            verifyVideoUrl(podcastDTO);
             podcast.setVideoUrl(podcastDTO.getVideoUrl());
         }
 

@@ -41,7 +41,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
                 if (userDetails == null) {
                     logger.warn("User not found: {}", username);
-                    return; // or handle as appropriate
+                    return;
                 }
 
                 UsernamePasswordAuthenticationToken authentication =

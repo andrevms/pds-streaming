@@ -2,8 +2,6 @@ package br.com.pds.streaming.yulearn.media.services;
 
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
-import br.com.pds.streaming.framework.exceptions.InvalidVideoException;
-import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
 import br.com.pds.streaming.yulearn.mapper.modelMapper.YulearnMapper;
 import br.com.pds.streaming.yulearn.media.model.dto.TextLessonRequest;
 import br.com.pds.streaming.yulearn.media.model.dto.TextLessonResponse;
@@ -17,8 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static br.com.pds.streaming.framework.media.util.VerifyHelper.verifyAnimationUrl;
-import static br.com.pds.streaming.framework.media.util.VerifyHelper.verifyThumbnailUrl;
+import static br.com.pds.streaming.framework.media.util.FileExtensionVerifier.verifyAnimationUrl;
+import static br.com.pds.streaming.framework.media.util.FileExtensionVerifier.verifyThumbnailUrl;
+import static br.com.pds.streaming.yulearn.media.util.FileExtensionVerifier.verifyPdfUrl;
 
 @Service
 public class TextLessonService {
@@ -115,10 +114,6 @@ public class TextLessonService {
         cloudStorageService.deleteFile(textLessonAnimation);
 
         textLessonRepository.deleteById(id);
-    }
-
-    private void verifyPdfUrl(TextLessonRequest textLessonRequest) {
-        if (!FileExtensionValidator.validatePdfFileExtension(textLessonRequest.getPdfUrl())) throw new InvalidVideoException(textLessonRequest.getPdfUrl());
     }
 
     private void verifyFileUrl(@NotNull TextLessonRequest textLessonRequest) {

@@ -2,8 +2,6 @@ package br.com.pds.streaming.yulearn.media.services;
 
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
-import br.com.pds.streaming.framework.exceptions.InvalidVideoException;
-import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
 import br.com.pds.streaming.yulearn.mapper.modelMapper.YulearnMapper;
 import br.com.pds.streaming.yulearn.media.model.dto.VideoLessonRequest;
 import br.com.pds.streaming.yulearn.media.model.dto.VideoLessonResponse;
@@ -17,8 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static br.com.pds.streaming.framework.media.util.VerifyHelper.verifyAnimationUrl;
-import static br.com.pds.streaming.framework.media.util.VerifyHelper.verifyThumbnailUrl;
+import static br.com.pds.streaming.framework.media.util.FileExtensionVerifier.verifyAnimationUrl;
+import static br.com.pds.streaming.framework.media.util.FileExtensionVerifier.verifyThumbnailUrl;
+import static br.com.pds.streaming.yulearn.media.util.FileExtensionVerifier.verifyVideoUrl;
 
 @Service
 public class VideoLessonService {
@@ -114,10 +113,6 @@ public class VideoLessonService {
         cloudStorageService.deleteFile(videoLessonAnimation);
 
         videoLessonRepository.deleteById(id);
-    }
-
-    private void verifyVideoUrl(VideoLessonRequest videoLessonRequest) {
-        if (!FileExtensionValidator.validateVideoFileExtension(videoLessonRequest.getVideoUrl())) throw new InvalidVideoException(videoLessonRequest.getVideoUrl());
     }
 
     private void verifyFileUrl(@NotNull VideoLessonRequest videoLessonRequest) {

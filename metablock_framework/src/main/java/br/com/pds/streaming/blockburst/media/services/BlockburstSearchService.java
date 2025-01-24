@@ -7,6 +7,7 @@ import br.com.pds.streaming.blockburst.media.model.entities.Movie;
 import br.com.pds.streaming.blockburst.media.model.entities.TvShow;
 import br.com.pds.streaming.blockburst.media.repositories.MovieRepository;
 import br.com.pds.streaming.blockburst.media.repositories.TvShowRepository;
+import br.com.pds.streaming.framework.exceptions.MediaTypeException;
 import br.com.pds.streaming.framework.media.model.dto.MediaDTO;
 import br.com.pds.streaming.framework.media.model.entities.Media;
 import br.com.pds.streaming.framework.media.services.SearchService;
@@ -46,7 +47,7 @@ public class BlockburstSearchService extends SearchService {
             } else if (m instanceof TvShow) {
                 return mapper.convertValue(m, TvShowResponse.class);
             } else {
-                throw new RuntimeException("This media type shouldn't be here.");
+                throw new MediaTypeException();
             }
         }).toList();
     }

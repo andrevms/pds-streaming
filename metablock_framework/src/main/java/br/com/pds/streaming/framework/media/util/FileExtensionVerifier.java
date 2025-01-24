@@ -4,7 +4,7 @@ import br.com.pds.streaming.framework.exceptions.InvalidAnimationException;
 import br.com.pds.streaming.framework.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.framework.media.model.dto.MediaDTO;
 
-public class VerifyHelper {
+public class FileExtensionVerifier {
 
     public static void verifyThumbnailUrl(MediaDTO mediaDTO) {
         if (!FileExtensionValidator.validateThumbnailFileExtension(mediaDTO.getThumbnailUrl())) throw new InvalidThumbnailException(mediaDTO.getThumbnailUrl());

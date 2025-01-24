@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static br.com.pds.streaming.blockfy.media.services.AudioService.*;
+import static br.com.pds.streaming.blockfy.media.util.FileExtensionVerifier.*;
+import static br.com.pds.streaming.framework.media.util.FileExtensionVerifier.*;
 
 @Service
 public class MusicService {
@@ -40,7 +41,7 @@ public class MusicService {
 
     public MusicDTO insert(MusicDTO musicDTO) {
 
-        AudioService.verifyFileUrl(musicDTO);
+        verifyFileUrl(musicDTO);
 
         var music = mapper.convertValue(musicDTO, Music.class);
 
@@ -49,7 +50,7 @@ public class MusicService {
 
     public MusicDTO update(MusicDTO musicDTO, String id) {
 
-        AudioService.verifyFileUrl(musicDTO);
+        verifyFileUrl(musicDTO);
 
         var music = musicRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Music.class));
 
@@ -74,17 +75,17 @@ public class MusicService {
         if (musicDTO.getDescription() != null) music.setDescription(musicDTO.getDescription());
 
         if (musicDTO.getThumbnailUrl() != null) {
-            verifyFileThumbnailUrl(musicDTO);
+            verifyThumbnailUrl(musicDTO);
             music.setThumbnailUrl(musicDTO.getThumbnailUrl());
         }
 
         if (musicDTO.getAnimationUrl() != null) {
-            verifyFileAnimationUrl(musicDTO);
+            verifyAnimationUrl(musicDTO);
             music.setAnimationUrl(musicDTO.getAnimationUrl());
         }
 
         if (musicDTO.getAudioUrl() != null) {
-            verifyFileAudioUrl(musicDTO);
+            verifyAudioUrl(musicDTO);
             music.setAudioUrl(musicDTO.getAudioUrl());
         }
 

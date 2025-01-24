@@ -1,6 +1,5 @@
 package br.com.pds.streaming.blockburst.exceptions;
 
-import br.com.pds.streaming.framework.exceptions.InvalidVideoException;
 import br.com.pds.streaming.framework.exceptions.response.ResponseError;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;

@@ -9,16 +9,13 @@ import br.com.pds.streaming.blockburst.media.repositories.SeasonRepository;
 import br.com.pds.streaming.blockburst.media.repositories.TvShowRepository;
 import br.com.pds.streaming.framework.cloud.services.CloudStorageService;
 import br.com.pds.streaming.framework.exceptions.EntityNotFoundException;
-import br.com.pds.streaming.framework.exceptions.InvalidAnimationException;
-import br.com.pds.streaming.framework.exceptions.InvalidThumbnailException;
 import br.com.pds.streaming.framework.media.repositories.LikeRatingRepository;
-import br.com.pds.streaming.framework.media.util.FileExtensionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static br.com.pds.streaming.framework.media.util.VerifyHelper.*;
+import static br.com.pds.streaming.framework.media.util.FileExtensionVerifier.*;
 
 @Service
 public class TvShowService {

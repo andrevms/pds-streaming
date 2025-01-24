@@ -52,6 +52,11 @@ public class CustomResourceExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Invalid file extension for a thumbnail", e.getMessage(), request.getRequestURI()));
     }
 
+    @ExceptionHandler(MediaTypeException.class)
+    public ResponseEntity<ResponseError> mediaType(MediaTypeException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Media type shouldn't be here", e.getMessage(), request.getRequestURI()));
+    }
+
     @ExceptionHandler(MissingOrInvalidMediaException.class)
     public ResponseEntity<ResponseError> missingOrInvalidMedia(MissingOrInvalidMediaException e, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "A history node or a user has an invalid media or a list of invalid medias", e.getMessage(), request.getRequestURI()));
