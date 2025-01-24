@@ -1,6 +1,7 @@
 package br.com.pds.streaming.framework.media.controllers;
 
 import br.com.pds.streaming.framework.media.model.dto.HistoryNodeDTO;
+import br.com.pds.streaming.framework.media.model.dto.request.HistoryNodeRequest;
 import br.com.pds.streaming.framework.media.model.entities.HistoryNode;
 import br.com.pds.streaming.framework.media.services.HistoryNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,8 @@ public class HistoryNodeController {
     }
 
     @PostMapping
-    public ResponseEntity<HistoryNodeDTO> insert(@RequestBody HistoryNodeDTO historyNodeDTO, @RequestParam(name = "historyId") String historyId, @RequestParam(name = "mediaId", required = false) String mediaId) {
-        return new ResponseEntity<>(historyNodeService.insert(mediaId, historyNodeDTO, historyId), HttpStatus.CREATED);
+    public ResponseEntity<HistoryNodeDTO> insert(@RequestBody HistoryNodeRequest historyNodeRequest, @RequestParam(name = "historyId") String historyId, @RequestParam(name = "mediaId", required = false) String mediaId) {
+        return new ResponseEntity<>(historyNodeService.insert(mediaId, historyNodeRequest, historyId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
