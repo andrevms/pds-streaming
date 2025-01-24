@@ -28,15 +28,13 @@ public class BlockfyHistoryNodeService extends HistoryNodeService {
     private final HistoryRepository historyRepository;
     private final MusicRepository musicRepository;
     private final PodcastRepository podcastRepository;
-    private final UserRepository userRepository;
 
     @Autowired
-    public BlockfyHistoryNodeService(HistoryNodeRepository historyNodeRepository, BlockfyMapper mapper, HistoryRepository historyRepository, MusicRepository musicRepository, PodcastRepository podcastRepository, UserRepository userRepository) {
+    public BlockfyHistoryNodeService(HistoryNodeRepository historyNodeRepository, BlockfyMapper mapper, HistoryRepository historyRepository, MusicRepository musicRepository, PodcastRepository podcastRepository) {
         super(historyNodeRepository, mapper);
         this.historyRepository = historyRepository;
         this.musicRepository = musicRepository;
         this.podcastRepository = podcastRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -66,9 +64,8 @@ public class BlockfyHistoryNodeService extends HistoryNodeService {
             var media = musicRepository.findById(mediaId).orElseThrow(() -> new EntityNotFoundException(Music.class));
 
             var userId = historyRepository.findById(historyId).orElseThrow(() -> new EntityNotFoundException(History.class)).getUserId();
-            var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class));
 
-            media.getUsers().add(user);
+            media.getUsersId().add(userId);
 
             musicRepository.save(media);
             historyNode.setMedia(media);

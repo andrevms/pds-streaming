@@ -21,6 +21,6 @@ public class MusicDTO extends AudioDTO implements Serializable {
 
     private String musicGenre;
     private List<String> artists = new ArrayList<>();
-    private List<UserDTO> usersDTO = new ArrayList<>();
+    private List<String> usersId = new ArrayList<>();
 
 }

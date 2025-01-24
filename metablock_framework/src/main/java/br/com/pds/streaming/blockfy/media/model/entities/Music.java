@@ -2,6 +2,7 @@ package br.com.pds.streaming.blockfy.media.model.entities;
 
 import br.com.pds.streaming.framework.authentication.model.entities.User;
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serial;
@@ -22,5 +23,5 @@ public class Music extends Audio implements Serializable {
 
     private String musicGenre;
     private List<String> artists = new ArrayList<>();
-    private List<User> users = new ArrayList<>();
+    private List<String> usersId = new ArrayList<>();
 }

@@ -54,7 +54,8 @@ public class BlockfyRecommendationService extends RecommendationService {
 
         for (HistoryNodeDTO node : historyNodes) {
             MusicDTO musicDTO = (MusicDTO) node.getMedia();
-            for (UserDTO user : musicDTO.getUsersDTO()) {
+            for (String userId : musicDTO.getUsersId()) {
+                UserDTO user = userService.findById(userId);
                 if (!uniqueUsers.contains(user) && uniqueUsers.size() < 5) {
                     uniqueUsers.add(user);
                     break;
