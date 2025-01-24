@@ -60,6 +60,7 @@ public class MusicService {
         music.setAnimationUrl(musicDTO.getAnimationUrl());
         music.setAudioUrl(musicDTO.getAudioUrl());
         music.setMusicGenre(musicDTO.getMusicGenre());
+        music.setArtists(musicDTO.getArtists());
 
         var updatedMusic = musicRepository.save(music);
 
@@ -90,6 +91,8 @@ public class MusicService {
         }
 
         if (musicDTO.getMusicGenre() != null) music.setMusicGenre(musicDTO.getMusicGenre());
+
+        if (musicDTO.getArtists() != null) music.setArtists(musicDTO.getArtists());
 
         var patchedMusic = musicRepository.save(music);
 

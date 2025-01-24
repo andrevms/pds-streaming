@@ -1,13 +1,11 @@
 import "./Listen.css";
 import React, { useState, useEffect } from "react";
-import { loadEpisodes, loadMovies } from "../util/Data";
+import { loadMusics, loadPodcasts } from "../util/Data";
 import { useOutletContext, useParams } from "react-router-dom";
 
-export default function Watch() {
-    const [width, setWidth] = useState(window.innerWidth * 0.75);
+export default function Listen() {
     const [subject, setSubject] = useState();
-    const [video, setVideo] = useState(null);
-    const [quiz, setQuiz] = useState();
+    const [audio, setAudio] = useState(null);
 
     const { mediaType, mediaId } = useParams();
 
@@ -15,43 +13,34 @@ export default function Watch() {
 
     useEffect(() => {
         if (mediaType == `music`) {
-            loadEpisodes().then((episodes) => {
-                for (let key in episodes) {
-                    if (episodes[key].id == mediaId) {
-                        updateTitle(episodes[key].title);
-                        setSubject(episodes[key].description);
-                        setVideo(episodes[key].videoUrl);
+            loadMusics().then((music) => {
+                for (let key in music) {
+                    if (music[key].id == mediaId) {
+                        updateTitle(`${music[key].artists} - ${music[key].title}`);
+                        document.title = `${music[key].artists} - ${music[key].title}`;
+                        setSubject(music[key].description);
+                        setAudio(music[key].audioUrl);
                     }
                 }
             });
         }
 
         if (mediaType == `podcast`) {
-            loadMovies().then((movies) => {
-                for (let key in movies) {
-                    if (movies[key].id == mediaId) {
-                        updateTitle(movies[key].title);
-                        setSubject(movies[key].description);
-                        setVideo(movies[key].videoUrl);
+            loadPodcasts().then((podcasts) => {
+                for (let key in podcasts) {
+                    if (podcasts[key].id == mediaId) {
+                        updateTitle(podcasts[key].title);
+                        setSubject(podcasts[key].description);
+                        setAudio(podcasts[key].audioUrl);
                     }
                 }
             });
         }
-
-        const handleResize = () => {
-            setWidth(window.innerWidth * 0.75);
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
     }, []);
 
     return (
-        <div className="watch-page">
-            {localStorage.getItem("username") ? (video ? <video className="player-video" style={{ width: width, height: width / 1.7 }} src={video} controls autoPlay></video> : <p className="video-warning-text">Vídeo não encontrado.</p>) : <p className="video-warning-text">Você precisa estar logado para ter acesso ao conteúdo.</p>}
+        <div className="listen-page">
+            {localStorage.getItem("username") ? (audio ? <audio controls><source src={audio}></source></audio> : <p className="audio-warning-text">Áudio não encontrado.</p>) : <p className="audio-warning-text">Você precisa estar logado para ter acesso ao conteúdo.</p>}
         </div>
     );
 }

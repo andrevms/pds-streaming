@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ContentCell from "./ContentCell";
-import { loadMovies, loadTvShows } from "../util/Data";
+import { loadMusics, loadPodcasts } from "../util/Data";
 import "./ContentLine.css";
 
 export default function ContentLine(props) {
@@ -8,7 +8,7 @@ export default function ContentLine(props) {
     
     useEffect(() => {
         if (props.mediaType == `music`) {
-            loadTvShows().then((music) => {
+            loadMusics().then((music) => {
                 const musicList = [];
                 for (let key in music) {
                     musicList.push(music[key]);
@@ -18,7 +18,7 @@ export default function ContentLine(props) {
         }
 
         if (props.mediaType == `podcast`) {
-            loadMovies().then((podcasts) => {
+            loadPodcasts().then((podcasts) => {
                 const podcastsList = [];
                 for (let key in podcasts) {
                     podcastsList.push(podcasts[key]);

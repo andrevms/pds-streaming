@@ -1,10 +1,10 @@
-.watch-page {
+.listen-page {
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
 
-.video-warning-text {
+.audio-warning-text {
     font-size: 125%;
     color: #eeeeee;
 }
